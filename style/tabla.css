@@ -1,0 +1,107 @@
+
+table.tablesorter {
+	font-family:arial;
+	background-color: #CDCDCD;
+	margin:10px 0pt 15px;
+	font-size: 8pt;
+	width: 100%;
+	text-align: left;
+}
+table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+	/*background-color: #CED2D2; /*#BAC8D9;*/
+	/*background-image: url("../img/header.png");	*/
+	background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0, rgb(74,149,184)),color-stop(0.97, rgb(46,112,143)));
+	background-image: -moz-linear-gradient(center bottom,rgb(74,149,184) 0%,rgb(46,112,143) 97%);
+	background-repeat: repeat;
+	color: #FFF;
+	border: 1px solid #B4B5B5;
+	font-size: 10pt;
+	padding: 8px 7px 8px 7px;
+
+}
+table.tablesorter thead tr .header {
+	background-image: url("../img/sort.png");
+	background-repeat: no-repeat;
+	background-position: center right;
+	cursor: pointer;
+}
+table.tablesorter tbody td {
+	color: #3D3D3D;
+	padding: 4px;
+	background-color: #FFF;
+	vertical-align: top;
+}
+
+table.tablesorter tbody td img{
+	cursor: pointer;
+}
+table.tablesorter tbody tr.odd td {
+	/*filas de division */
+	background-color:#FFEADF;
+}
+table.tablesorter thead tr .headerSortUp {
+	background-image: url("../img/desc.png");
+}
+table.tablesorter thead tr .headerSortDown {
+	background-image: url("../img/asc.png");
+}
+table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #0B3861;
+color: #FFF;
+}
+
+
+div.tableContainer {
+	
+	background: #FFF;
+	color: #000;
+	margin: 10px;
+	padding: 0;
+	
+	
+	clear: both;	
+	height: 450px;
+	overflow: auto;
+	width: 98%;
+}
+
+html>body div.tableContainer table {
+	width: 100%;
+}
+
+
+/* Esto define los bordes del contenido */
+tbody.scrollContent td, tbody.scrollContent tr.normalRow td {
+	background: #FFF;
+	border-bottom: none;
+	border-left: none;
+	border-right: 1px solid #CCC;
+	border-top: 1px solid #DDD;
+	padding: 2px 3px 3px 4px;
+	font-size: 12px;
+}
+
+tbody.scrollContent tr.alternateRow td {
+	background: #EEE;
+	border-bottom: none;
+	border-left: none;
+	border-right: 1px solid #CCC;
+	border-top: 1px solid #DDD;
+	padding: 2px 3px 3px 4px;
+}
+
+.hover td {
+background-color:#989A9F;
+}
+
+.sortedminus {
+background-color:#989A9F;
+}
+
+.sortedplus {
+background-color:#989A9F;
+}
+
+.selrow td {
+background-color:#989A9F;
+}

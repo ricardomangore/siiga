@@ -1,0 +1,44 @@
+<?php
+
+/**
+ * El nombre de este archivo debe de ser modificado por 'Conectar.php' para que funcione su entorno de desarrollo
+ * o de producción.
+ *
+ */
+
+
+
+
+class Conectar
+{
+	var $servidor;
+	var $usuario_bd;
+	var $passwd_bd;
+	var $base;
+	var $conexion;
+	var $seleccion;
+
+	function Conectar()
+	{
+
+                /**
+                 * Cambie DATA_BASE_USER por el nombre de usuario de la base de datos
+                 * Cambie DATA_BASE_PASSWORD por el password correpsondiente para el usuario de la base de datos
+                 * Cambie DATA_BASE_NAME por el nombre de la base de datos
+                 */
+
+
+
+
+		$this->servidor="127.0.0.1";
+		$this->usuario_bd="DATA_BASE_USER";
+		$this->passwd_bd="DATA_BASE_PASSWORD";
+		$this->base="DATA_BASE_NAME";
+
+		$this->conexion=mysql_connect($this->servidor , $this->usuario_bd, $this->passwd_bd) OR die("error de conexión");
+		$this->seleccion = mysql_select_db($this->base, $this->conexion);
+		@mysql_query("SET NAMES 'utf8'");
+		return;
+	}
+}
+?>

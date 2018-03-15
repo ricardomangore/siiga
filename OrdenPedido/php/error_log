@@ -1,0 +1,10 @@
+[19-Feb-2018 14:59:09 America/Chicago] PHP Warning:  include(conexion2.php): failed to open stream: No such file or directory in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 2
+[19-Feb-2018 14:59:09 America/Chicago] PHP Warning:  include(): Failed opening 'conexion2.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 2
+[20-Feb-2018 11:27:13 America/Chicago] PHP Warning:  include(conexion3.php): failed to open stream: No such file or directory in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 2
+[20-Feb-2018 11:27:13 America/Chicago] PHP Warning:  include(): Failed opening 'conexion3.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 2
+[20-Feb-2018 11:27:13 America/Chicago] PHP Warning:  mysql_query(): No such file or directory in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 42
+[20-Feb-2018 11:27:13 America/Chicago] PHP Warning:  mysql_query(): A link to the server could not be established in /home/solucell/public_html/siiga/OrdenPedido/php/recargas.php on line 42
+[21-Feb-2018 12:22:53 America/Chicago] PHP Warning:  include(conexion3.php): failed to open stream: No such file or directory in /home/solucell/public_html/siiga/OrdenPedido/php/depositos.php on line 2
+[21-Feb-2018 12:22:53 America/Chicago] PHP Warning:  include(): Failed opening 'conexion3.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/solucell/public_html/siiga/OrdenPedido/php/depositos.php on line 2
+[21-Feb-2018 12:22:53 America/Chicago] PHP Warning:  mysql_query(): No such file or directory in /home/solucell/public_html/siiga/OrdenPedido/php/depositos.php on line 32
+[21-Feb-2018 12:22:53 America/Chicago] PHP Warning:  mysql_query(): A link to the server could not be established in /home/solucell/public_html/siiga/OrdenPedido/php/depositos.php on line 32

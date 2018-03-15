@@ -1,0 +1,12 @@
+.gitignore
+Depositos/
+Validaciones/
+RecargasDoc/
+DocBuro/
+FilesTmp/
+FacturasDoc/
+Depositos/
+*.zip
+includes/Conectar.php
+Ventas/
+Avisos/

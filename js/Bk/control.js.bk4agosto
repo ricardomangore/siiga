@@ -1,0 +1,2086 @@
+var x;
+x=$(document);
+
+
+x.ready(inicializarEventos);
+
+function inicializarEventos()
+{
+  var x;
+  DisplayBotones(1);
+  $("#lista").click(BtLista);
+  $("#formulario").click(BtFormulario);
+  $("#guardar").click(BtGuardar);
+  $("#actualizar").click(BtActualizar);
+  $("#LiberaSerie").click(LiberaSerie);
+  $("#FechaRecepcion").click(CambiaFechaRecepcion);
+  $("#nuevo").click(BtNuevo);
+  $("#cancelar").click(BtCancelar);
+  $("#borrar").click(BtBorrar);
+  $("#activar").click(BtActivar);
+  $("#editar").click(BtEditar);
+  $("#seleccionar").click(BtSeleccionar);
+  $("#photo").live('click',CargaPhoto);
+  $("#PuntoVenta").click(ventana);
+  $("#PuntoVentaO").click(ventana);
+  $("#PuntoVentaD").click(ventana); 
+  $("#Vendedor").click(ventana);
+  $("#Coordinador").click(ventana);
+  $("#Crear").click(BtCrearReferencia);
+  $("#CrearCl").click(BtCrearCliente);
+
+  $("#Nombre").click(ventana);
+  $("#AddReferencia").click(ventana);
+  $("#Equipo").click(ventana);
+  $("#Plan").click(ventana);
+  $("#AddAddon").click(ventana);
+  $("#AddServ").click(ventana);
+  $("#AddCliente").click(ventana);
+  $("#BCliente").click(ventana);
+  $("#AddLinea").click(AgregaLinea);
+  $("#AddLineaOr").click(AgregaLineaOr);
+  $("#Lectura").keydown(ProcesaLectura);
+  $("#Lectura2").keydown(AgregaLectura);
+  $("#Lectura3").keydown(LecturaTraspaso);
+  $("#Lectura4").keydown(BuscarDisponible);
+  $("#Lectura5").keydown(InventarioFisico);
+
+  if (typeof $("#Lectura5") != "undefined")
+  	$("#Lectura5").focus();
+
+  if (typeof $("#Lectura4") != "undefined")
+  	$("#Lectura4").focus();
+
+  if (typeof $("#Lectura3") != "undefined")
+  	$("#Lectura3").focus();
+
+  if (typeof $("#Lectura2") != "undefined")
+  	$("#Lectura2").focus();
+
+  if (typeof $("#Lectura") != "undefined")
+  	$("#Lectura").focus();
+   
+}
+
+function InventarioFisico(e)
+{
+$("#resultados").html("");
+	if(e.which==13)
+	{		
+		if($("#Lectura5").attr("value")=="")
+		{
+		alert("Debes ingresar el numero de Serie");
+		return false
+		}
+
+		var v1=$("#Lectura5").attr("value");
+		var v2=$("#PuntoVentaId").attr("value");
+		var res=$.post("Acciones.php",{Lectura5:v1, PuntoVentaId:v2, modulo:33, opc:1}, getLineasVU); 
+		$("#Lectura5").val('');
+	}	
+}
+
+function BuscarDisponible(e)
+{
+$("#resultados").html("");
+	if(e.which==13)
+	{
+		if($("#Lectura4").attr("value")=="")
+		{
+		alert("Debes ingresar el numero de Serie");
+		return false
+		}
+
+		$("#foo").submit();
+	}
+}
+
+
+function AgregaLectura(e)
+{
+$("#resultados").html("");
+	if(e.which==13)
+	{
+		if($("#EquipoId").attr("value")=="0")
+		{
+		alert("Debes ingresar el Equipo");
+		return false
+		}
+
+		if($("#Lectura2").attr("value")=="")
+		{
+		alert("Debes ingresar el numero de Serie");
+		return false
+		}
+
+		existeCodigo();
+	}
+}
+
+function LecturaTraspaso(e)
+{
+	$("#resultados").html("");
+	if(e.which==13)
+	{
+		if($("#Lectura3").attr("value")=="")
+		{
+		alert("Debes ingresar el numero de Serie");
+		return false
+		}
+
+		existeSerieTraspaso();
+	}	
+}
+
+function existeSerieTraspaso()
+{
+	var v1=$("#Lectura3").attr("value");
+	var v2=$("#PuntoVentaIdO").attr("value");
+	var res=$.post("Acciones.php",{Lectura3:v1, PuntoVentaIdO:v2, modulo:30, opc:2}, validaLectura); 
+}
+
+
+function existeCodigo()
+{
+	var v1=$("#Lectura2").attr("value");
+	var res=$.post("Acciones.php",{Lectura2:v1, modulo:23, opc:2}, validaLectura); 
+}
+
+
+
+function validaLectura(datos)
+{
+
+	if(datos=='Existe')
+	{
+		$("#resultados").html(utf8_decode('<span class="alerta">¡Este numero de serie ya existe!</span>'));
+		$("#Lectura2").val("");
+	}
+
+	if(datos=='Disponible')
+	{
+		$("#resultados").html(utf8_decode('<span class="alerta">¡Este numero de serie no esta disponible!</span>'));
+		$("#Lectura3").val("");
+	}	
+
+	if(datos=='NoExiste')
+	{
+		$("#resultados").html(utf8_decode('<span class="alerta">¡Este numero de serie no se encuentra en el almacen!</span>'));
+		$("#Lectura3").val("");
+	}	
+
+	if(datos=='Recibe')
+	{
+
+		var v1=$("#Clave").attr("value");
+		var v2=$("#EquipoId").attr("value");
+		var v3=$("#Lectura2").attr("value");
+
+		$.post("Acciones.php",{Clave:v1, EquipoId:v2, Lectura2:v3, modulo:23, opc:3},getLineasVU); 
+		$("#Lectura2").val("");	
+	}
+
+	if(datos=='TExpress')
+	{
+
+
+		var v1=$("#Clave").attr("value");		
+		var v2=$("#Lectura3").attr("value");
+
+		$.post("Acciones.php",{Clave:v1, Lectura3:v2, modulo:30, opc:3},getLineasVU); 
+		$("#Lectura3").val("");	
+	}
+
+
+}
+
+
+function AgregaLinea()
+{
+
+	if($("#EquipoId").attr("value")=="0")
+	{
+	alert("Debes ingresar el Equipo");
+	return false
+	}
+
+	if($("#PlanId").attr("value")=="0")
+	{
+	alert("Debes ingresar el Plan");
+	return false
+	}
+
+	if($("#PlazoId").attr("value")=="0")
+	{
+	alert("Debes elegir el Plazo");
+	return false
+	}	
+
+  	if($("#ModuloId").attr("value")=="26")
+	if($("#Contrato").attr("value")=="")
+	{
+	alert("Debes ingresar el numero de contrato");
+	return false
+	}	
+
+var v1=$("#Clave").attr("value");
+var v2=$("#EquipoId").attr("value");
+var v3=$("#PlanId").attr("value");
+var v4=$("#TipoPlanId").attr("value");
+var v5=$("#AddOnes").attr("value")+'0';
+var v6=$("#OtrosServ").attr("value")+'0';
+var v7=$("#PlazoId").attr("value");
+var v8=$("#Contrato").attr("value");
+alert($("#Contrato").attr("value"));
+	$.post("Acciones.php",{Clave:v1, EquipoId:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Contrato:v8, modulo:22, opc:3},getLineasVU); 
+
+	$("#EquipoId").val("0");
+	$("#PlanId").val("0");
+	$("#TipoPlanId").val("0");
+	$("#AddOnes").val("");
+	$("#OtrosServ").val("");
+	$("#PlazoId").val("0");
+	$("#Equipo").val("");
+	$("#Plan").val("");
+	if($("#ModuloId").attr("value")=="26")
+	$("#Contrato").val("");
+    $(".Pt").closest('#checks').find('input[type=checkbox]').attr('checked', false);
+}
+
+
+function ventana() 
+{
+
+	var obj
+	var w=500;
+	var h=300;
+
+	switch ($(this).attr("id"))
+	{
+
+		case 'PuntoVenta':
+       	     obj=$("#PuntosVenta")
+       	      w=800;		  
+			  h=600;
+		break;
+
+		case 'BCliente':
+       	     obj=$("#MisClientes")
+       	      w=800;		  
+			  h=600;
+		break;
+
+		case 'PuntoVentaO':
+		
+		if($("#Cantidad").attr("value")!='0')
+		{
+			alert ("No es posible cambiar esta campo despues de iniciar la lectura");
+			return false;
+		}
+		$(".Pt").attr('checked', false);
+			$("#Campo").val(1);
+       	     obj=$("#PuntosVenta")
+       	      w=800;		  
+			  h=600;
+
+		break;
+
+		case 'PuntoVentaD':
+
+		if($("#Cantidad").attr("value")!='0')
+		{
+			alert ("No es posible cambiar esta campo despues de iniciar la lectura");
+			return false;
+		}
+		$(".Pt").attr('checked', false);
+
+			$("#Campo").val(2);
+       	     obj=$("#PuntosVenta")
+       	      w=800;		  
+			  h=600;
+		break;
+
+		case 'Vendedor':
+       	     obj=$("#Vendedores")
+       	      w=800;		  
+			  h=600;
+		break;
+
+		case 'AddReferencia':
+       	     obj=$("#NReferencia")       	     
+		break;
+
+		case 'AddServ':			
+       	     obj=$("#SAdicional")
+		break;		
+
+		case 'AddAddon':
+       	     obj=$("#AddOn")
+		break;
+
+		case 'Equipo':
+       	     obj=$("#Equipos")
+		break;
+
+		case 'Plan':
+       	     obj=$("#Planes")
+		break;
+
+		case 'Nombre':
+       	     obj=$("#Clientes")
+		break;
+
+		case 'AddCliente':
+			  obj=$("#ClientesNuevos")	
+			  w=800;		  
+			  h=600;
+		break;	
+		
+		case 'Coordinador':
+       	     obj=$("#Coordinaciones")
+       	      w=800;		  
+			  h=600;
+		break;
+	}
+	
+	obj.dialog({
+						width: w,
+						height: h,
+						show: "scale",
+						hide: "scale",
+						resizable: "false",
+						position: "center",
+						modal: "true"
+					});
+}
+
+function VentanaBaja()
+{
+	
+	var w=500;
+	var h=300;
+
+	$("#Baja").dialog({
+						width: w,
+						height: h,
+						show: "scale",
+						hide: "scale",
+						resizable: "false",
+						position: "center",
+						modal: "true"
+					});
+}
+
+
+function DisplayBotones(v1)
+{
+
+	switch(v1)
+	{
+		case 1:
+				$("#formulario").hide();
+				$("#editar").hide();
+				$("#borrar").hide();
+				$("#activar").hide();	
+				$("#lista").show();
+				$("#nuevo").show();
+				$("#guardar").show();
+				$("#actualizar").hide();	
+				$("#cancelar").show();
+		break;
+		case 2:
+
+				$("#formulario").hide();
+				$("#editar").hide();
+				$("#borrar").hide();
+				$("#activar").hide();	
+				$("#lista").show();
+				$("#nuevo").show();
+				$("#guardar").hide();
+				$("#actualizar").show();	
+				$("#cancelar").show();		
+		break;
+		case 3:
+				$("#lista").hide();
+				$("#formulario").show();
+				$("#nuevo").show();
+				$("#guardar").hide();
+				$("#actualizar").hide();	
+				$("#editar").show();
+				$("#borrar").show();
+				$("#activar").show();
+				$("#cancelar").show();
+		break;
+	}
+
+}
+function BtCrearCliente()
+{
+	if($("#TipoPersonaId").attr("value")=="0")
+	{
+	alert("Debes elegir el tipo de persona");
+	return false
+	}
+
+	if($("#NombreC").attr("value")=="")
+	{
+	alert("Debes ingresar el nombre del cliente");
+	return false
+	}
+
+	if($("#PaternoC").attr("value")=="")
+	{
+	alert("Debes ingresar el apellido paterno del cliente");
+	return false
+	}
+
+	if($("#MaternoC").attr("value")=="0")
+	{
+	alert("Debes ingresar el apellido materno del cliente");
+	return false
+	}
+
+	if($("#RFCC").attr("value")=="")
+	{
+	alert("Debes ingresar el RFC del cliente");
+	return false
+	}
+	
+	if($("#Calle").attr("value")=="")
+	{
+	alert("Debes ingresar la Calle");
+	return false
+	}
+
+	if($("#NExterior").attr("value")=="")
+	{
+	alert("Debes ingresar el numero exterior");
+	return false
+	}
+
+	if($("#NInterior").attr("value")=="")
+	{
+	alert("Debes ingresar el numero interior");
+	return false
+	}
+
+	if($("#Cp").attr("value")=="")
+	{
+	alert("Debes ingresar el codigo postal");
+	return false
+	}
+
+	if($("#ColoniaId").attr("value")=="0")
+	{
+	alert("Debes elegir la colonia");
+	return false
+	}
+
+	if($("#TLocal").attr("value")=="")
+	{
+	alert("Debes ingresar el telefono local");
+	return false
+	}
+
+	if($("#TMovil").attr("value")=="")
+	{
+	alert("Debes ingresar el telefono movil");
+	return false
+	}
+
+
+
+var v1=$("#TipoPersonaId").attr("value");
+var v2=$("#NombreC").attr("value");
+var v3=$("#PaternoC").attr("value");
+var v4=$("#MaternoC").attr("value");
+var v5=$("#RFCC").attr("value");
+var v15=$("#Calle").attr("value");
+var v16=$("#NExterior").attr("value");
+var v17=$("#NInterior").attr("value");
+var v18=$("#ColoniaId").attr("value");
+var v19=$("#TLocal").attr("value");
+var v20=$("#TMovil").attr("value");
+
+if($("#NombreCT").attr("value")=="")
+	var v21=" ";
+else
+	var v21=$("#NombreCT").attr("value");
+
+if($("#PaternoCT").attr("value")=="")
+	var v22=" ";
+else
+	var v22=$("#PaternoCT").attr("value");
+
+if($("#MaternoCT").attr("value")=="")
+	var v23=" ";
+else
+	var v23=$("#MaternoCT").attr("value");
+
+
+
+$.post("Acciones.php",{TipoPersonaId:v1, NombreC:v2, PaternoC:v3, MaternoC:v4, RFCC:v5, Calle:v15, NExterior:v16, NInterior:v17,
+	ColoniaId:v18, TLocal:v19, TMovil:v20, NombreCT:v21, PaternoCT:v22, MaternoCT:v23, modulo:22, opc:2},getClienteId); 
+
+}
+
+function BtCrearReferencia()
+{
+
+	if($("#ParentescoReferenciaId").attr("value")=="0")
+	{
+	alert("Debes elegir el parentesco de la referencia");
+	return false
+	}
+
+	if($("#NombreR").attr("value")=="")
+	{
+	alert("Debes ingresar el nombre de la referencia");
+	return false
+	}	
+
+	if($("#PaternoR").attr("value")=="")
+	{
+	alert("Debes ingresar el apellido paterno de la referencia");
+	return false
+	}
+
+	if($("#MaternoR").attr("value")=="")
+	{
+	alert("Debes ingresar el apellido materno de la referencia");
+	return false
+	}
+
+	if($("#TelefonoR").attr("value")=="")
+	{
+	alert("Debes ingresar el telefono de la referencia");
+	return false
+	}
+
+var v1=$("#Clave").attr("value");
+var v2=$("#ParentescoReferenciaId").attr("value");
+var v3=$("#NombreR").attr("value");
+var v4=$("#PaternoR").attr("value");
+var v5=$("#MaternoR").attr("value");
+var v6=$("#TelefonoR").attr("value");
+var v7=$("#MailR").attr("value");
+
+	$.post("Acciones.php",{Clave:v1, ParentescoId:v2, NombreR:v3, PaternoR:v4, MaternoR:v5, TelefonoR:v6, MailR:v7, modulo:22, opc:1},getRespuestaVU); 
+
+	$("#ParentescoReferenciaId").val("0");
+	$("#NombreR").val("");
+	$("#PaternoR").val("");
+	$("#MaternoR").val("");
+	$("#TelefonoR").val("");
+	$("#MailR").val("");
+	$("#NReferencia").dialog("close");	
+
+
+
+}
+
+function BtSeleccionar()
+{
+  $(".dialogo").dialog( "close" );
+}
+
+
+function ValidaDatos()
+{
+	var modulo=$("#ModuloId").attr("value");
+
+	switch(modulo)
+	{
+		case '0':				
+				return true;
+				break; 
+		case '10':
+				if($("#Nombre").attr("value")=="")	
+				{
+				alert("Debes ingresar el nombre del Empleado");
+				return false
+				}
+
+				if($("#Paterno").attr("value")=="")	
+				{
+				alert("Debes ingresar el apellido paterno del Empleado");
+				return false
+				}
+
+				if($("#Materno").attr("value")=="")	
+				{
+				alert("Debes ingresar el apellido materno del Empleado");
+				return false
+				}
+
+				if($("#FechaNacimiento").attr("value")=="")	
+				{
+				alert("Debes ingresar la fecha de nacimiento del Empleado");
+				return false
+				}
+
+				if($("#Curp").attr("value")=="")	
+				{
+				alert("Debes ingresar el CURP del Empleado");
+				return false
+				}
+
+				if($("#Rfc").attr("value")=="")	
+				{
+				alert("Debes ingresar el RFC del Empleado");
+				return false
+				}
+
+				if($("#Ife").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero de IFE del Empleado");
+				return false
+				}
+
+				if($("#Genero").attr("value")=="0")	
+				{
+				alert("Debes elegir el genero del Empleado");
+				return false
+				}
+
+				if($("#NacionalidadId").attr("value")=="0")	
+				{
+				alert("Debes elegir la Nacionalidad del Empleado");
+				return false
+				}
+
+				if($("#EscolaridadId").attr("value")=="0")	
+				{
+				alert("Debes elegir la Escolaridad del Empleado");
+				return false
+				}
+
+				if($("#ProfesionId").attr("value")=="0")	
+				{
+				alert("Debes elegir la Profesion del Empleado");
+				return false
+				}
+
+				if($("#EstadoCivilId").attr("value")=="")	
+				{
+				alert("Debes elegir el estado civil del Empleado");
+				return false
+				}
+
+				if($("#Calle").attr("value")=="")	
+				{
+				alert("Debes ingresar la calle del domicilio del Empleado");
+				return false
+				}
+
+				if($("#NExterior").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero exterior");
+				return false
+				}
+
+				if($("#NInterior").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero interior");
+				return false
+				}
+
+				if($("#Cp").attr("value")=="")	
+				{
+				alert("Debes ingresar el codigo postal");
+				return false
+				}
+
+				if($("#ColoniaId").attr("value")=="0")	
+				{
+				alert("Debes elegir la colonia");
+				return false
+				}
+
+				if($("#Telefono").attr("value")=="")	
+				{
+				alert("Debes ingresar el telefono de casa del Empleado");
+				return false
+				}
+
+				if($("#Movil").attr("value")=="")	
+				{
+				alert("Debes ingresar telefono movil del Empleado");
+				return false
+				}
+
+				if($("#Nss").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero del seguro social del Empleado");
+				return false
+				}
+
+				if($("#Sangre").attr("value")=="")	
+				{
+				alert("Debes ingresar el tipo sanguineo del Empleado");
+				return false
+				}
+
+				if($("#DepartamentoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el departamento del Empleado");
+				return false
+				}
+
+				if($("#PuestoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el puesto del Empleado");
+				return false
+				}
+
+				if($("#PuestoId").attr("value")=="1")	
+				{
+					if($("#SubCategoriaId").attr("value")=="0")	
+					{
+						alert("Debes elegir la Sub Categoria Empleado");
+						return false
+					}
+				}			
+
+				if($("#FechaIngreso").attr("value")=="")	
+				{
+				alert("Debes ingresar la fecha de ingreso");
+				return false
+				}
+
+				if($("#BancoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Banco");
+				return false
+				}
+
+				if($("#Cuenta").attr("value")=="")	
+				{
+				alert("Debes ingresar la cuenta ancaria");
+				return false
+				}
+
+				if($("#Clabe").attr("value")=="")	
+				{
+				alert("Debes ingresar la clabe interbancaria");
+				return false
+				}
+
+				if($("#PuestoId").attr("value")=="1")	
+				{
+					if($("#CoordinadorId").attr("value")=="0")		
+					{
+						alert("Debes elegir al Coordinador");
+						return false
+					}
+				}
+
+
+				if($("#FechaIngresoPunto").attr("value")=="")	
+				{
+				alert("Debes ingresar la fecha de ingreso al punto de venta");
+				return false
+				}
+
+				if($("#Puntos").attr("value")=="")	
+				{
+				alert("Debes seleccionar al menos un Punto de Venta");
+				return false
+				}
+
+				if($("#Fisico").attr("value")=="")	
+				{
+				alert("Debes elegir un Punto de Venta como fisico");
+				return false
+				}
+
+				if($("#ParentescoId").attr("value")=="")	
+				{
+				alert("Debes elegir el parentesco");
+				return false
+				}
+
+				if($("#NombreContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el nombre del contacto");
+				return false
+				}
+
+				if($("#CalleContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar la calle del contacto");
+				return false
+				}
+
+				if($("#NExteriorContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero exterior del contacto");
+				return false
+				}
+
+				if($("#NInteriorContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el numero interior del contacto");
+				return false
+				}
+
+				if($("#CpContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el codigo postal del empleado");
+				return false
+				}
+
+				if($("#ColoniaIdContacto").attr("value")=="")	
+				{
+				alert("Debes elegir la colonia");
+				return false
+				}
+
+				if($("#TelefonoContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el telefono local del contacto");
+				return false
+				}
+
+				if($("#MovilContacto").attr("value")=="")	
+				{
+				alert("Debes ingresar el telefono movil del contacto");
+				return false
+				}
+
+				if($("#CorreoElectronico").attr("value")=="")	
+				{
+				alert("Debes ingresar el correoekectronico");
+				return false
+				}
+
+				return true;
+
+				break;		
+		case '22':
+			
+				if($("#TipoContratacionId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de conrtratacion");
+				return false
+				}
+
+				if($("#Folio").attr("value")=="")	
+				{
+				alert("Debes Ingresar el Folio");
+				return false
+				}
+
+				if($("#FechaContrato").attr("value")=="")	
+				{
+				alert("Debes Ingresar la fecha de contrato");
+				return false
+				}
+
+
+				if($("#TipoPagoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de pago");
+				return false
+				}
+
+				if($("#PuntoVentaId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta");
+				return false
+				}
+
+				if($("#VendedorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Ejecutivo de ventas");
+				return false
+				}
+
+				if($("#CoordinadorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Coordinado de ventas");
+				return false
+				}
+
+				if($("#ClienteId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Cliente");
+				return false
+				}
+
+				if($("#RFC").attr("value")=="")	
+				{
+				alert("Debes ingresar el RFC");
+				return false
+				}
+
+				if(typeof($('#NoLineas').attr("value")) == "undefined" && $('#NoLineas').attr("value") == null || $('#NoLineas').attr("value")=="0")
+				{
+				alert("Debes ingresar al menos una linea");
+				return false
+				}
+				 
+				 return true;				
+
+				break;
+
+		case '23':
+			
+				if($("#Factura").attr("value")=="")	
+				{
+				alert("Debes Ingresar el numero de Factura");
+				return false
+				}
+
+
+				if($("#PuntoVentaId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta");
+				return false
+				}
+
+				if(typeof($('#NoLineas').attr("value")) == "undefined" && $('#NoLineas').attr("value") == null || $('#NoLineas').attr("value")=="0")
+				{
+				alert("Debes ingresar al menos un articulo");
+				return false
+				}
+				 
+				 return true;				
+
+				break;
+
+
+		case '24':
+			
+				if($("#TipoContratacionId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de conrtratacion");
+				return false
+				}
+
+				if($("#Folio").attr("value")=="")	
+				{
+				alert("Debes Ingresar el Folio");
+				return false
+				}
+
+				if($("#FechaContrato").attr("value")=="")	
+				{
+				alert("Debes Ingresar la fecha de contrato");
+				return false
+				}
+
+
+				if($("#TipoPagoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de pago");
+				return false
+				}
+
+				if($("#PuntoVentaId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta");
+				return false
+				}
+
+				if($("#VendedorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Ejecutivo de ventas");
+				return false
+				}
+
+				if($("#CoordinadorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Coordinado de ventas");
+				return false
+				}
+
+				if($("#ClienteId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Cliente");
+				return false
+				}
+
+				if($("#RFC").attr("value")=="")	
+				{
+				alert("Debes ingresar el RFC");
+				return false
+				}
+								 
+				return true;				
+
+				break;	
+
+		case '26':
+			
+				if($("#TipoContratacionId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de conrtratacion");
+				return false
+				}
+
+				if($("#Folio").attr("value")=="")	
+				{
+				alert("Debes Ingresar el Folio");
+				return false
+				}
+				
+				if($("#TipoPagoId").attr("value")=="0")	
+				{
+				alert("Debes elegir el tipo de pago");
+				return false
+				}
+
+				if($("#PuntoVentaId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta");
+				return false
+				}
+
+				if($("#VendedorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Ejecutivo de ventas");
+				return false
+				}
+
+				if($("#CoordinadorId").attr("value")=="0")	
+				{
+				alert("Debes elegir al Coordinado de ventas");
+				return false
+				}
+
+				if($("#ClienteId").attr("value")=="0")	
+				{
+				alert("Debes elegir el Cliente");
+				return false
+				}
+
+				if($("#RFC").attr("value")=="")	
+				{
+				alert("Debes ingresar el RFC");
+				return false
+				}
+
+				if(typeof($('#NoLineas').attr("value")) == "undefined" && $('#NoLineas').attr("value") == null || $('#NoLineas').attr("value")=="0")
+				{
+				alert("Debes ingresar al menos una linea");
+				return false
+				}
+				 
+				 return true;				
+
+				break;			
+
+		case '30':
+				if($("#PuntoVentaIdO").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta Origen");
+				return false
+				}
+
+				if($("#PuntoVentaIdD").attr("value")=="0")	
+				{
+				alert("Debes elegir el Punto de Venta Destino");
+				return false
+				}
+
+				if(typeof($('#NoLineas').attr("value")) == "undefined" && $('#NoLineas').attr("value") == null || $('#NoLineas').attr("value")=="0")
+				{
+				alert("Debes ingresar al menos un articulo");
+				return false
+				}
+				 
+				 return true;				
+
+				break;
+		case '35':
+
+				if($("#Coordinador").attr("value")=="")	
+				{
+				alert("Debes elegir al Coordinador");
+				return false
+				}
+				if($("#Llaves").attr("value")=="")	
+				{
+				alert("Debes elegir al menos un ejecutivo de ventas");
+				return false
+				}
+				return true;
+				break;
+
+	}	
+}
+
+function BtEditar()
+{	
+	$("#resultados").html('');
+	var claves=$("#Llaves").attr("value");
+	var modulo=$("#ModuloId").attr("value");
+	var elementos=claves.split(",");
+	if (elementos.length>2)	
+		alert('Debes elegir solo un registro de la tabla');
+	else
+		if(elementos.length<2)
+			alert("Deber elegir un registro de la tabla");
+		else
+			{
+				$("#resultados").html('');				
+				$("#display").html('<div align="center"><img src="img/loading.gif"/></div>');				
+				DisplayBotones(2);
+				$("#display").load("Display.php?modulo="+modulo+"&opc=2&ObjetoId="+claves);				
+			}				
+}
+
+function BtLista()
+{
+	$("#resultados").html('');
+    var v1=$("#ModuloId").attr("value");
+	$("#display").html('<div align="center"><img src="img/loading.gif"/></div>');
+	DisplayBotones(3);	
+	$("#display").load("Display.php?modulo="+v1+"&opc=1");	
+}
+
+function BtFormulario()
+{
+	$("#resultados").html('');
+	var v1=$("#ModuloId").attr("value");
+	$("#display").html('<div align="center"><img src="img/loading.gif"/></div>');
+	DisplayBotones(1);
+	$("#display").load("Display.php?modulo="+v1+"&opc=0");
+	
+}
+
+function BtCancelar()
+{	
+
+	var modulo=$("#ModuloId").attr("value");
+
+	switch(modulo)
+	{
+		case '0':				
+				$("#resultados").html("");
+				break; 
+		default:				
+				location.reload();
+				break;
+	}
+	
+}
+
+function BtNuevo()
+{	
+	location.reload();	
+}
+
+function BtBorrar()
+{	
+
+	$("#resultados").html('');
+	var claves=$("#Llaves").attr("value");
+	var modulo=$("#ModuloId").attr("value");
+	var elementos=claves.split(",");
+	if (elementos.length>2)	
+		alert('Debes elegir solo un registro de la tabla');
+	else
+		if(elementos.length<2)
+			alert("Deber elegir un registro de la tabla");
+		else
+			{
+				getcampoTabla(6);
+				VentanaBaja();
+
+			}				
+}
+
+	
+function BtActivar()
+{	
+	$("#resultados").html('');
+	var claves=$("#Llaves").attr("value");
+	var modulo=$("#ModuloId").attr("value");
+	if(claves=='')
+		alert('Debes elegir al menos un registro de la tabla');
+	else
+	{
+	$.post("Acciones.php",{Llaves:claves, modulo:modulo, opc:3},getRespuesta); 
+	BtLista();
+	}
+}
+
+
+function BtGuardar()
+{	
+	if(ValidaDatos())
+	{
+		var modulo=$("#ModuloId").attr("value");
+
+		switch(modulo)
+		{
+			case '0':
+						guardaMisitio();
+			break; 
+			case '10':
+					return guardarPersonal();	
+			break;		
+			case '22':
+					return guardarVu();
+			break;
+			case '23':
+					return guardarLectura();
+			break;
+			case '24':
+					return guardarOr();
+			break;
+			case '26':
+					return guardarOrsInv();
+			break;
+			case '30':
+					return guardarTExpress();
+			break;
+			case '35':
+					return guardarAsignacionCoordinadores();
+			break;
+		}
+	}
+}
+
+function guardarAsignacionCoordinadores()
+{
+	v1=$("#CoordinadorId").attr("value");
+	v2=$("#Llaves").attr("value");	
+	$.post("Acciones.php",{modulo:35, CoordinadorId:v1, Llaves:v2},getRespuesta); 
+	v1=$("#CoordinadorId").val("");
+	v2=$("#Llaves").attr("");	
+	
+
+}
+
+function BtActualizar()
+{	
+	if(ValidaDatos())
+	{
+		var modulo=$("#ModuloId").attr("value");
+		switch(modulo)
+		{
+			case '10':
+						actualizarPersonal();					
+					return true;
+			break;
+
+
+		}
+	}
+}
+
+
+
+function guardarPersonal()
+{
+	
+	v1=$("#Nombre").attr("value");
+	v2=$("#Paterno").attr("value");	
+	v3=$("#Materno").attr("value");
+	v4=$("#FechaNacimiento").attr("value");
+	v5=$("#Curp").attr("value");
+	v6=$("#Rfc").attr("value");
+	v7=$("#Ife").attr("value");	
+	v8=$("#Genero").attr("value");
+	v9=$("#NacionalidadId").attr("value");
+	v10=$("#EscolaridadId").attr("value");
+	v11=$("#ProfesionId").attr("value");
+	v12=$("#EstadoCivilId").attr("value");
+	v13=$("#Calle").attr("value");
+	v14=$("#NExterior").attr("value");
+	v15=$("#NInterior").attr("value");
+	v16=$("#Cp").attr("value");
+	v17=$("#ColoniaId").attr("value");
+	v18=$("#Telefono").attr("value");
+	v19=$("#Movil").attr("value");
+	v20=$("#Nss").attr("value");	
+	v21=$("#Sangre").attr("value");
+	v23=$("#PuestoId").attr("value");	
+	v24=$("#FechaIngreso").attr("value");
+	v25=$("#BancoId").attr("value");
+	v26=$("#Cuenta").attr("value");
+	v27=$("#Clabe").attr("value");
+	v28=$("#FechaIngresoPunto").attr("value");
+	v29=$("#Puntos").attr("value");
+	v30=$("#ParentescoId").attr("value");
+	v31=$("#CalleContacto").attr("value");
+	v32=$("#NExteriorContacto").attr("value");
+	v33=$("#NInteriorContacto").attr("value");
+	v34=$("#CpContacto").attr("value");
+	v35=$("#ColoniaIdContacto").attr("value");
+	v36=$("#TelefonoContacto").attr("value");
+	v37=$("#MovilContacto").attr("value");
+	v38=$("#CorreoElectronico").attr("value");
+	v39=$("#Fisico").attr("value");
+	v40=$("#SubCategoriaId").attr("value");
+	v41=$("#NombreContacto").attr("value");
+	v42=$("#CoordinadorId").attr("value");
+   
+ 	$.post("Acciones.php",{modulo:10, opc:1, Nombre:v1, Paterno:v2, Materno:v3, FechaNacimiento:v4, Curp:v5, Rfc:v6, Ife:v7, Nss:v20, Genero:v8, NacionalidadId:v9, PuestoId:v23, FechaAltaPuesto:v24, PuntoVentaId:v29, FechaAltaPunto:v28, Fisico:v39, EscolaridadId:v10, ProfesionId:v11, EstadoCivilId:v12, BancoId:v25, NoCuenta:v26, Clabe:v27, ColoniaId:v17, Calle:v13, NExterior:v14, NInterior:v15, Telefono:v18, Movil:v19, TipoSangre:v21, ParentescoId:v30, ColoniaIdContacto:v35, CalleContacto:v31, NExteriorContacto:v32, NInteriorContacto:v33, TelefonoContacto:v36, MovilContacto:v37, CorreoElectronicoContacto:v38, SubCategoriaId:v40, NombreContacto:v41, CoordinadorId:v42},getRespuesta); 
+ 	
+	$("#Nombre").val("");
+	$("#Paterno").val("");	
+	$("#Materno").val("");
+	$("#FechaNacimiento").val("");
+	$("#Curp").val("");
+	$("#Rfc").val("");
+	$("#Ife").val("");	
+	$("#Genero").val("0");
+	$("#NacionalidadId").val("0");
+	$("#EscolaridadId").val("0");
+	$("#ProfesionId").val("0");
+	$("#EstadoCivilId").val("0");
+	$("#Calle").val("");
+	$("#NExterior").val("");
+	$("#NInterior").val("");
+	$("#Cp").val("");
+	$("#ColoniaId").val("0");
+	$("#SubCategoriaId").val("0");
+	$("#Telefono").val("");
+	$("#Movil").val("");
+	$("#Nss").val("");	
+	$("#Sangre").val("");
+	
+	$("#PuestoId").val("0");
+	$("#FechaIngreso").val("");
+	$("#BancoId").val("0");
+	$("#Cuenta").val("");
+	$("#Clabe").val("");
+	$("#FechaIngresoPunto").val("");
+	$("#Puntos").val("");
+	$("#ParentescoId").val("0");
+	$("#NombreContacto").val("");
+	$("#CalleContacto").val("");
+	$("#NExteriorContacto").val("");
+	$("#NInteriorContacto").val("");
+	$("#CpContacto").val("");
+	$("#ColoniaIdContacto").val("0");
+	$("#TelefonoContacto").val("");
+	$("#MovilContacto").val("");
+	$("#CorreoElectronico").val("");
+	$("#Fisico").val("");
+ 	$("#CoordinadorId").val("0");
+
+ 	$(".pv:checkbox:checked").removeAttr("checked");
+
+ 	return false;
+}
+
+function actualizarPersonal()
+{
+
+	v0=$("#EmpleadoId").attr("value");
+	v1=$("#Nombre").attr("value");
+	v2=$("#Paterno").attr("value");	
+	v3=$("#Materno").attr("value");
+	v4=$("#FechaNacimiento").attr("value");
+	v5=$("#Curp").attr("value");
+	v6=$("#Rfc").attr("value");
+	v7=$("#Ife").attr("value");	
+	v8=$("#Genero").attr("value");
+	v9=$("#NacionalidadId").attr("value");
+	v10=$("#EscolaridadId").attr("value");
+	v11=$("#ProfesionId").attr("value");
+	v12=$("#EstadoCivilId").attr("value");
+	v13=$("#Calle").attr("value");
+	v14=$("#NExterior").attr("value");
+	v15=$("#NInterior").attr("value");
+	v16=$("#Cp").attr("value");
+	v17=$("#ColoniaId").attr("value");
+	v18=$("#Telefono").attr("value");
+	v19=$("#Movil").attr("value");
+	v20=$("#Nss").attr("value");	
+	v21=$("#Sangre").attr("value");
+	v23=$("#PuestoId").attr("value");
+	v24=$("#FechaIngreso").attr("value");
+	v25=$("#BancoId").attr("value");
+	v26=$("#Cuenta").attr("value");
+	v27=$("#Clabe").attr("value");
+	v28=$("#FechaIngresoPunto").attr("value");
+	v29=$("#Puntos").attr("value");
+	v30=$("#ParentescoId").attr("value");
+	v31=$("#CalleContacto").attr("value");
+	v32=$("#NExteriorContacto").attr("value");
+	v33=$("#NInteriorContacto").attr("value");
+	v34=$("#CpContacto").attr("value");
+	v35=$("#ColoniaIdContacto").attr("value");
+	v36=$("#TelefonoContacto").attr("value");
+	v37=$("#MovilContacto").attr("value");
+	v38=$("#CorreoElectronico").attr("value");
+	v39=$("#Fisico").attr("value");
+	v40=$("#SubCategoriaId").attr("value");
+	v41=$("#NombreContacto").attr("value");
+	v42=$("#CoordinadorId").attr("value");
+
+ 	$.post("Acciones.php",{modulo:10, opc:2, EmpleadoId:v0, Nombre:v1, Paterno:v2, Materno:v3, FechaNacimiento:v4, Curp:v5, Rfc:v6, Ife:v7, Nss:v20, Genero:v8, NacionalidadId:v9, PuestoId:v23, FechaAltaPuesto:v24, PuntoVentaId:v29, FechaAltaPunto:v28, Fisico:v39, EscolaridadId:v10, ProfesionId:v11, EstadoCivilId:v12, BancoId:v25, NoCuenta:v26, Clabe:v27, ColoniaId:v17, Calle:v13, NExterior:v14, NInterior:v15, Telefono:v18, Movil:v19, TipoSangre:v21, ParentescoId:v30, ColoniaIdContacto:v35, CalleContacto:v31, NExteriorContacto:v32, NInteriorContacto:v33, TelefonoContacto:v36, MovilContacto:v37, CorreoElectronicoContacto:v38, SubCategoriaId:v40, NombreContacto:v41, CoordinadorId:v42},getRespuesta); 
+ 	
+	$("#Nombre").val("");
+	$("#Paterno").val("");	
+	$("#Materno").val("");
+	$("#FechaNacimiento").val("");
+	$("#Curp").val("");
+	$("#Rfc").val("");
+	$("#Ife").val("");	
+	$("#Genero").val("0");
+	$("#NacionalidadId").val("0");
+	$("#EscolaridadId").val("0");
+	$("#ProfesionId").val("0");
+	$("#EstadoCivilId").val("0");
+	$("#SubCategoriaId").val("0");
+	$("#Calle").val("");
+	$("#NExterior").val("");
+	$("#NInterior").val("");
+	$("#Cp").val("");
+	$("#ColoniaId").val("0");
+	$("#Telefono").val("");
+	$("#Movil").val("");
+	$("#Nss").val("");	
+	$("#Sangre").val("");
+	
+	$("#PuestoId").val("0");
+	$("#FechaIngreso").val("");
+	$("#BancoId").val("0");
+	$("#Cuenta").val("");
+	$("#Clabe").val("");
+	$("#FechaIngresoPunto").val("");
+	$("#Puntos").val("");
+	$("#ParentescoId").val("0");
+	$("#NombreContacto").val("");
+	$("#CalleContacto").val("");
+	$("#NExteriorContacto").val("");
+	$("#NInteriorContacto").val("");
+	$("#CpContacto").val("");
+	$("#ColoniaIdContacto").val("0");
+	$("#TelefonoContacto").val("");
+	$("#MovilContacto").val("");
+	$("#CorreoElectronico").val("");
+	$("#Fisico").val("");
+	$("#CoordinadorId").val("0");
+ 	
+ 	$(".pv:checkbox:checked").removeAttr("checked");
+
+ 	return false;
+}
+
+
+function guardaMisitio()
+{
+
+	/*Valida datos de Formulario */
+	if($("#actual").attr("value")=="" || $("#password1").attr("value")=="" || $("#password2").attr("value")=="")
+	{	
+		$("#resultados").html('<span class="alerta">¡Debes ingresar los datos marcados como obligatorios (*)!</span>');
+		return false;
+	}
+
+	if($("#password1").attr("value")!=$("#password2").attr("value"))
+	{
+		$("#resultados").html('<span class="alerta">¡La nueva contraseña no coincide!</span>');
+		return false;
+	}
+
+	/*Envia Datos al server*/
+ 	var v1=$("#actual").attr("value");	
+ 	var v2=$("#password1").attr("value");
+ 	$.post("Acciones.php",{actual:v1, nuevo:v2, modulo:0},getRespuesta); 
+ 	return false;
+ 	
+}
+
+function getRespuestaVU(datos)
+{
+	$("#displayRef").html(datos);
+}
+
+function getLineasVU(datos)
+{
+	$("#displayLineas").html(datos);
+
+ if (typeof $("#Cantidad") != "undefined" & typeof $("#NoLineas") != "undefined")
+	$("#Cantidad").val($("#NoLineas").attr("value"));
+}
+
+function getLineasVUCta(datos)
+{
+	$("#NoLineas").val(datos);
+}
+
+function getRespuesta(datos)
+{
+	$("#resultados").html(datos);
+}
+
+function getClienteId(datos)
+{
+
+	$("#ClienteId").val(datos);
+	if(datos=="0")
+		alert("No se realizo el registro");
+	else
+	{
+		var v1='<input type="radio" name="ClienteId" id="ClienteId" class="Pt" value="'+datos+'" onclick="setEleccion(this,4)"/>';
+		$("#MiTabla5").append('<tr><td>'+datos+'</td><td>'+$("#NombreC").attr("value")+' '+$("#PaternoC").attr("value")+' '+$("#MaternoC").attr("value")+'</td><td>'+$("#RFCC").attr("value")+'</td><td align="center">'+v1+'</td></tr>');
+
+		$("#ClienteId").val(datos);
+		$("#Nombre").val($("#NombreC").attr("value")+' '+$("#PaternoC").attr("value")+' '+$("#MaternoC").attr("value"));
+		$("#RFC").val($("#RFCC").attr("value"));
+
+		$("#TipoPersonaId").val("0");
+		$("#NombreC").val("");
+		$("#PaternoC").val("");
+		$("#MaternoC").val("");
+		$("#RFCC").val("");
+		$("#NacionalidadId").val("0");
+		$("#TipoIdentificacionId").val("0");
+		$("#NoId").val("");
+		$("#EstadoCivilId").val("0");
+		$("#EscolaridadId").val("0");
+		$("#OcupacionId").val("0");
+		$("#TEmpleo").val("");
+		$("#TEmpleo").val("");
+		$("#TVivienda").val("");
+		$("#Calle").val("");
+		$("#NExterior").val("");
+		$("#NInterior").val("");
+		$("#ColoniaId").val("0");
+		$("#TLocal").val("");
+		$("#TMovil").val("");
+		$("#NombreCT").val("");
+		$("#PaternoCT").val("");
+		$("#MaternoCT").val("");
+		$("#TipoViviendaId").val("0");
+		$("#Cp").val("");		
+		$("#ClientesNuevos").dialog( "close" );
+	}
+}
+
+function setSeleccion(obj, Clave)
+{
+var valor=obj.value;
+
+switch(Clave)
+	{
+		case 1:
+				if(obj.checked)
+					$("#Puntos").val($("#Puntos").attr("value")+valor+",");		
+				else
+					$("#Puntos").val($("#Puntos").attr("value").replace(valor+",",""));
+		break;
+		case 2:
+				if(obj.checked)
+					$("#AddOnes").val($("#AddOnes").attr("value")+valor+",");		
+				else
+					$("#AddOnes").val($("#AddOnes").attr("value").replace(valor+",",""));
+		break;
+		case 3:
+				if(obj.checked)
+					$("#OtrosServ").val($("#OtrosServ").attr("value")+valor+",");		
+				else
+					$("#OtrosServ").val($("#OtrosServ").attr("value").replace(valor+",",""));
+		break;
+	}
+
+}
+
+function setEleccion(obj, Clave)
+{
+var valor=obj.value;
+
+switch(Clave)
+	{
+		case 1:
+				$("#Fisico").val(valor);		
+		break;
+		case 2:
+				$("#PuntoVentaId").val(valor);	
+
+				$('#MiTabla tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#PuntoVenta").val(this.cells[4].innerHTML);	                
+	                $("#PuntosVenta").dialog( "close" );	                
+            	}
+                 });
+		break;
+		case 3:
+				$("#VendedorId").val(valor);	
+
+				$('#MiTabla2 tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#Vendedor").val(this.cells[4].innerHTML);
+	                $("#CoordinadorId").val(this.cells[2].innerHTML);
+	                $("#Coordinador").val(this.cells[3].innerHTML);
+	                $("#Categoria").val(this.cells[5].innerHTML);
+	                $("#Vendedores").dialog( "close" );
+            	}
+                 });
+		break;
+		case 4:
+				$("#ClienteId").val(valor);	
+
+				$('#MiTabla5 tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#Nombre").val(this.cells[1].innerHTML);
+	                $("#RFC").val(this.cells[2].innerHTML);	                
+	                $("#Clientes").dialog( "close" );
+            	}
+                 });
+		break;
+
+		case 5:
+				$("#EquipoId").val(valor);	
+
+				$('#MiTabla6 tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#Equipo").val(this.cells[1].innerHTML);	              
+	                $("#Equipos").dialog( "close" );
+            	}
+                 });
+		break;
+		case 6:
+				var myArray = valor.split(',');
+				$("#PlanId").val(myArray[0]);	
+				$("#TipoPlanId").val(myArray[1]);
+				$('#MiTabla7 tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==myArray[0] & this.cells[1].innerHTML==myArray[1])
+                {                	
+	                $("#Plan").val(this.cells[2].innerHTML);	              
+	                //$("#TipoPlanId").val(this.cells[1].innerHTML);	
+	                $("#Planes").dialog( "close" );
+            	}
+                 });
+		break;
+		case 7:
+			if($("#Campo").attr("value")=="1")	
+			{
+			$("#PuntoVentaIdO").val(valor);	
+
+				$('#MiTabla tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#PuntoVentaO").val(this.cells[4].innerHTML);	                
+	                $("#PuntosVenta").dialog( "close" );	                
+            	}
+                 });
+			}
+			else
+			{
+			$("#PuntoVentaIdD").val(valor);	
+
+				$('#MiTabla tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#PuntoVentaD").val(this.cells[4].innerHTML);	                
+	                $("#PuntosVenta").dialog( "close" );	                
+            	}
+                 });
+			}
+		
+		break;
+		case 8:
+			$("#CoordinadorId").val(valor);	
+
+				$('#MiTabla2 tr').each(function() {
+                
+                if (!this.rowIndex) return; 
+                if(this.cells[0].innerHTML==valor)
+                {                	
+	                $("#Coordinador").val(this.cells[1].innerHTML);	                
+	                $("#Coordinaciones").dialog( "close" );
+            	}
+                 });
+		break;
+
+
+	}
+
+}
+
+function Remover(obj, Folio, Clave)
+{
+	switch(Clave)
+	{
+		case 1: //Borrar Linea de TLineas
+				$.post("Acciones.php",{RegistroId:obj, Clave:Folio, modulo:22, opc:4},getLineasVU); 
+		break;
+		case 2:
+				$.post("Acciones.php",{RegistroId:obj, Clave:Folio, modulo:23, opc:4},getLineasVU); 	
+		break;
+		case 3:
+				$.post("Acciones.php",{RegistroId:obj, Clave:Folio, modulo:30, opc:4},getLineasVU);
+		break;
+		case 4: 
+				$.post("Acciones.php",{RegistroId:obj, PuntoVentaId:Folio, modulo:33, opc:2},getLineasVU);
+		break;
+	}
+
+}
+
+function guardarLectura()
+{
+	v1=$("#Factura").attr("value");
+	v2=$("#PuntoVentaId").attr("value");	
+	v3=$("#Comentarios").attr("value");
+	v4=$("#Clave").attr("value");
+
+	$.post("Acciones.php",{Factura:v1, PuntoVentaId:v2, Comentarios:v3, Clave:v4, modulo:23, opc:5},getAltaVu); 
+
+}
+
+function guardarTExpress()
+{
+	v1=$("#PuntoVentaIdO").attr("value");
+	v2=$("#PuntoVentaIdD").attr("value");	
+	v3=$("#Comentarios").attr("value");
+	v4=$("#Clave").attr("value");
+
+	$.post("Acciones.php",{PuntoVentaIdO:v1, PuntoVentaIdD:v2, Comentarios:v3, Clave:v4, modulo:30, opc:5},getAltaVu); 
+
+}
+
+
+function guardarVu()
+{
+	v1=$("#Folio").attr("value");
+	v2=$("#FechaContrato").attr("value");
+	
+	v4=$("#PuntoVentaId").attr("value");
+	v5=$("#VendedorId").attr("value");
+	v6=$("#CoordinadorId").attr("value");
+	v7=$("#ClienteId").attr("value");
+	v8=$("#TipoContratacionId").attr("value");
+	v9=$("#TipoPagoId").attr("value");
+	v10=$("#Comentarios").attr("value");
+	v11=$("#Clave").attr("value");
+
+	$.post("Acciones.php",{Folio:v1, FechaContrato:v2, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6, 
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, modulo:22, opc:5},getAltaVu); 
+
+}
+
+function guardarOrsInv()
+{
+	v1=$("#Folio").attr("value");
+	v4=$("#PuntoVentaId").attr("value");
+	v5=$("#VendedorId").attr("value");
+	v6=$("#CoordinadorId").attr("value");
+	v7=$("#ClienteId").attr("value");
+	v8=$("#TipoContratacionId").attr("value");
+	v9=$("#TipoPagoId").attr("value");
+	v10=$("#Comentarios").attr("value");
+
+	$.post("Acciones.php",{Folio:v1, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6, 
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, modulo:26, opc:5},getAltaVu); 
+
+}
+
+
+function guardarOr()
+{
+	v1=$("#Folio").attr("value");
+	v2=$("#FechaContrato").attr("value");
+	
+	v4=$("#PuntoVentaId").attr("value");
+	v5=$("#VendedorId").attr("value");
+	v6=$("#CoordinadorId").attr("value");
+	v7=$("#ClienteId").attr("value");
+	v8=$("#TipoContratacionId").attr("value");
+	v9=$("#TipoPagoId").attr("value");
+	v10=$("#Comentarios").attr("value");
+	v11=$("#Clave").attr("value");
+
+	$.post("Acciones.php",{Folio:v1, FechaContrato:v2, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6, 
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, modulo:24, opc:5},getAltaVu);
+}
+
+
+function getAltaVu(datos)
+{
+	
+	if(datos=='OK')
+		location.reload();
+	else
+
+	$("#resultados").html(datos);
+
+}
+
+function descargaLayout(opc)
+{
+ location.href="ExportaLayoutCsv.php?opc="+opc;
+}
+
+function descargaConsulta(opc)
+{
+ location.href="ExportaConsultasCsv.php?opc="+opc;
+}
+
+
+function changeEstatus(Folio)
+{
+
+
+	$("#foo").attr("action", "CambiarEstatus.php");
+	$("#foo").attr("target", "CambiarEstatus");
+	$("#MiFolio").val(Folio);
+
+	ancho=800;
+	alto=400;
+
+	AbrirVentana(ancho, alto, 'CambiarEstatus');
+	$("#foo").submit();
+}
+
+function addEquipos(Folio, Movimiento)
+{
+
+	$("#foo").attr("action", "AddEquipo.php");
+	$("#foo").attr("target", "AgregarEquipos");
+	$("#MiFolio").val(Folio);
+	$("#Movimiento").val(Movimiento);
+
+	ancho=800;
+	alto=400;
+
+	AbrirVentana(ancho, alto, 'AgregarEquipos');
+	$("#foo").submit();
+}
+
+
+function AbrirVentana(ancho,alto, nombreVentana) 	
+{
+	if(navigator.userAgent.toLowerCase().indexOf('chrome') > -1)
+	alto=eval(alto)+50;
+	x=(screen.width- ancho)/2;
+	y=(screen.height - alto)/2;
+	dimensiones="width=" + ancho + ", height=" + alto + ", left=" + x + ", top=" + y;
+	barra = "scrollbars=" + "1";	
+	features="status=0, toolbar=0, location=0, menubar=0, directories=0, resizable=0, " + barra + ", " + dimensiones;
+  cjb=window.open('',nombreVentana,features);
+  cjb.focus();
+return;
+}
+
+function ActualizaEstatus(RegistroId)
+{
+	
+	v1=$("#EstatusId"+RegistroId).attr("value");
+	v2=$("#FechaEstatus"+RegistroId).attr("value");
+	v3=$("#Comentarios"+RegistroId).attr("value");
+	v4=$("#Contrato"+RegistroId).attr("value");
+
+	if(v1==0)
+	{
+		alert("Debes elegir el nuevo estatus")
+		return false;
+	}
+
+	$.post("Acciones.php",{RegistroId:RegistroId, EstatusId:v1, FechaEstatus:v2, Comentario:v3, Contrato:v4, modulo:22, opc:6},getRespuesta); 
+
+}
+
+
+ 
+
+ function ProcesaLectura(e)
+ {
+ 	$("#resultados").html("");
+ 	$("#Equipo").val("");
+	var v1=$("#Lectura").prop("value");
+	var v2=$("#MiFolio").prop("value");
+
+	if(e.which==13 & v1!='')
+	{
+
+		$.post("Acciones.php",{Lectura:v1, MiFolio:v2, modulo:24, opc:3},getLectura); 
+	
+	}
+ }
+
+ function getLectura(datos)
+ { 	
+	
+ 	var v1=$("#Lectura").prop("value");
+
+ 	if(datos.toString().search('alerta')>0)
+		{
+			$("#resultados").html(datos);
+		}
+		else
+		$("#Equipo").val(datos);
+		
+}
+
+function AgregaLineaOr()
+{
+
+	if($("#Equipo").attr("value")=="")
+	{
+	alert("Debes ingresar el Equipo");
+	return false
+	}
+
+	if($("#PlanId").attr("value")=="0")
+	{
+	alert("Debes ingresar el Plan");
+	return false
+	}
+
+	if($("#PlazoId").attr("value")=="0")
+	{
+	alert("Debes elegir el Plazo");
+	return false
+	}	
+
+	var v1=$("#Lectura").attr("value");
+	var v2=$("#MiFolio").attr("value");	
+	var v3=$("#PlanId").attr("value");
+	var v4=$("#TipoPlanId").attr("value");
+	var v5=$("#AddOnes").attr("value")+'0';
+	var v6=$("#OtrosServ").attr("value")+'0';
+	var v7=$("#PlazoId").attr("value");
+	var v8=$("#Movimiento").attr("value");
+
+	$.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Movimiento:v8, modulo:24, opc:7},getResultadoOrg); 
+
+}
+
+function getResultadoOrg(datos)
+{
+
+	if(datos=='ok')
+		{
+			document.forms[0].submit();
+			
+		}
+		else
+			$("#resultados").html(datos);
+		
+}
+
+function setSolicitud(clave)
+{
+	
+	$("#Folio").val(clave);
+}
+
+function LiberaSerie()
+{
+	$("#resultados").html("");
+	if($("#Serie").attr("value")=="")
+	{
+	alert("Debes ingresar el numero de serie");
+	return false
+	}		
+
+	var v1=$("#Serie").attr("value");
+	$.post("Acciones.php",{Serie:v1,  modulo:34, opc:1},getRespuesta); 
+
+}
+
+function CambiaFechaRecepcion()
+{
+	$("#resultados").html("");
+	if($("#MovimientoId").attr("value")=="")
+	{
+	alert("Debes ingresar el numero de Recepcion");
+	return false
+	}			
+
+	if($("#FechaIngreso").attr("value")=="")
+	{
+	alert("Debes ingresar la fecha de Recepcion");
+	return false
+	}		
+
+	var v1=$("#MovimientoId").attr("value");
+	var v2=$("#FechaIngreso").attr("value");
+
+	$.post("Acciones.php",{MovimientoId:v1, FechaRecepcion:v2,  modulo:34, opc:2},getRespuesta); 
+
+}
+
+
+function getcampoTabla(campo)
+{
+var valor =$("#Llaves").attr("value").replace(',','');
+
+	$('#myTable tr').each(function() 
+	{
+    	if (!this.rowIndex) return;     	
+        if(this.cells[1].innerHTML==valor)
+        {                	        	
+	        $("#ObjetoBaja").html(this.cells[campo].innerHTML);
+        }
+    });
+
+}
+
+function bajaPersonal()
+{
+	var v1 =$("#Llaves").attr("value").replace(',','');
+	var v2= $("#CausaBajaId").attr("value");
+	var v3= $("#FechaContrato").attr("value");
+
+		$.post("Acciones.php",{EmpleadoId:v1, CausaBajaId:v2, FechaBaja:v3, modulo:10, opc:3},getRespuestaVentana); 
+}
+
+function  getRespuestaVentana(datos)
+{
+	if(datos=='OK')
+	{
+	$("#Baja").dialog( "close" );
+	BtLista();
+	}
+	else		
+	$("#avisoVentana").html(datos);
+}
+
+function GuardaSeguimiento(obj)
+{
+
+	
+	var v1= $("#Comentarios"+obj).attr("value");
+	var v2= $("#EstatusId"+obj).attr("value");
+
+	if(v2==0)
+	{
+		alert("Debes elegir un estatus");	
+	return false;
+	}
+
+	if(v1=='')
+	{
+		alert("Debes ingresar un comentario de estatus");	
+	return false;
+	}
+
+	$.post("Acciones.php",{SeguimientoId:obj, EstatusSeguimientoId:v2, Comentarios:v1, modulo:36},getRespuesta); 
+}
+
+function EnviaCliente(valor)
+{
+	
+	$("#Nombre").val(valor);
+	$("#foo").submit();	
+}

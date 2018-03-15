@@ -1,0 +1,4 @@
+[21-Feb-2018 12:46:36 America/Chicago] PHP Warning:  include(conexion3.php): failed to open stream: No such file or directory in /home/solucell/public_html/siiga/reportes/php/recargas.php on line 2
+[21-Feb-2018 12:46:36 America/Chicago] PHP Warning:  include(): Failed opening 'conexion3.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/solucell/public_html/siiga/reportes/php/recargas.php on line 2
+[21-Feb-2018 12:46:36 America/Chicago] PHP Warning:  mysql_query(): No such file or directory in /home/solucell/public_html/siiga/reportes/php/recargas.php on line 42
+[21-Feb-2018 12:46:36 America/Chicago] PHP Warning:  mysql_query(): A link to the server could not be established in /home/solucell/public_html/siiga/reportes/php/recargas.php on line 42
