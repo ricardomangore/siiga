@@ -4011,7 +4011,7 @@ function validaSeriePunto($Serie, $PuntoVentaId)
 			{
 				$FechaMin=$A0[1];
 			}
-			if(($Serie==$A0[0] & $FechaMin==$A0[1]) || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO'))
+			if(($Serie==$A0[0] & $FechaMin==$A0[1]) || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO') || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF'))
 				return $A0[2];
 			$t++;
 		}
@@ -4154,7 +4154,7 @@ function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, 
 		if($this->Consulta($Q1) & $this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4))
 			{
 				$this->AceptaTransaccion();
-				if($codigo_sim!='0')
+				if($codigo_sim!='0' && $PlanId!=81)
 					$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
 				return 'ok';
 			}
@@ -8076,7 +8076,7 @@ else
 {
 	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
 
-	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO') & $this->Consulta($Q0))
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF')  & $this->Consulta($Q0))
 
   //if($this->Consulta($Q0))
 
