@@ -3743,7 +3743,17 @@ function AgregaLineaOr()
 			return false;
 		}
 
-  if($("#DSim").attr("value")=="")
+  if(($("#DSim").attr("value")=="") && ($("#PlanId").attr("value")!="81")  && ($("#PlanId").attr("value")!="282") 
+     && ($("#PlanId").attr("value")!="283")  && ($("#PlanId").attr("value")!="284")  && ($("#PlanId").attr("value")!="285") 
+      && ($("#PlanId").attr("value")!="286")  && ($("#PlanId").attr("value")!="287")  && ($("#PlanId").attr("value")!="288") 
+       && ($("#PlanId").attr("value")!="314")  && ($("#PlanId").attr("value")!="315")  && ($("#PlanId").attr("value")!="328") 
+        && ($("#PlanId").attr("value")!="329")  && ($("#PlanId").attr("value")!="330")  && ($("#PlanId").attr("value")!="331") 
+         && ($("#PlanId").attr("value")!="332")  && ($("#PlanId").attr("value")!="333")  && ($("#PlanId").attr("value")!="334") 
+          && ($("#PlanId").attr("value")!="335")  && ($("#PlanId").attr("value")!="336")  && ($("#PlanId").attr("value")!="337") 
+           && ($("#PlanId").attr("value")!="278")  && ($("#PlanId").attr("value")!="279")  && ($("#PlanId").attr("value")!="280") 
+            && ($("#PlanId").attr("value")!="281")  && ($("#PlanId").attr("value")!="312")  && ($("#PlanId").attr("value")!="365") 
+             && ($("#PlanId").attr("value")!="289")  && ($("#PlanId").attr("value")!="290")  && ($("#PlanId").attr("value")!="291") 
+              && ($("#PlanId").attr("value")!="292")  && ($("#PlanId").attr("value")!="313"))
   {
   alert("Debes ingresar el SIM");
   return false

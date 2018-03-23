@@ -4154,7 +4154,7 @@ function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, 
 		if($this->Consulta($Q1) & $this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4))
 			{
 				$this->AceptaTransaccion();
-				if($codigo_sim!='0' && $PlanId!=81)
+				if($codigo_sim!='0' && $PlanId!=81  && $PlanId!=282  && $PlanId!=283  && $PlanId!=284  && $PlanId!=285  && $PlanId!=286  && $PlanId!=287 && $PlanId!=288  && $PlanId!=314  && $PlanId!=315  && $PlanId!=328  && $PlanId!=329  && $PlanId!=330  && $PlanId!=331  && $PlanId!=332  && $PlanId!=333  && $PlanId!=334  && $PlanId!=335  && $PlanId!=336  && $PlanId!=337  && $PlanId!=278  && $PlanId!=279  && $PlanId!=280  && $PlanId!=281  && $PlanId!=312  && $PlanId!=365  && $PlanId!=289  && $PlanId!=290  && $PlanId!=291  && $PlanId!=292 && $PlanId!=313)
 					$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
 				return 'ok';
 			}
