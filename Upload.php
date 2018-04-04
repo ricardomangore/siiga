@@ -120,5 +120,45 @@ switch ($Opc) {
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
 				//}
 		break;
+	case '8':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaTAE($_REQUEST['FolioR'],$_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;
+	case '9':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaTAESim($_REQUEST['Folio'],$_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['Serie'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;
+	case '10':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaPortabilidad($_REQUEST['FolioR'], $_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario'], $_REQUEST['Sim'], $_REQUEST['NTelP'], $_REQUEST['Nombre'], $_REQUEST['Paterno'], $_REQUEST['Materno'],$_REQUEST['Nip'],$_REQUEST['Portabilidad']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;
+
 	}
 ?>

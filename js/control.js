@@ -2404,6 +2404,186 @@ function ValidaDatos()
               }
           return true;
         break;
+        case '73':
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;
+
+        case '74':
+
+        if($("#CompaniaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Compañia");
+        return false
+        }
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#SIM").attr("value")=="")
+        {
+        alert("Debes ingresar la serie de la sim");
+        return false
+        }
+
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;
+      case '75':
+
+        if($("#CompaniaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Compañia");
+        return false
+        }
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#SIM").attr("value")=="")
+        {
+        alert("Debes Ingresar la serie de la sim");
+        return false
+        }
+
+  
+  if($("#NTelP").attr("value")=="")
+    {
+    alert("Debes ingresar el numero para la portabilidad")
+    return false
+    }
+  if($("#Nip").attr("value")=="")
+    {
+    alert("Debes ingresar el Nip para la portabilidad")
+    return false
+    }
+
+  if($("#Nombre").attr("value")=="")
+    {
+    alert("Debes ingresar el Nombre para la portabilidad")
+    return false
+    }
+  if($("#Paterno").attr("value")=="")
+    {
+    alert("Debes ingresar el apellido paterno para la portabilidad")
+    return false
+    }
+  if($("#Materno").attr("value")=="")
+    {
+    alert("Debes ingresar el apellido materno para la portabilidad")
+    return false
+    }
+    if($("#Portabilidad").attr("value")=="0")
+    {
+    alert("Debes elegir el tipo de portabilidad realizada")
+    return false
+    }
+
+
+
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;        
 
     	}
 
@@ -2621,16 +2801,24 @@ function BtGuardar()
   case '65':
           return guardaRecarga();
       break;
-      case '66':
+  case '66':
           return guardaDeposito();
       break;
-      case '68':
+  case '68':
           return asignaClientePuntoVenta();
       break;
-      case '70':
+  case '70':
           return addValidacionVenta();
       break;
-
+  case '73':
+          return guardaVentaTAE();
+      break;
+  case '74':
+          return guardaVentaTAESim();
+      break;
+  case '75':
+          return guardaVentaPortabilidad();
+      break;
 		}
 		$("#guardar").attr("disabled", true);
 	}
@@ -6805,6 +6993,209 @@ $("#resultados").html(data);
        }
   });
 }
+
+/*Funcion para guardadr los registro de venta de tiempo aire electronico*/
+
+function guardaVentaTAE()
+{
+  var extension1 = '';
+  var inputFile1 ='';
+  var file1 = '';
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+
+  var clave=$("#Clave").attr("value");
+  var data = new FormData();
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('FolioR', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('clave', clave);
+
+  data.append('Opc', 8);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+//funcion para guardar ventas con venta de de tiempo aire electronico mas activacion de sim
+
+function guardaVentaTAESim()
+{
+
+  var extension1 ='';
+  var inputFile1 = '';
+  var file1 = '';
+
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+  v9=$("#SIM").attr("value");
+
+var clave=$("#Clave").attr("value");
+  var data = new FormData();
+
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('Folio', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('Serie', v9);
+  data.append('clave', clave);
+
+  data.append('Opc', 9);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+
+
+
+//funcion para guardar ventas de Portabilidad
+function guardaVentaPortabilidad()
+{
+
+  var extension1 = '';
+  var inputFile1 = '';
+  var file1 = '';
+
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+  v9=$("#SIM").attr("value");
+  v11=$("#NTelP").attr("value");
+  v12=$("#Nip").attr("value");
+  v13=$("#Nombre").attr("value");
+  v14=$("#Materno").attr("value");
+  v15=$("#Paterno").attr("value");
+  v16=$("#Portabilidad").attr("value");
+
+var clave=$("#Clave").attr("value");
+  var data = new FormData();
+
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('FolioR', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('Sim', v9);
+  data.append('NTelP', v11);
+  data.append('Nip', v12);
+  data.append('Nombre', v13);
+  data.append('Materno', v14);
+  data.append('Paterno', v15);
+  data.append('Portabilidad', v16);
+  data.append('clave', clave);
+
+  data.append('Opc', 10);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function guardaDeposito()

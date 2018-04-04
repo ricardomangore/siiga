@@ -173,6 +173,15 @@ class ToolsHtml extends Tools{
 			case '70':
 						$this->displayValidacionVenta();
 				break;
+			case '73':
+						$this->displayVentaTAE();
+				break;
+			case '74':
+						$this->displayVentaTAESim();
+				break;
+			case '75':
+						$this->displayVentaPortabilidad();
+				break;
 
 			default:
 				echo '';
@@ -4545,6 +4554,290 @@ function displayRecarga()
                     <br>
 					<label for="FileIfe"><span class="importante">*</span>Identificacion Oficial (Formatos validos: png, jpg, bmp, pdf, zip):</label>
 					<input type="file" name="FileIfe" id="FileIfe">
+
+				</div>
+		</fieldset>
+
+
+		<br>
+	</div>
+	';
+
+		/*Ventanas*/
+
+		echo'
+		<div id="Vendedores" class="dialogo" title="Elegir Ejecutivo de Ventas" >
+			Buscar:&nbsp<input id="Busqueda2" class="Busqueda" type="text">
+			<div id="Asesores" class="datagrid">';
+		 	echo $this->getListaAsesores();
+			echo'
+				</div>
+			</div>
+			';
+
+		/*FIN VENTANAS*/
+}
+
+
+function displayVentaTAE()
+{
+
+	list($PuntoVentaId, $PuntoVenta, $ClasificacionPersonalVenta)=$this->getMiPuntoVentaFisico();
+	if(!isset($PuntoVentaId))
+	{
+		$PuntoVentaId=0;
+		$PuntoVenta='';
+	}
+
+
+	$hoy = date("d-m-Y");
+	echo'
+	<div class="ConScroll">
+		<fieldset>
+			<legend>Datos del Folio</legend>
+				<br>
+				<div class="Izquierda">
+					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
+
+					<label for="FolioR"><span class="importante">*</span>Folio :</label>
+					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<br>
+					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
+					<input type="text" name="NTel" id="NTel" maxlength="10" >
+
+				<label for="MontoRecargaId"><span class="importante">*</span>Monto Recarga:</label>
+				<select name="MontoRecargaId" id="MontoRecargaId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('MontoRecargas','MontoRecargaId','MontoRecarga', 0, 'ACTIVO=1', 'Orden');
+				echo'
+				</select>
+				<br><br>
+
+
+				</div>
+
+				<div class="Derecha">
+
+				<label for="PuntoVenta"><span class="importante">*</span>Punto de Venta:</label>
+					<input type="text" name="MiPuntoVenta" id="MiPuntoVenta" readonly="readonly" value="'.$PuntoVenta.'">
+					<input type="hidden" name="PuntoVentaId" id="PuntoVentaId" value="'.$PuntoVentaId.'"/>
+					<br>
+
+					<label for="Vendedor"><span class="importante">*</span>Ejecutivo de Ventas:</label>
+					<input type="text" name="Vendedor" id="Vendedor" readonly="readonly">
+					<input type="hidden" name="VendedorId" id="VendedorId" value="0" />
+					<br>
+
+					<label for="Categoria">RFC:</label>
+					<input type="text" name="Categoria" id="Categoria" readonly="readonly">
+					<br>
+
+					<label for="Coordinador"><span class="importante">*</span>Coordinador:</label>
+					<input type="text" name="Coordinador" id="Coordinador" readonly="readonly">
+					<input type="hidden" name="CoordinadorId" id="CoordinadorId" value="0" />
+					<br>
+					<label for="Comentarios">Comentarios:</label>
+					<textarea id="Comentarios" name="Comentarios"></textarea>
+					<br><br><br>
+				
+
+				</div>
+		</fieldset>
+
+
+		<br>
+	</div>
+	';
+
+		/*Ventanas*/
+
+		echo'
+		<div id="Vendedores" class="dialogo" title="Elegir Ejecutivo de Ventas" >
+			Buscar:&nbsp<input id="Busqueda2" class="Busqueda" type="text">
+			<div id="Asesores" class="datagrid">';
+		 	echo $this->getListaAsesores();
+			echo'
+				</div>
+			</div>
+			';
+
+		/*FIN VENTANAS*/
+}
+
+function displayVentaTAESim()
+{
+
+	list($PuntoVentaId, $PuntoVenta, $ClasificacionPersonalVenta)=$this->getMiPuntoVentaFisico();
+	if(!isset($PuntoVentaId))
+	{
+		$PuntoVentaId=0;
+		$PuntoVenta='';
+	}
+
+
+	$hoy = date("d-m-Y");
+	echo'
+	<div class="ConScroll">
+		<fieldset>
+			<legend>Datos del Folio</legend>
+				<br>
+				<div class="Izquierda">
+					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
+
+					<label for="FolioR"><span class="importante">*</span>Folio :</label>
+					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<br>
+					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
+					<input type="text" name="NTel" id="NTel" maxlength="10" >
+
+				<label for="MontoRecargaId"><span class="importante">*</span>Monto Recarga:</label>
+				<select name="MontoRecargaId" id="MontoRecargaId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('MontoRecargas','MontoRecargaId','MontoRecarga', 0, 'ACTIVO=1', 'Orden');
+				echo'
+				</select>
+				<br><br>
+					<label for="SIM"><span class="importante">*</span>SIM:</label>
+					<input type="text" name="SIM" id="SIM" maxlength="20">
+				<br><br>
+				
+				</div>
+
+				<div class="Derecha">
+
+				<label for="PuntoVenta"><span class="importante">*</span>Punto de Venta:</label>
+					<input type="text" name="MiPuntoVenta" id="MiPuntoVenta" readonly="readonly" value="'.$PuntoVenta.'">
+					<input type="hidden" name="PuntoVentaId" id="PuntoVentaId" value="'.$PuntoVentaId.'"/>
+					<br>
+
+					<label for="Vendedor"><span class="importante">*</span>Ejecutivo de Ventas:</label>
+					<input type="text" name="Vendedor" id="Vendedor" readonly="readonly">
+					<input type="hidden" name="VendedorId" id="VendedorId" value="0" />
+					<br>
+
+					<label for="Categoria">RFC:</label>
+					<input type="text" name="Categoria" id="Categoria" readonly="readonly">
+					<br>
+
+					<label for="Coordinador"><span class="importante">*</span>Coordinador:</label>
+					<input type="text" name="Coordinador" id="Coordinador" readonly="readonly">
+					<input type="hidden" name="CoordinadorId" id="CoordinadorId" value="0" />
+					<br>
+					<label for="Comentarios">Comentarios:</label>
+					<textarea id="Comentarios" name="Comentarios"></textarea>
+					<br><br><br>
+				 
+				</div>
+		</fieldset>
+
+
+		<br>
+	</div>
+	';
+
+		/*Ventanas*/
+
+		echo'
+		<div id="Vendedores" class="dialogo" title="Elegir Ejecutivo de Ventas" >
+			Buscar:&nbsp<input id="Busqueda2" class="Busqueda" type="text">
+			<div id="Asesores" class="datagrid">';
+		 	echo $this->getListaAsesores();
+			echo'
+				</div>
+			</div>
+			';
+
+		/*FIN VENTANAS*/
+}
+
+
+function displayVentaPortabilidad()
+{
+
+	list($PuntoVentaId, $PuntoVenta, $ClasificacionPersonalVenta)=$this->getMiPuntoVentaFisico();
+	if(!isset($PuntoVentaId))
+	{
+		$PuntoVentaId=0;
+		$PuntoVenta='';
+	}
+
+
+	$hoy = date("d-m-Y");
+	echo'
+	<div class="ConScroll">
+		<fieldset>
+			<legend>Datos del Folio</legend>
+				<br>
+				<div class="Izquierda">
+					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
+
+					<label for="FolioR"><span class="importante">*</span>Folio :</label>
+					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<br>
+					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
+					<input type="text" name="NTel" id="NTel" maxlength="10" >
+
+				<label for="MontoRecargaId"><span class="importante">*</span>Monto Recarga:</label>
+				<select name="MontoRecargaId" id="MontoRecargaId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('MontoRecargas','MontoRecargaId','MontoRecarga', 0, 'ACTIVO=1', 'Orden');
+				echo'
+				</select>
+				<br><br>
+					<label for="SIM"><span class="importante">*</span>SIM:</label>
+					<input type="text" name="SIM" id="SIM" maxlength="20">
+				<br><br>
+				<input type="hidden" id="PortabilidadId" name="PortabilidadId" value="0" />
+
+				  <label for="NTelP"><span class="importante">*</span>Numero Telefonico para portabilidad:</label>
+                                        <input type="text" name="NTelP" id="NTelP" maxlength="10" >
+
+				  <label for="Nip"><span class="importante">*</span>NIP (4 dijitos):</label>
+                                        <input type="text" name="Nip" id="Nip" maxlength="4" >
+
+				  <label for="Nombre"><span class="importante">*</span>Nombre:</label>
+                                        <input type="text" name="Nombre" id="Nombre" >
+
+				  <label for="Paterno"><span class="importante">*</span>Paterno:</label>
+                                        <input type="text" name="Paterno" id="Paterno" >
+
+				  <label for="Materno"><span class="importante">*</span>Materno:</label>
+                                        <input type="text" name="Materno" id="Materno" >
+
+				</div>
+
+				<div class="Derecha">
+
+				<label for="PuntoVenta"><span class="importante">*</span>Punto de Venta:</label>
+					<input type="text" name="MiPuntoVenta" id="MiPuntoVenta" readonly="readonly" value="'.$PuntoVenta.'">
+					<input type="hidden" name="PuntoVentaId" id="PuntoVentaId" value="'.$PuntoVentaId.'"/>
+					<br>
+
+					<label for="Vendedor"><span class="importante">*</span>Ejecutivo de Ventas:</label>
+					<input type="text" name="Vendedor" id="Vendedor" readonly="readonly">
+					<input type="hidden" name="VendedorId" id="VendedorId" value="0" />
+					<br>
+
+					<label for="Categoria">RFC:</label>
+					<input type="text" name="Categoria" id="Categoria" readonly="readonly">
+					<br>
+
+					<label for="Coordinador"><span class="importante">*</span>Coordinador:</label>
+					<input type="text" name="Coordinador" id="Coordinador" readonly="readonly">
+					<input type="hidden" name="CoordinadorId" id="CoordinadorId" value="0" />
+					<br>
+					<label for="Comentarios">Comentarios:</label>
+					<textarea id="Comentarios" name="Comentarios"></textarea>
+					<br><br><br>
+					<label for="Portabilidad"><span class="importante">*</span>Elige tipo de portabilidad</label>
+					<select id="Portabilidad" name="Portabilidad">
+					<option value="0">--Seleccionar tipo de portabilidad--</option>
+					<option>Portabilidad SIIGA</option>
+					<option>Portabilidad PVS</option>
+					</select>
 
 				</div>
 		</fieldset>

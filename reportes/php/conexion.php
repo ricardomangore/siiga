@@ -12,7 +12,7 @@
 			 echo 'Error al conectar: <br>'.mysqli_connect_error();
 		}*/
 			error_reporting(E_COMPILE_ERROR|E_ERROR|E_CORE_ERROR);
-		$conexion = mysql_connect("solucell.com.mx", "solucell_consult", "consulta3.14");
+		$conexion = mysql_connect("localhost", "root", "ger12menjuz");
 //$conexion = mysql_connect("localhost", "root", "");
 
 if (!$conexion) {

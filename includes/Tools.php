@@ -8145,6 +8145,252 @@ else
 
 	return 'FAIL';
 }
+//funcion para guardar venta de tiempo aire electronico
+function guardaVentaTAE($FolioR, $NTel, $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario)
+{
+	//echo 'Folio: '.$FolioR.'<br>'.'Numero para Recarga: '.$NTel.'<br>Monto de la Recarga:'.$MontoRecargaId.'<br>Punto VentaId: '.$PuntoVentaId.'<br>VendedorId: '.$VendedorId.'<br> CoordinadorId:'.$CoordinadorId.'<br>Comentario: '.$Comentario.'<br>';
+	//return 'Hola';
+$Folio='RE'.$FolioR;
+
+//	$Diferencial=0;
+/*
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+*/
+
+//$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+
+	if($this->Consulta($Q1) & $this->addBitacora(73, 2, 0, $Folio, ''))
+		{
+			$this->AceptaTransaccion();
+			return utf8_decode('<span class="alerta">¡Recarga Registrada con exito!</span>');
+			
+		}
+		else
+		{
+			$this->CancelaTransaccion();
+
+			return utf8_decode('<span class="alerta">¡Error al guardar Recarga!</span>');
+		}
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+}
+
+//Fin de la funcion para la venta de tiempo aire electronica
+
+//funcion para guardar venta de tiempo aire electronico mas activacion de sim
+function guardaVentaTAESim($FolioR, $NTel, $MontoRecargaId, $Sim, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario)
+{
+	/*echo $FolioR."<br>".$NTel."<br>".$MontoRecargaId."<br>".$Sim."<br>".$PuntoVentaId."<br>".$VendedorId."<br>".$CoordinadorId."<br>".$Comentario."<br>";
+	return 'Hola';*/
+$Folio='RE'.$FolioR;
+$Serie=$Sim;
+//	$Diferencial=0;
+
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+
+
+$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+
+	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
+
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF')  & $this->Consulta($Q0))
+
+  //if($this->Consulta($Q0))
+
+
+	{
+
+		$MovimientoId=mysql_insert_id();
+
+		$Q2="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
+	                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+						 VALUES(UCASE('$Folio'), CURDATE(), CURDATE(), CURDATE(), $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, 6004,
+	        					1, 1, 'Recarga Electronica', '$Folio',$MovimientoId, 1,0, 0)";
+
+		$Q3="INSERT INTO TLineas
+	                   SELECT NULL, '$Folio', EquipoId, 255, 3, 6, '', '$NTel',  $Diferencial, 1, '',0
+	                   FROM Inventario WHERE Serie='$Serie' LIMIT 1";
+
+
+		$Q4="INSERT INTO LFolios
+				 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 14,
+				 0 AS Costo, 0 AS RentaSI, '', CURDATE(), '$Serie', '', Dn, Diferencial, TipoPagoDiferencial,0
+				 FROM TLineas AS T1
+				 WHERE T1.Clave='$Folio'";
+
+		$Q5="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, CURDATE(), '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.Folio='$Folio'
+			LIMIT 1";
+
+		$Q6="UPDATE Inventario AS T1
+			INNER JOIN (
+			            SELECT T1.Serie, 0 AS Cantidad
+			            FROM LFolios AS T1
+			            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			            WHERE T1.Folio='$Folio'
+			            LIMIT 1
+			           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
+						SELECT NULL, $this->UsuarioId, 65, 2, RegistroId, '',14, CURDATE(), CURTIME(), 'Recarga Electronica'
+						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
+			";
+
+			if($this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4) & $this->Consulta($Q5) & $this->Consulta($Q6) & $this->Consulta($Q7) & $this->Consulta($Q1) & $this->addBitacora(74, 2, 0, $Folio, ''))
+			{
+
+				$this->AceptaTransaccion();
+				return utf8_decode('<span class="alerta">¡Venta de TAE y Activacion de Sim Exitosa!</span>');
+			}
+			else
+			{
+				$this->CancelaTransaccion();
+
+				return 'INVALID';
+			}
+	}
+		$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡Equipo Elegido no Valido!</span>');
+
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+
+	
+	//return 'prueba de envio';
+}
+function guardaVentaPortabilidad($FolioR, $NTel, $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario, $Sim, $NTelP, $Nombre, $Paterno, $Materno, $Nip, $Portabilidad)
+{
+
+$Folio='RE'.$FolioR;
+$Serie=$Sim;
+$comentarioFin=$Comentario.' '.$Portabilidad;
+//	$Diferencial=0;
+
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+
+
+$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$comentarioFin', CURDATE(), CURTIME(), 0, '$NTelP', '$Nombre', '$Paterno', '$Materno', '', '', '', '$Nip')";
+
+	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
+
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF')  & $this->Consulta($Q0))
+
+  //if($this->Consulta($Q0))
+
+
+	{
+
+		$MovimientoId=mysql_insert_id();
+
+		$Q2="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
+	                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+						 VALUES(UCASE('$Folio'), CURDATE(), CURDATE(), CURDATE(), $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, 6004,
+	        					1, 1, 'Recarga Electronica', '$Folio',$MovimientoId, 1,0, 0)";
+
+		$Q3="INSERT INTO TLineas
+	                   SELECT NULL, '$Folio', EquipoId, 255, 3, 6, '', '$NTel',  $Diferencial, 1, '',0
+	                   FROM Inventario WHERE Serie='$Serie' LIMIT 1";
+
+
+		$Q4="INSERT INTO LFolios
+				 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 14,
+				 0 AS Costo, 0 AS RentaSI, '', CURDATE(), '$Serie', '', Dn, Diferencial, TipoPagoDiferencial,0
+				 FROM TLineas AS T1
+				 WHERE T1.Clave='$Folio'";
+
+		$Q5="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, CURDATE(), '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.Folio='$Folio'
+			LIMIT 1";
+
+		$Q6="UPDATE Inventario AS T1
+			INNER JOIN (
+			            SELECT T1.Serie, 0 AS Cantidad
+			            FROM LFolios AS T1
+			            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			            WHERE T1.Folio='$Folio'
+			            LIMIT 1
+			           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
+						SELECT NULL, $this->UsuarioId, 75, 2, RegistroId, '',14, CURDATE(), CURTIME(), 'Recarga Electronica'
+						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
+			";
+
+			if($this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4) & $this->Consulta($Q5) & $this->Consulta($Q6) & $this->Consulta($Q7) & $this->Consulta($Q1) & $this->addBitacora(65, 2, 0, $Folio, ''))
+			{
+
+				$this->AceptaTransaccion();
+				return utf8_decode('<span class="alerta">¡Venta de Portabilidad registrada con Exito!</span>');
+			}
+			else
+			{
+				$this->CancelaTransaccion();
+
+				return 'INVALID';
+			}
+	}
+		$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡ Equipo Elegido no Valido!</span>');
+
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+
+	
+	//return 'prueba de envio';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function getReporteChecador()
