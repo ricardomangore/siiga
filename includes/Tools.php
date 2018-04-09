@@ -1237,6 +1237,60 @@ function getDatos($ModuloId)
 							AND T1.PuntoVentaId IN ($MisPuntos)
 							";
 				break;
+				case '73':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,
+					PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=73
+					";
+				break;
+				case '74':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,
+					PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=74
+					";
+				break;
+				case '75':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=75
+					";
+				break;
+
 		default:
 				$Q0="SELECT CURDATE()";
 		break;
@@ -8164,7 +8218,7 @@ else
 
 $this->StartTransaccion();
 $Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
-	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
 
 	if($this->Consulta($Q1) & $this->addBitacora(73, 2, 0, $Folio, ''))
 		{
@@ -8205,7 +8259,7 @@ $Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
 
 $this->StartTransaccion();
 $Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
-	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
 
 	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
 
@@ -8253,7 +8307,7 @@ $Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId
 			SET T1.Cantidad=T2.Cantidad
 			WHERE T1.Cantidad>0";
 		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
-						SELECT NULL, $this->UsuarioId, 65, 2, RegistroId, '',14, CURDATE(), CURTIME(), 'Recarga Electronica'
+						SELECT NULL, $this->UsuarioId, 73, 2, RegistroId, '',14, CURDATE(), CURTIME(), '".$Folio."'
 						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
 			";
 
@@ -8299,7 +8353,7 @@ $Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
 
 $this->StartTransaccion();
 $Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
-	VALUES('$Folio', 2, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$comentarioFin', CURDATE(), CURTIME(), 0, '$NTelP', '$Nombre', '$Paterno', '$Materno', '', '', '', '$Nip')";
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$comentarioFin', CURDATE(), CURTIME(), 0, '$NTelP', '$Nombre', '$Paterno', '$Materno', '', '', '', '$Nip')";
 
 	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
 
@@ -8347,7 +8401,7 @@ $Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId
 			SET T1.Cantidad=T2.Cantidad
 			WHERE T1.Cantidad>0";
 		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
-						SELECT NULL, $this->UsuarioId, 75, 2, RegistroId, '',14, CURDATE(), CURTIME(), 'Recarga Electronica'
+						SELECT NULL, $this->UsuarioId, 75, 2, RegistroId, '',14, CURDATE(), CURTIME(), '".$Folio."'
 						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
 			";
 

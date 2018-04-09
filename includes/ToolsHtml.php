@@ -4600,7 +4600,7 @@ function displayVentaTAE()
 					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
 
 					<label for="FolioR"><span class="importante">*</span>Folio :</label>
-					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<input type="text" name="FolioR" id="FolioR" maxlength="6" >
 					<br>
 					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
 					<input type="text" name="NTel" id="NTel" maxlength="10" >
@@ -4686,7 +4686,7 @@ function displayVentaTAESim()
 					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
 
 					<label for="FolioR"><span class="importante">*</span>Folio :</label>
-					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<input type="text" name="FolioR" id="FolioR" maxlength="6" >
 					<br>
 					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
 					<input type="text" name="NTel" id="NTel" maxlength="10" >
@@ -4774,7 +4774,7 @@ function displayVentaPortabilidad()
 					<input type="hidden" id="CompaniaId" name="CompaniaId" value="1" />
 
 					<label for="FolioR"><span class="importante">*</span>Folio :</label>
-					<input type="text" name="FolioR" id="FolioR" maxlength="10" >
+					<input type="text" name="FolioR" id="FolioR" maxlength="6" >
 					<br>
 					<label for="NTel"><span class="importante">*</span>Numero Telefonico :</label>
 					<input type="text" name="NTel" id="NTel" maxlength="10" >
