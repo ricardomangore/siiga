@@ -1884,7 +1884,7 @@ function displayPrecaptura()
 
 				//if($ClasificacionPersonalVenta==4 || $ClasificacionPersonalVenta==6)
 				//{
-					echo'<input type="text" name="Folio" id="Folio" maxlength="20" >
+					echo'<input type="text" name="FolioPO" id="FolioPO" maxlength="20" >
 						<label for="FechaSS"><span class="importante">*</span>Fecha de Activacion:</label>
 						<input type="text" id="FechaSS" name="FechaSS" value="">
 

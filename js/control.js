@@ -1608,7 +1608,7 @@ function ValidaDatos()
 				return false
 				}
 
-				if($("#Folio").attr("value")=="")
+				if($("#FolioPO").attr("value")=="")
 				{
 				alert("Debes Ingresar el Folio");
 				return false
@@ -2528,7 +2528,12 @@ function ValidaDatos()
         return false
         }
 
-  
+      if($("#NTel").attr("value")==$("#NTelP").attr("value"))
+        {
+        alert("Los numeros telefonicos deben ser diferentes");
+        return false
+        }
+
   if($("#NTelP").attr("value")=="")
     {
     alert("Debes ingresar el numero para la portabilidad")
@@ -3641,7 +3646,7 @@ function guardarOrsInv()
 function guardarOr()
 {
 //alert("esto es por que si actualizaste cookies")
-	v1=$("#Folio").attr("value");
+	v1=$("#FolioPO").attr("value");
 	v2=$("#FechaSS").attr("value");
 
 	v4=$("#PuntoVentaId").attr("value");
