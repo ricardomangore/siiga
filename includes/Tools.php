@@ -9451,6 +9451,27 @@ function getReporteValidaciones()
 		";
 	return $this->Consulta($Q0);
 }
+function getReporteRotacionEquipos()
+{
+	$Q0="SELECT 'Equipo', 'Serie', 'Punto Recepcion', 'Fecha Recepcion', 'Punto Venta', 'Fecha Venta', 'Ejecutivo', 'Dias en almacen'
+		UNION
+		SELECT T3.Equipo, T1.serie, T4.PuntoVenta AS PuntoVentaRecepcion, T2.Fecha AS FechaRecepcion,
+       	T9.PuntoVenta AS PuntoVentaVenta, T5.Activacion AS FechaVenta, CONCAT_WS(' ', T11.nombre, T11.paterno, T11.materno) AS Ejecutivo,
+       	DATEDIFF(T5.Activacion, T2.Fecha) AS dias
+		FROM Inventario AS T1
+		INNER JOIN Recepciones AS T2 ON T2.MovimientoId=T1.MovimientoId AND T2.TipoMovimientoId=1
+		INNER JOIN Equipos AS T3 ON T3.EquipoId=T1.EquipoId
+		INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T2.PuntoVentaId
+		INNER JOIN Inventario AS T5 ON T5.serie=T1.serie AND T5.Activacion!='0000-00-00'
+		INNER JOIN LFolios AS T7 ON T7.serie=T5.serie
+		INNER JOIN HFolios AS T8 ON T8.Folio=T7.Folio
+		INNER JOIN PuntosVenta AS T9 ON T9.PuntoVentaId=T8.PuntoVentaId
+		INNER JOIN HistorialPuestosEmpleados AS T10 ON T10.HistorialPuestoEmpleadoId=T8.HistorialPuestoEmpleadoId
+		INNER JOIN Empleados AS T11 ON T11.EmpleadoId= T10.EmpleadoId WHERE T2.Fecha=date_sub(CURDATE(), INTERVAL 3 MONTH)
+
+		";
+		return $this->Consulta($Q0);
+}
 
 
 }//fin clase

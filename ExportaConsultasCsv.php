@@ -66,6 +66,8 @@ switch ($_GET['opc'])
       break;
   case 26: $R0=$Herramientas->getReporteValidaciones();
       break;
+  case 27: $R0=$Herramientas->getReporteRotacionEquipos();
+      break;
 
 
 }//switch
