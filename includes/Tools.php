@@ -17,7 +17,17 @@ class Tools extends Conectar{
 		$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
 	return $Query;
 	}//Consulta
+	function MarcaEquipo($sql){
+		if($sql==''){
 
+			return true;
+		}else{
+			$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
+			$resultado=mysql_fetch_array($query);
+			$MarcaId=$resultado["MarcaId"];
+			return $MarcaId;
+		}
+	}//MarcaEquipo
 	function Insertar($sql){
 		$query=mysql_query("$sql", $this->conexion) or die("Error al Insertar: $sql ".mysql_error());
 		$Identificador= mysql_insert_id($this->conexion);
@@ -4178,6 +4188,15 @@ function addLineaOr($Serie, $Folio)
 
 function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, $PlazoId, $Movimiento, $Diferencial, $TipoPagoDiferencial, $SeguroId, $codigo_sim)
 	{
+		$sql="SELECT E.MarcaId AS MarcaId FROM Inventario AS I  INNER JOIN Equipos AS E ON E.EquipoId=I.EquipoId WHERE I.Serie='$Serie'";
+		$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
+		$resultadoMarca=mysql_fetch_array($Query);
+		$MarcaId=$resultadoMarca["MarcaId"];
+		$cont=0;
+		if($MarcaId==13){
+			$cont=1;
+		}
+
 		$Q0="INSERT INTO TLineas
                    SELECT NULL, '$Movimiento', EquipoId, $PlanId, $TipoPlanId, $PlazoId, '', '', $Diferencial, $TipoPagoDiferencial, '', $SeguroId
                    FROM Inventario WHERE Serie='$Serie' LIMIT 1";
@@ -4208,7 +4227,7 @@ function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, 
 		if($this->Consulta($Q1) & $this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4))
 			{
 				$this->AceptaTransaccion();
-				if($codigo_sim!='0' && $PlanId!=81  && $PlanId!=282  && $PlanId!=283  && $PlanId!=284  && $PlanId!=285  && $PlanId!=286  && $PlanId!=287 && $PlanId!=288  && $PlanId!=314  && $PlanId!=315  && $PlanId!=328  && $PlanId!=329  && $PlanId!=330  && $PlanId!=331  && $PlanId!=332  && $PlanId!=333  && $PlanId!=334  && $PlanId!=335  && $PlanId!=336  && $PlanId!=337  && $PlanId!=278  && $PlanId!=279  && $PlanId!=280  && $PlanId!=281  && $PlanId!=312  && $PlanId!=365  && $PlanId!=289  && $PlanId!=290  && $PlanId!=291  && $PlanId!=292 && $PlanId!=313)
+				if($codigo_sim!='0' && $PlanId!=81  && $PlanId!=282  && $PlanId!=283  && $PlanId!=284  && $PlanId!=285  && $PlanId!=286  && $PlanId!=287 && $PlanId!=288  && $PlanId!=314  && $PlanId!=315  && $PlanId!=328  && $PlanId!=329  && $PlanId!=330  && $PlanId!=331  && $PlanId!=332  && $PlanId!=333  && $PlanId!=334  && $PlanId!=335  && $PlanId!=336  && $PlanId!=337  && $PlanId!=278  && $PlanId!=279  && $PlanId!=280  && $PlanId!=281  && $PlanId!=312  && $PlanId!=365  && $PlanId!=289  && $PlanId!=290  && $PlanId!=291  && $PlanId!=292 && $PlanId!=313 && $cont!=1)
 					$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
 				return 'ok';
 			}

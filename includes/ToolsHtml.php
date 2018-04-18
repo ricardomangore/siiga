@@ -182,7 +182,8 @@ class ToolsHtml extends Tools{
 			case '75':
 						$this->displayVentaPortabilidad();
 				break;
-
+			case '76':
+						$this->displayOriginacionV2();
 			default:
 				echo '';
 				break;
@@ -2175,6 +2176,371 @@ function displayPrecaptura()
 
 		/*FIN VENTANAS*/
 }
+
+/*Formulario para nuevo diseño de originacion*/
+function displayOriginacionV2()
+{
+
+	list($PuntoVentaId, $PuntoVenta, $ClasificacionPersonalVenta)=$this->getMiPuntoVentaFisico();
+	if(!isset($PuntoVentaId))
+	{
+		$PuntoVentaId=0;
+		$PuntoVenta='';
+	}
+
+	$hoy = date("d-m-Y");
+	echo'
+	<div class="ConScroll">
+		<fieldset>
+			<legend>Datos del Folio</legend>
+				<br>
+				<div class="Izquierda">
+		
+				<label for="PlataformaId"><span class="importante">*</span>Plataforma:</label>
+					<select name="PlataformaId" id="PlataformaId">
+					<option value="0">Elige</option>
+				';
+					$this->Scroll('Plataformas','PlataformaId','Plataforma', 0, 'ACTIVO=1', 'Plataforma');
+				echo'
+				</select>
+				<br>
+
+				<label for="TipoVentaId"><span class="importante">*</span>Tipo de Venta:</label>
+					<select name="TipoVentaId" id="TipoVentaId">
+					<option value="0">Elige</option>
+					<option value="1">Prepago</option>
+					<option value="2">Pospago</option>
+					</select>
+					<br>
+
+				<input type="hidden" id="ClasificacionPersonalVenta" name="ClasificacionPersonalVenta" value="'.$ClasificacionPersonalVenta.'" />
+					<label for="TipoContratacionId"><span class="importante">*</span>Tipo de Contratacion:</label>
+					<select name="TipoContratacionId" id="TipoContratacionId">
+					<option value="0">Elige</option>
+					';
+						$this->Scroll('TiposContratacion','TipoContratacionid','Tipocontratacion', 0, 'ACTIVO=1', 'Tipocontratacion');
+					echo'
+					</select>
+					<br>
+
+					<label for="Folio"><span class="importante">*</span>Folio / Solicitud:</label>
+
+					';
+
+				//if($ClasificacionPersonalVenta==4 || $ClasificacionPersonalVenta==6)
+				//{
+					echo'<input type="text" name="FolioPO" id="FolioPO" maxlength="20" >
+						<label for="FechaSS"><span class="importante">*</span>Fecha de Activacion:</label>
+						<input type="text" id="FechaSS" name="FechaSS" value="">
+
+					<label for="ContratacionId"><span class="importante">*</span>Contratacion:</label>
+				<select name="ContratacionId" id="ContratacionId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('Contrataciones','ContratacionId','Contratacion', 0, 'ACTIVO=1', 'Contratacion');
+				echo'
+				</select>
+				';
+				//}
+/*
+					else
+					{
+					echo'<input type="text" name="Folio" id="Folio" maxlength="20" >
+					<input type="hidden" id="FechaSS" name="FechaSS" value="'.$hoy.'">
+					<input type="hidden" id="ContratacionId" name="ContratacionId" value="0">';
+						}
+						*/
+				echo'
+					<br>
+					<input type="hidden" id="FechaContrato" name="FechaContrato" value="'.$hoy.'">
+					<input type="hidden" id="ClasificacionPersonalVenta" name="ClasificacionPersonalVenta" value="'.$ClasificacionPersonalVenta.'">
+
+				<label for="TipoPagoId"><span class="importante">*</span>Tipo de Pago:</label>
+				<select name="TipoPagoId" id="TipoPagoId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('TiposPago','TipoPagoId','TipoPago', 0, 'ACTIVO=1', 'TipoPago');
+				echo'
+				</select>
+
+
+				</div>
+
+				<div class="Derecha">
+				';
+/*
+				<label for="PuntoVenta"><span class="importante">*</span>Punto de Venta:</label>
+					<input type="text" name="MiPuntoVenta" id="MiPuntoVenta" readonly="readonly" value="'.$PuntoVenta.'">
+					<input type="hidden" name="PuntoVentaId" id="PuntoVentaId" value="'.$PuntoVentaId.'"/>
+					<br>
+*/
+				echo'
+					<label for="PuntoVenta"><span class="importante">*</span>Punto de Venta:</label>
+					<input type="text" name="PuntoVenta" id="PuntoVenta" readonly="readonly" value="'.$PuntoVenta.'">
+					<input type="hidden" name="PuntoVentaId" id="PuntoVentaId" value="'.$PuntoVentaId.'"/>
+					<br>
+
+					<label for="Vendedor"><span class="importante">*</span>Ejecutivo de Ventas:</label>
+					<input type="text" name="Vendedor" id="Vendedor" readonly="readonly">
+					<input type="hidden" name="VendedorId" id="VendedorId" value="0" />
+					<br>
+
+					<label for="Categoria">Sub Categoria:</label>
+					<input type="text" name="Categoria" id="Categoria" readonly="readonly">
+					<br>
+
+					<label for="Coordinador"><span class="importante">*</span>Coordinador:</label>
+					<input type="text" name="Coordinador" id="Coordinador" readonly="readonly">
+					<input type="hidden" name="CoordinadorId" id="CoordinadorId" value="0" />
+					<br>
+					<label for="Comentarios">Comentarios:</label>
+					<textarea id="Comentarios" name="Comentarios"></textarea>
+				</div>
+		</fieldset>
+
+		<fieldset>
+			<legend>Datos del Cliente</legend>
+				<br>
+				<div class="Izquierda">
+
+					<label for="Nombre"><span class="importante">*</span>Nombre Cliente: <img src="img/Add.png" id="AddCliente"/></label>
+					<input type="text" name="Nombre" id="Nombre" readonly="readonly">
+					<input type="hidden" name="ClienteId" id="ClienteId" />
+					<br>
+
+					<label for="RFC"><span class="importante">*</span>RFC Cliente:</label>
+					<input type="text" name="RFC" id="RFC" readonly="readonly">
+					<br>
+					<label>Referencias: <img src="img/Add.png" id="AddReferencia"/></label>
+				</div>
+				<div class="Derecha">
+					<div class="datagrid">
+						<div id="displayRef"></div>
+				</div>
+		</fieldset>
+
+		';
+
+
+
+
+/*
+		<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		  <span class="informacion">Buscar:</span>&nbsp<input id="Busqueda" class="Busqueda" type="text" >
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Estatus_Actual</th>
+				<th bgcolor="#BFD5EA" >Nuevo_Estatus</th>
+				<th bgcolor="#BFD5EA" >Fecha_Estatus</th>
+				<th bgcolor="#BFD5EA" >Comentario</th>
+				<th bgcolor="#BFD5EA" >Contrato</th>
+				<th bgcolor="#BFD5EA" >DN</th>
+				<th bgcolor="#BFD5EA" >Controles</th>
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td align="center" valign="midle">'.$this->getEstatusPosible($A0[4],$A0[0]).'</td>
+		<td align="center" valign="midle"><input type="text" id="FechaEstatus'.$A0[0].'" name="FechaEstatus'.$A0[0].'" class="FechaEstatus" value="'.date('d/m/Y').'" readonly="readonly"></td>
+		<td align="center" valign="midle"><textarea id="Comentarios'.$A0[0].'" name="Comentarios'.$A0[0].'">'.$A0[5].'</textarea></td>
+		<td align="center" valign="midle"><input type="text" id="Contrato'.$A0[0].'" name="Contrato'.$A0[0].'" class="contrato" maxlength="8" value="'.$A0[6].'"></td>
+		<td align="center" valign="midle"><input type="text" id="DN'.$A0[0].'" name="DN'.$A0[0].'" value="'.$A0[8].'"></td>
+		<td align="center" valign="midle"><input type="button" class="guardar" id="Actualiza" name="Actualiza" value="Guardar" onclick="ActualizaEstatus('.$A0[0].','.$A0[7].')"></td>
+		</tr>';
+		}
+		echo '</tbody></table>
+*/
+
+	echo'
+		</fieldset>
+		<br>
+	</div>
+	';
+
+		/*Ventanas*/
+		echo'
+		<div id="PuntosVenta" class="dialogo" title="Elegir Punto de Venta" >
+			Buscar:&nbsp<input id="Busqueda1" class="Busqueda" type="text" >
+			<div id="Puntos" class="datagrid" >';
+		 	echo $this->getListaPuntos();
+			echo'
+				</div>
+			</div>
+			';
+
+		echo'
+		<div id="Vendedores" class="dialogo" title="Elegir Ejecutivo de Ventas" >
+			Buscar:&nbsp<input id="Busqueda2" class="Busqueda" type="text">
+			<div id="Asesores" class="datagrid">';
+		 	echo $this->getListaAsesores();
+			echo'
+				</div>
+			</div>
+			';
+
+
+		echo'
+		<div id="NReferencia" class="dialogo" title="Registrar Referencia" >
+		<div class="Izquierda">
+			<label for="ParentescoReferenciaId"><span class="importante">*</span>Parentesco:</label>
+				<select name="ParentescoReferenciaId" id="ParentescoReferenciaId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('Parentescos','ParentescoId','Parentesco', 0, 'ACTIVO=1', 'Parentesco');
+				echo'
+				</select>
+			<br>
+			<label for="NombreR"><span class="importante">*</span>Nombre:</label>
+				<input type="text" name="NombreR" id="NombreR" maxlength="30">
+			<br>
+			<label for="PaternoR"><span class="importante">*</span>Apellido Paterno:</label>
+				<input type="text" name="PaternoR" id="PaternoR" maxlength="30" >
+			<br>
+			<label for="MaternoR"><span class="importante">*</span>Apellido Materno:</label>
+				<input type="text" name="MaternoR" id="MaternoR" maxlength="30">
+			<br>
+		</div>
+		<div class="Derecha">
+			<label for="TelefonoR"><span class="importante">*</span>Telefono:</label>
+				<input type="text" name="TelefonoR" id="TelefonoR" maxlength="11">
+			<br>
+			<label for="MailR">Correo Electronico:</label>
+				<input type="text" name="MailR" id="MailR" maxlength="40">
+			<br>
+			<input type="button" class="guardar" id="Crear" name="Crear">
+
+		</div>
+		</div>
+		';
+
+		echo'
+		<div id="Clientes" class="dialogo" title="Elegir Cliente" >
+			Buscar:&nbsp<input id="BuscarObj" type="text">
+			<div id="Customer" class="datagrid">';
+
+			echo'
+				</div>
+			</div>
+			';
+
+		echo'
+		<div id="ClientesNuevos" class="dialogo" title="Registrar Cliente" >
+		<div class="Izquierda">
+
+			<label for="TipoPersonaId"><span class="importante">*</span>Tipo de Persona:</label>
+				<select name="TipoPersonaId" id="TipoPersonaId">
+				<option value="0">Elige</option>
+				';
+					$this->Scroll('TiposPersona','TipoPersonaId','TipoPersona', 0, 'ACTIVO=1', 'TipoPersona');
+				echo'
+				</select>
+			<br>
+
+			<label for="NombreC"><span class="importante">*</span>Nombre:</label>
+				<input type="text" name="NombreC" id="NombreC" maxlength="30">
+			<br>
+
+			<label for="PaternoC"><span class="importante">*</span>Apellido Paterno:</label>
+				<input type="text" name="Pat
+				rnoC" id="PaternoC" maxlength="30" >
+			<br>
+
+			<label for="MaternoC"><span class="importante">*</span>Apellido Materno:</label>
+				<input type="text" name="MaternoC" id="MaternoC" maxlength="30">
+			<br>
+
+			<label for="RFCC"><span class="importante">*</span>RFC:</label>
+				<input type="text" name="RFCC" id="RFCC" maxlength="30">
+			<br>
+
+			<label for="Calle"><span class="importante">*</span>Calle:</label>
+				<input type="text" name="Calle" id="Calle" maxlength="50">
+			<br>
+
+			<label for="NExterior"><span class="importante">*</span>Numero Exterior:</label>
+				<input type="text" name="NExterior" id="NExterior" maxlength="5">
+			<br>
+
+			<label for="NInterior"><span class="importante">*</span>Numero Interior:</label>
+				<input type="text" name="NInterior" id="NInterior" maxlength="5">
+			<br>
+
+			<label for="Cp"><span class="importante">*</span>Codigo Postal:</label>
+				<input type="text" id="Cp" name="Cp" maxlength="5">
+			<br>
+
+			<label for="ColoniaId"><span class="importante">*</span>Colonia:</label>
+				<select name="ColoniaId" id="ColoniaId">
+					<option value="0">Elige</option>
+				</select>
+			<br>
+
+		</div>
+		<div class="Derecha">
+
+			<label for="TLocal"><span class="importante">*</span>Telefono Local:</label>
+				<input type="text" name="TLocal" id="TLocal" maxlength="11">
+			<br>
+
+			<label for="TMovil"><span class="importante">*</span>Telefono Movil:</label>
+				<input type="text" name="TMovil" id="TMovil" maxlength="11">
+			<br>
+			<br>
+			<span class="importanteMini">
+			Los datos de Contacto son necesarios para Personas Morales
+			</span>
+			<br>
+			<br>
+			<label for="NombreCT">Nombre Contactos:</label>
+				<input type="text" name="NombreCT" id="NombreCT" maxlength="30">
+			<br>
+
+			<label for="PaternoCT">Apellido Paterno Contacto:</label>
+				<input type="text" name="PaternoCT" id="PaternoCT" maxlength="30" >
+			<br>
+
+			<label for="MaternoCT">Apellido Materno Contacto:</label>
+				<input type="text" name="MaternoCT" id="MaternoCT" maxlength="30">
+			<br><br>
+
+			<input type="button" class="guardar" id="CrearCl" name="CrearCl" value="Guardar">
+		</div>
+
+		</div>
+
+		';
+
+		/*FIN VENTANAS*/
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 	function drawTablaDescargas($R0, $Icono)
 	{

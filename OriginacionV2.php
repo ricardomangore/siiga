@@ -13,8 +13,8 @@
 	$Herramientas= new Tools($_SESSION['UsuarioId']);
 	$HerramientasHtml= new ToolsHtml($_SESSION['UsuarioId']);	
 	$Clave=$_SESSION['UsuarioId'].date("dmyHis");
-	$ModuloId=24;
-	
+
+	$ModuloId=76;
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
