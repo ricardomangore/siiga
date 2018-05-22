@@ -1157,6 +1157,17 @@ function displayVentanilla()
 		<fieldset>
 			<legend>Datos del Folio</legend>
 				<br>
+				<label for="PlataformaId"><span class="importante">*</span>Plataforma:</label>
+					<select name="PlataformaId" id="PlataformaId">
+					<option value="0">Elige</option>
+				';
+					$this->Scroll('Plataformas','PlataformaId','Plataforma', 0, 'ACTIVO=1', 'Plataforma');
+				echo'
+				</select>
+				
+				
+
+				<br>
 				<div class="Izquierda">
 					<input type="hidden" id="ClasificacionPersonalVenta" name="ClasificacionPersonalVenta" value="'.$ClasificacionPersonalVenta.'" />
 					<label for="TipoContratacionId"><span class="importante">*</span>Tipo de Contratacion:</label>
@@ -2728,26 +2739,50 @@ function displayOriginacionV2()
 		';
 	}
 
-	function drawaddEquipo($PlataformaId)	{
+	function drawaddEquipo($PlataformaId,$FamiliaPlanId){
+					if(($PlataformaId==1) && ($FamiliaPlanId!=4)){
+						echo '
+							<input type="hidden" name="csequipoAux" id="csequipoAux" value="0">
+						';
+					}else{
+						echo '
+						<label for="csequipo"><span class="importante">*</span>Tipo de Venta:</label>
+							<input type="hidden" name="csequipoAux" id="csequipoAux" value="1">
+							<select name="csequipo" id="csequipo">
+								<option value="0">Elige</option>
+								<option value="1">Con Equipo</option>
+								<option value="2">Sin Equipo</option>
+							</select>
+						';
+					}
 		echo'
+					
+					
+					
+					<br>
+					<div id="column1">
 					<label for="Lectura"><span class="importante">*</span>Codigo Equipo:</label>
 					<input type="text" name="Lectura" id="Lectura">
-					<br><br>
-					<div id="column1">
-					<label for="Equipo">Equipo:</label>
+					<label for="Equipo"> Descripcion Equipo:</label>
 					<input type="text" name="Equipo" id="Equipo" readonly="readonly">
-					<br><br>
-					<label for="Diferencial">Diferencial:</label>
-					<input type="text" name="Diferencial" id="Diferencial">
+					<br>
+					
 			';
-					if($PlataformaId==1)
+					if(($PlataformaId==1) && ($FamiliaPlanId==3 || $FamiliaPlanId==4 || $FamiliaPlanId==6))
 					echo'
-						<br><br>					
+										
 						<label for="codigo_sim"><span class="importante">*</span>SIM:</label>
 						<input type="text" name="codigo_sim" id="codigo_sim">
-						<br><br>
+						
 					';else
 					echo '<input type="hidden" name="codigo_sim" id="codigo_sim" value="0">';
+					if(($PlataformaId==1)  && ($FamiliaPlanId==3 || $FamiliaPlanId==4 || $FamiliaPlanId==6))
+					echo'
+					<label for="DSim">Descripcion SIM:</label>
+					<input type="text" name="DSim" id="DSim" readonly="readonly" value="">
+					';
+					else
+					echo'<input type="hidden" name="DSim" id="DSim" value="x">';
 
 		echo'  				
 					</div>
@@ -2755,8 +2790,35 @@ function displayOriginacionV2()
 					<label for="Plan"><span class="importante">*</span>Plan de Contratacion:</label>
 					<input type="text" name="Plan" id="Plan" readonly="readonly">
 					<input type="hidden" name="PlanId" id="PlanId" value="0" />
-					<input type="hidden" name="TipoPlanId" id="TipoPlanId" value="0" />
+					<input type="hidden" name="TipoPlanId" id="TipoPlanId" value="0" /><br>
+					';
+
+		echo '
+					<label for="Dn"><span class="importante">*</span>Dn:</label>
+					<input type="text" name="Dn" id="Dn" maxlength="10">
 					<br><br>
+					<label for="Diferencial">Diferencial:</label>
+					<input type="text" name="Diferencial" id="Diferencial">
+				
+					<br><br>
+					';
+					
+						
+					echo '
+					</div>
+					<div id="column3">
+					
+
+
+
+					<label for="PlazoId"><span class="importante">*</span>Plazo:</label>
+					<select name="PlazoId" id="PlazoId">
+					<option value="0">Elige</option>
+					';
+						$this->Scroll('Plazos','PlazoId','Plazo', 0, 'IUSA=1 AND ACTIVO=1', 'Plazo');
+					echo'
+					</select>
+					<br><br><br><br>
 					<label for="TipoPagoId"><span class="importante">*</span>Tipo de Pago:</label>
 					<select name="TipoPagoId" id="TipoPagoId">
 					<option value="0">Elige</option>
@@ -2765,32 +2827,16 @@ function displayOriginacionV2()
 					echo'
 					</select>
 					<br><br>
-					';
-					if($PlataformaId==1)
-					echo'
-					<label for="DSim">Descripcion SIM:</label>
-					<input type="text" name="DSim" id="DSim" readonly="readonly" value="">
-					';
-					else
-					echo'<input type="hidden" name="DSim" id="DSim" value="x">';
-						
-					echo '
-					</div>
-					<div id="column3">
-					<label>Add ON: <img src="img/Add.png" id="AddAddon"/></label>
-					<input type="hidden" name="AddOnes" id="AddOnes" />
-
-					<label>Servicios Adicionales: <img src="img/Add.png" id="AddServ"/></label>
-					<input type="hidden" name="OtrosServ" id="OtrosServ" />
+					
+					
+					<br><br>
+				
 					</div>
 					<div id="column4">
-					<label for="PlazoId"><span class="importante">*</span>Plazo:</label>
-					<select name="PlazoId" id="PlazoId">
-					<option value="0">Elige</option>
-					';
-						$this->Scroll('Plazos','PlazoId','Plazo', 0, 'IUSA=1 AND ACTIVO=1', 'Plazo');
-					echo'
-					</select>
+					<br><br>
+						<label>Add ON: <img src="img/Add.png" id="AddAddon"/></label>
+						<input type="hidden" name="AddOnes" id="AddOnes" />
+					
 					<br>
 					<label for="SeguroId"><span class="importante">*</span>Seguro:</label>
 					<select name="SeguroId" id="SeguroId">
@@ -2799,10 +2845,16 @@ function displayOriginacionV2()
 						$this->Scroll('Seguros','SeguroId','Seguro', 0, 'ACTIVO=1', 'SeguroId');
 					echo'
 					</select>
-					<br><br>
+
+
+
+
+
+
 					</div>
 					<br><br><br>
 					<div id="columnDerecha">
+					<br>
 					<input type="button" class="agregar" value="Agregar" id="AddLineaOr" name="AddLineaOr" align="right" >
 					</div>
 				<br>
@@ -2834,11 +2886,12 @@ function displayOriginacionV2()
 		<div id="Planes" class="dialogo" title="Elegir Plan" >
 			Buscar:&nbsp<input id="Busqueda7" class="Busqueda" type="text">
 			<div id="MisPlanes" class="datagrid">';
-		 	echo $this->getListaPlanes();
+		 	echo $this->getListaPlanesV2($FamiliaPlanId);
 			echo'
 				</div>
 			</div>
 			';
+			echo '<br><br><br><br><br><br><br>';
 	}
 
 function displayVentana()
@@ -2855,6 +2908,16 @@ function displayVentana()
 		<fieldset>
 			<legend>Datos del Folio</legend>
 				<br>
+
+				<label for="PlataformaId"><span class="importante">*</span>Plataforma:</label>
+					<select name="PlataformaId" id="PlataformaId">
+					<option value="0">Elige</option>
+				';
+					$this->Scroll('Plataformas','PlataformaId','Plataforma', 0, 'ACTIVO=1', 'Plataforma');
+				echo'
+				</select><br>
+				';
+	echo '
 				<div class="Izquierda">
 
 
@@ -6087,7 +6150,397 @@ function removeAddOn($RegistroId, $AddonId)
 	return $this->getAddonEdit($RegistroId);
 }
 
+function displayFamiliasPlanes($Folio,$Movimiento,$PlataformaId)
+	{
+		$R0=$this->getFamiliasPlanes();
+		$estilos = array("datagridBlueFamiliaPlan");
+		shuffle($estilos);
+		$i=0;
+		while($A0=mysql_fetch_row($R0))
+		{
+			echo'
+
+			<div class="datagridColor" id="'.$estilos[$i].'">
+			<table>
+				<thead>
+					<tr>
+						<th height="40">:: Elige</th>
+					</tr>
+				</thead>
+				<tfoot>
+					<tr>
+						<td>
+							<div id="no-paging"></div>
+						<td>
+					</tr>
+				</tfoot>
+				<tbody>
+					<tr align="center">
+						<td height="80"><h2><a class="ligas" href="AddEquipo2.php?id1='.$Folio.'&id2='.$Movimiento.'&id3='.$A0[0].'">'.$A0[1].'</a></h2></td>
+					</tr>
+				</tbody>
+			</table>
+			</div>
+			';
+				$i++;
+				if($i>=count($estilos))
+				{
+					$i=0;
+					$estilos = array("datagridBlueFamiliaPlan");
+					shuffle($estilos);
+				}
+			}
+	}
+	function drawTablaEstatusEquipos2($Folio)
+	{
+		$R0=$this->getLineasTemporales($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		  <span class="informacion">Buscar:</span>&nbsp<input id="Busqueda" class="Busqueda" type="text" >
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Operaciones</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[0]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$A0[4].'</td>
+		<td>'.$addones.'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$A0[6].'</td>
+		<td><div align="center"><a href="reportes/php/borrarTemporales.php?id='.$A0[7].'&id2='.$A0[8].'&ss='.$A0[2].'&id3='.$A0[9].'&temp='.$A0[0].'" title="Quitar Equipo"><img src="img/Remove.png"></a></div></td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+
+function drawTablaEstatusEquipos3($Folio)
+	{
+		$R0=$this->getLineasTemporales($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		/*Addones*/
+
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[0]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+		/*Fin de Addones*/
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$A0[4].'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+function drawTablaEstatusEquipos4($Folio)
+	{
+		$R0=$this->getLineasTemporalesV3($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Raiz</th>
+				<th bgcolor="#BFD5EA" >Tipo Venta</th>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+				if($A0[10]==1){
+					$tipoVenta="Con Equipo";
+					$serie=$A0[0];
+					$modelo=$this->getModelo($serie);
+				}elseif($A0[10]==2){
+					$tipoVenta="Sin Equipo";
+					$serie=$A0[3];
+					$modelo=$this->getModelo($serie);
+
+				}
+
+		/*inicio Addones*/
+				$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[2]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
 
 
+		/*Fin de Addones*/
+
+
+		echo'<tr>
+		<td>'.$A0[11].'</td>
+		<td>'.$tipoVenta.'</td>
+		<td>'.$A0[1].'</td>
+		<td>'.$serie.'</td>
+		<td>'.$modelo.'</td>
+		<td>'.$A0[4].'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+
+
+
+
+
+
+
+
+
+
+function drawTablaEstatusEquipos2V2($Folio)
+	{
+		$R0=$this->getLineasTemporalesV2($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		  <span class="informacion">Buscar:</span>&nbsp<input id="Busqueda" class="Busqueda" type="text" >
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Imei Sim</th>
+				<th bgcolor="#BFD5EA" >Sim</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Operaciones</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[0]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+		$modelo=$this->getModelo($A0[4]);
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$A0[4].'</td>
+		<td>'.$modelo.'</td>
+		<td>'.$A0[5].'</td>
+		<td>'.$addones.'</td>
+		<!--<td>'.$A0[6].'</td>-->
+		<td>'.$A0[7].'</td>
+		<td><div align="center"><a href="reportes/php/borrarTemporales.php?id='.$A0[8].'&id2='.$A0[9].'&ss='.$A0[2].'&id3='.$A0[10].'&temp='.$A0[0].'" title="Quitar Equipo"><img src="img/Remove.png"></a></div></td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+
+function drawTablaEstatusEquipos2V3($Folio)
+	{
+		$R0=$this->getLineasTemporalesV3($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		  <span class="informacion">Buscar:</span>&nbsp<input id="Busqueda" class="Busqueda" type="text" >
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Imei Sim</th>
+				<th bgcolor="#BFD5EA" >Sim</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Tipo de Venta</th>
+				<th bgcolor="#BFD5EA" >Raiz</th>
+				<th bgcolor="#BFD5EA" >Operaciones</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		$modelo=$this->getModelo($A0[4]);
+		if($A0[10]==1){
+			$tipoVenta="Con Equipo";
+		}elseif($A0[10]==2){
+			$tipoVenta="Sin Equipo";
+		}
+		$equipo=$this->getModelo($A0[0]);
+		$sim=$this->getModelo($A0[3]);
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[2]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+
+
+
+
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[0].'</td>
+		<td>'.$equipo.'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$sim.'</td>
+		<td>'.$A0[4].'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		<td>'.$tipoVenta.'</td>
+		<td>'.$A0[11].'</td>
+		<td><div align="center"><a href="reportes/php/borrarTemporales2.php?id='.$A0[7].'&id2='.$A0[8].'&ss='.$A0[0].'&si='.$A0[3].'&id3='.$A0[9].'&temp='.$A0[2].'" title="Quitar Equipo"><img src="img/Remove.png"></a></div></td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+
+
+	function drawTablaFolioTemporal($Folio){
+		$R0=$this->getDatosFolioTemporal($Folio);
+		$A0=mysql_fetch_row(($R0));
+		echo '
+			<fieldset>
+			<legend>Informacion del Folio</legend>
+			<div class="Izquierda">
+			<table border="0">
+				<tr>
+					<td>Folio: </td>
+					<td>&nbsp;&nbsp;&nbsp;'.$A0[0].' </td>
+				</tr>
+				<tr>
+					<td>Plataforma: </td>
+					<td>&nbsp;&nbsp;&nbsp;'.$A0[1].' </td>
+				</tr>
+				<tr>
+					<td>Tipo de Venta: </td>
+					<td>&nbsp;&nbsp;&nbsp;'.$A0[2].' </td>
+				</tr>
+			</table>
+			</div>
+			<div class="Derecha">
+			<table border="0">
+				<tr>
+					<td>Cliente: </td>
+					<td>&nbsp;&nbsp;&nbsp;'.$A0[3].' </td>
+				</tr>
+				<tr>
+					<td>Ejecutivo de Ventas: </td>
+					<td>&nbsp;&nbsp;&nbsp;'.$A0[4].' </td>
+				</tr>
+				<tr>
+					<td>Punto Venta: </td>
+					<td>&nbsp;&nbsp; '.$A0[5].'</td>
+				</tr>
+			</table>
+			</div>
+			<br><br>
+		</fieldset>
+		';
+
+	}
 }//Fin Clase
 ?>

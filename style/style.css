@@ -973,6 +973,62 @@ a:active {
 }
 
 
+/*data grid para seleccion de familias planes*/
+#datagridBlueFamiliaPlan table { 
+	border-collapse: collapse; 
+	text-align: left; 
+	width: 100%;
+} 
+#datagridBlueFamiliaPlan {
+	font: normal 12px/150% Arial, Helvetica, sans-serif; 
+	background: #fff; overflow: hidden; 
+	border: 1px solid #006699; 
+	-webkit-border-radius: 10px; 
+	-moz-border-radius: 10px; 
+	border-radius: 10px; 
+	min-width: 25%;
+}
+#datagridBlueFamiliaPlan table td, #datagridBlueFamiliaPlan table th { 
+	padding: 5px 5px; 
+
+}
+#datagridBlueFamiliaPlan table thead th {
+	background-color:#006699; 
+	color:#FFFFFF; 
+	font-size: 15px;
+	font-weight: bold; 
+	border-left: 1px solid #006699; 
+
+} 
+#datagridBlueFamiliaPlan table thead th:first-child { 
+	border: none; 
+}
+#datagridBlueFamiliaPlan table tbody td { 
+	color: #006699; 
+	font-size: 12px;
+	font-weight: bolder;
+
+
+}
+
+#datagridBlueFamiliaPlan table tbody td span{ 
+	cursor: pointer;
+}
+
+#datagridBlueFamiliaPlan table tfoot td div { 
+	border-top: 1px olid #006699;
+	background: #E1EEf4;
+} 
+#datagridBlueFamiliaPlan table tfoot td { 
+	padding: 0; font-size: 10px 
+} 
+#datagridBlueFamiliaPlan table tfoot td div{ 
+	padding: 2px; 
+}
+
+
+/*fin de data grid para seleccion de familias planes*/
+
 
 #datagridGreen table { 
 	border-collapse: collapse; 
@@ -1398,4 +1454,23 @@ div.dhtmlx_window_active, div.dhx_modal_cover_dv {
 	text-decoration: underline;
 	color: #0B2161;
 	font-size: 115%;
+}
+span.blue {
+  background: #006699;
+  border-radius: 0.8em;
+  -moz-border-radius: 0.8em;
+  -webkit-border-radius: 0.8em;
+  color: #ffffff;
+  display: inline-block;
+  font-weight: bold;
+  line-height: 1.6em;
+  margin-right: 15px;
+  text-align: center;
+  width: 1.6em; 
+}
+h4.migas{
+	color: #006699;
+}
+a.ligas{
+	color: #006699;
 }

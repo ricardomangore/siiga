@@ -84,7 +84,7 @@ header('Content-Type: text/txt; charset=ISO-8859-1');
 								echo $Herramientas->removeLinea($_REQUEST['RegistroId'], $_REQUEST['Clave']);
 						break;
 						case 5: // Alta Folio
-			 					echo $Herramientas->altaFolioVU($_REQUEST['Folio'],$_REQUEST['FechaContrato'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['ClienteId'], $_REQUEST['TipoContratacionId'], $_REQUEST['TipoPagoId'], $_REQUEST['Comentarios'], $_REQUEST['Clave'], $_REQUEST['ContratacionId']);
+			 					echo $Herramientas->altaFolioVU($_REQUEST['Folio'],$_REQUEST['FechaContrato'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['ClienteId'], $_REQUEST['TipoContratacionId'], $_REQUEST['TipoPagoId'], $_REQUEST['Comentarios'], $_REQUEST['Clave'], $_REQUEST['ContratacionId'],$_REQUEST['PlataformaId']);
 						break;
 						case 6: //Actualiza estatus
 								echo $Herramientas->ActualizaEstatus($_REQUEST['RegistroId'],$_REQUEST['EstatusId'], $_REQUEST['FechaEstatus'], $_REQUEST['Comentario'], $_REQUEST['Contrato'], $_REQUEST['DN']);
@@ -131,13 +131,25 @@ header('Content-Type: text/txt; charset=ISO-8859-1');
 								echo $Herramientas->getListaClientes($_REQUEST['NombreCliente']);
 						break;
 
+						case 9: //Alta Linea
+								echo $Herramientas->altaLineaOrgV2($_REQUEST['Serie'], $_REQUEST['MiFolio'], $_REQUEST['PlanId'], $_REQUEST['TipoPlanId'], $_REQUEST['AddOnes'], $_REQUEST['Dn'], $_REQUEST['PlazoId'], $_REQUEST['Movimiento'], $_REQUEST['Diferencial'], $_REQUEST['TipoPagoDiferencial'], $_REQUEST['SeguroId'], $_REQUEST['codigo_sim'],$_REQUEST['tipoVentaAux'],$_REQUEST['tipoVenta']);
+						break;
+						case 10: //Alta Linea
+								echo $Herramientas->altaLineaOrgV3($_REQUEST['FechaSS'],$_REQUEST['Contrato']);
+						break;
+
+
+
+
+
+
 					}
 			break;
 		case '26':
 					switch ($_REQUEST['opc'])
 					{
 						case 5: // Alta Folio
-			 					echo $Herramientas->altaFolioOrsIn($_REQUEST['Folio'],$_REQUEST['FechaContrato'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['ClienteId'], $_REQUEST['TipoContratacionId'], $_REQUEST['TipoPagoId'], $_REQUEST['Comentarios']);
+			 					echo $Herramientas->altaFolioOrsIn($_REQUEST['Folio'],$_REQUEST['FechaContrato'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['ClienteId'], $_REQUEST['TipoContratacionId'], $_REQUEST['TipoPagoId'], $_REQUEST['Comentarios'],$_REQUEST['PlataformaId']);
 						break;
 					}
 			break;

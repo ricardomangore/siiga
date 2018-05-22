@@ -3092,7 +3092,48 @@ function getDatos($ModuloId)
 						</table>';
 		return $Cadena;
 	}
+	function getListaPlanesV2($FamiliaPlanId)
+	{
+		$Venta=$this->getClasificacionVenta();
+		$Cadena='<table id="MiTabla7" >
+					<thead>
+						<tr>
+							<th>#Plan</th>
+							<th>#TipoPlan</th>
+							<th>Plan</th>
+							<th>Descripcion</th>
+							<th>Elige</th>
+						</tr>
+					</thead>
+					<tbody>';
+		$t=true;
+		$Q0= "SELECT T1.PlanId, T1.TipopLanId, CONCAT_WS(' ',T3.TipoPlan, T2.Plan), Sigi FROM TiposPlanPlanes AS T1
+			  LEFT JOIN Planes AS T2 ON T2.PlanId=T1.PlanId
+			  LEFT JOIN TiposPlan AS T3 ON T3.TipoPlanId=T1.TipoPlanId
+  			  WHERE T2.Activo=1 AND ClasificacionPersonalVentaId IN ($Venta) AND FamiliaPlanId=$FamiliaPlanId";
 
+//  			echo $Q0;
+
+		$R0=$this->Consulta($Q0);
+		while($A0=mysql_fetch_row($R0))
+		{
+			if($t) $Clase='';
+			else $Clase='class="alt"';
+				$Cadena.='
+						<tr '.$Clase.'>
+							<td>'.$A0[0].'</td>
+							<td>'.$A0[1].'</td>
+							<td>'.$A0[2].'</td>
+							<td>'.$A0[3].'</td>
+							<td align="center"><input type="radio" name="PlanId" id="PlanId" class="Pt" value="'.$A0[0].','.$A0[1].'" onclick="setEleccion(this,6)"/></td>
+						</tr>
+				';
+			$t=(!$t);
+		}
+				$Cadena.='</tbody>
+						</table>';
+		return $Cadena;
+	}
 //:: Ventanilla Unica :::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
 
@@ -3234,7 +3275,7 @@ function getDatos($ModuloId)
 	}
 
 function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $CoordinadorId, $ClienteId,
-        $TipoContratacionId, $TipoPagoId, $Comentarios='', $Clave, $ContratacionId)
+        $TipoContratacionId, $TipoPagoId, $Comentarios='', $Clave, $ContratacionId,$PlataformaId)
 {
 	$FechaContrato=$this->CambiarFormatoFecha($FechaContrato);
 
@@ -3243,9 +3284,9 @@ function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coordin
 
 	$this->StartTransaccion();
 	$Q0="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
-                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado,PlataformaId)
 					 VALUES(UCASE('$Folio'), CURDATE(), '$FechaContrato', '$FechaContrato', $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, $ClienteId,
-        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Clave',0, 1, $ContratacionId, 0)";
+        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Clave',0, 1, $ContratacionId, 0,$PlataformaId)";
 	$Q1="INSERT INTO LFolios
 		 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 9,
 		 CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, T1.Comentario, '$FechaContrato', '', '', Dn, 0, 0,0
@@ -3275,7 +3316,7 @@ function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coordin
 }
 
 function altaFolioOrsIn($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $CoordinadorId, $ClienteId,
-        $TipoContratacionId, $TipoPagoId, $Comentarios='')
+        $TipoContratacionId, $TipoPagoId, $Comentarios='',$PlataformaId)
 {
 	$FechaContrato=$this->CambiarFormatoFecha($FechaContrato);
 
@@ -3288,9 +3329,9 @@ function altaFolioOrsIn($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coor
 	$MovimientoId=mysql_insert_id();
 
 	$Q0="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
-                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, Validado)
+                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, Validado,PlataformaId)
 					 VALUES('$Folio', CURDATE(), '$FechaContrato', '0000-00-00', $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, $ClienteId,
-        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Folio',$MovimientoId, 1, 0)";
+        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Folio',$MovimientoId, 1, 0,$PlataformaId)";
 	$Q1="INSERT INTO LFolios
 		 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 9,
 		 		CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, '', CURDATE(), '', Contrato, Dn, 0, 0,0
@@ -5956,7 +5997,11 @@ function desbloquearTraspasos()
 {
 	$Q0="SELECT T1.Serie FROM Disponibles AS T1
 		LEFT JOIN LFolios AS T2 ON T2.Serie=T1.Serie
-		WHERE T2.Serie IS NULL";
+		INNER JOIN HFolios AS T3 ON T2.Folio=T3.Folio
+		WHERE T2.Serie IS NULL AND T3.EnReporte=1";
+	/*$Q0="SELECT T1.Serie FROM Disponibles AS T1
+		LEFT JOIN LFolios AS T2 ON T2.Serie=T1.Serie
+		WHERE T2.Serie IS NULL";*/	
 	$R0=$this->Consulta($Q0);
 
 	while($A0=mysql_fetch_row($R0))
@@ -9491,7 +9536,310 @@ function getReporteRotacionEquipos()
 		";
 		return $this->Consulta($Q0);
 }
+//funciones para nueva captura de originacion
+	function getFamiliasPlanes()
+	{
+		$Q0="SELECT * FROM FamiliaPlan WHERE Activo=1";
+		return $this->Consulta($Q0);
+	}
+
+	function getLineasTemporales($Folio)
+	{
+		$Q0="SELECT T1.LineaTemporalId,T2.Plan,T1.Imei, T4.Equipo, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		INNER JOIN Inventario AS T3 ON T3.Serie=T1.Imei
+		INNER JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1";
+		return $this->Consulta($Q0);
+	}
+	function getLineasTemporalesV2($Folio)
+	{
+		$Q0="SELECT T1.LineaTemporalId,T2.Plan,T1.Imei,T4.Equipo,T1.ImeiSim,  T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		INNER JOIN Inventario AS T3 ON T3.Serie=T1.Imei
+		INNER JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1";
+		return $this->Consulta($Q0);
+	}
+	function getLineasTemporalesV3($Folio)
+	{
+		$Q0="SELECT  DISTINCT T1.Imei,T2.Plan,T1.LineaTemporalId,T1.ImeiSim, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId,T1.TipoVenta,T1.Raiz FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		LEFT JOIN Inventario AS T3 ON T3.Serie=T1.Imei OR T3.Serie=T1.ImeiSim
+		LEFT JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1 ORDER BY Raiz";
+		return $this->Consulta($Q0);
+	}
+	function getModelo($ImeiSim)
+	{
+		$Q0="SELECT T2.Equipo FROM Inventario AS T1 
+		INNER JOIN Equipos AS T2 ON T1.EquipoId=T2.EquipoId
+		WHERE T1.Serie='$ImeiSim' ";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}
+	function getMarca($ImeiSim)
+	{
+		$Q0="SELECT T3.Marca FROM Inventario AS T1 
+		INNER JOIN Equipos AS T2 ON T1.EquipoId=T2.EquipoId
+		INNER JOIN Marcas AS T3 ON T2.MarcaId=T3.MarcaId
+		WHERE T1.Serie='$ImeiSim' ";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}
+
+	function getAnclas($Folio){
+			$query="SELECT Raiz FROM LineaTemporalOpc1  WHERE Folio='$Folio' AND Raiz='Ancla'";
+			$resultado=$this->Consulta($query);
+			$total=mysql_num_rows($resultado);
+			return $total;
+	}
+	function getPopotes($Folio){
+			$query2="SELECT Raiz FROM LineaTemporalOpc1  WHERE Folio='$Folio' AND Raiz='Popote'";
+			$resultado2=$this->Consulta($query2);
+			$total2=mysql_num_rows($resultado2);
+			return $total2;
+	}
+	function altaLineaOrgV2($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Dn, $PlazoId, $Movimiento, $Diferencial, $TipoPagoDiferencial, $SeguroId, $codigo_sim,$tipoVentaAux,$tipoVenta)
+	{	
+		if($tipoVentaAux==0){
+
+			if($codigo_sim==0){
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim',$PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVentaAux,'No Aplica',1)";
+			}else{
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim',$PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVentaAux,'No Aplica',2)";
+			}
+
+			if($codigo_sim!=0){
+				if($this->getMarca($codigo_sim)!='SIMCARD'){
+				return utf8_decode('<span class="alerta">¡Elija una Sim Valida!</span>');
+				}
+			}
+
+		}elseif($tipoVentaAux==1){
+			if($PlanId==365 || $PlanId==366){
+				$raiz="Popote";
+			}else{
+				$raiz="Ancla";
+			}
+			
+			$total=$this->getAnclas($Clave);
+			$total2=$this->getPopotes($Clave);
+
+			if($total==0 && $raiz=="Popote"){
+				return utf8_decode('<span class="alerta">"Ingresar linea ancla antes de una linea Popote"</span>');
+			}elseif($total==1 && ($raiz=='Ancla')){
+				return utf8_decode('<span class="alerta">"Ya existe la linea ancla"</span>');
+			}elseif ($total==0 && ($PlanId!=365 || $PlanId!=366)) {
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim', $PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVenta,'$raiz',3)";
+			}elseif($total==1 && ($PlanId==365 || $PlanId==366)){
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim', $PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVenta,'$raiz',3)";
+			}elseif($total2==9) {
+				return utf8_decode('<span class="alerta">"ha llegado al limite de lineas permitidas"</span>');
+			}	
+		}
+		
 
 
+
+		$this->StartTransaccion();
+		if($this->Consulta($Q0))
+		{
+		$LineaTemporalId=mysql_insert_id();
+		$Q1="INSERT IGNORE INTO Disponibles (Serie) VALUES('$Serie')";
+		$sim="INSERT IGNORE INTO Disponibles (Serie) VALUES('$codigo_sim')";
+
+		$Q2="INSERT IGNORE INTO AddonTemporal
+			 SELECT NULL, AddonId, $LineaTemporalId FROM Addon WHERE AddonId IN ($AddOn)";
+		if($this->Consulta($Q1) & $this->Consulta($sim) & $this->Consulta($Q2))
+			{
+				$this->AceptaTransaccion();
+				return 'ok';
+			}
+		}
+			$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡No fue posible realizar el registro!</span>');
+	}
+
+
+function altaLineaOrgV3($FechaSS, $Contrato)
+	{	
+		echo "string";
+			 return utf8_decode('<span class="alerta">¡Fecha : !</span>');
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	function eliminaLineaTemporal($Folio){
+		$query="SELECT Imei,ImeiSim FROM LineaTemporalOpc1 WHERE $Folio AND Aux=0";
+		$resultado=mysql_query("$query", $this->conexion) or die(mysql_error());
+
+		while($row=mysql_fetch_row($resultado))
+		{
+			$imei=$row[0];
+			$ImeiSim=$row[1];
+			$query2="DELETE FROM Disponibles WHERE Serie='$imei' OR Serie='$ImeiSim'";
+			if(!mysql_query("$query2",$this->conexion)){
+				echo "Error: ".$query2.mysql_error();
+			}
+
+		}
+		$query3="DELETE FROM LineaTemporalOpc1 WHERE Folio='$Folio'";
+		if(!mysql_query("$query3",$this->conexion)){
+				echo "Error: ".$query3.mysql_error();
+		}
+
+	}//Scroll
+	function totalLineasTemporales($Folio){
+		$query="SELECT Folio FROM LineaTemporalOpc1 WHERE Folio='$Folio'";
+		$resultado=$this->Consulta($query);
+		$total=mysql_num_rows($resultado);
+		return $total;
+	}
+	function totalLineasAncla($Folio){
+		$query="SELECT Folio FROM LineaTemporalOpc1 WHERE Folio='$Folio' AND Raiz='Ancla'";
+		$resultado=$this->Consulta($query);
+		$total=mysql_num_rows($resultado);
+		return $total;
+	}
+
+
+
+
+
+
+	function getDatosFolioTemporal($Folio){
+		$query="SELECT T1.Folio,T2.Plataforma,T3.TipoContratacion,CONCAT(T4.Nombre, ' ',T4.Paterno,' ',T4.Materno) AS Cliente, 
+		CONCAT(T6.Nombre, ' ',T6.Paterno,' ',T6.Materno) AS Empleado, T7.Puntoventa FROM HFolios AS T1 
+		LEFT JOIN Plataformas AS T2 ON T1.PlataformaId=T2.PlataformaId 
+		LEFT JOIN TiposContratacion AS T3 ON T1.TipoContratacionId=T3.TipoContratacionId
+		LEFT JOIN Clientes AS T4 ON T1.ClienteId=T4.ClienteId
+		LEFT JOIN HistorialPuestosEmpleados AS T5 ON T1.HistorialPuestoEmpleadoId=T5.HistorialPuestoEmpleadoId
+		LEFT JOIN Empleados AS T6 ON T5.EmpleadoId=T6.EmpleadoId
+		INNER JOIN PuntosVenta AS T7 ON T1.PuntoventaId=T7.PuntoVentaId
+		WHERE T1.Folio='$Folio' ";
+
+		return  $this->Consulta($query);
+	}
+
+	function finVenta($LineaTemporalId,$Folio,$Movimiento,$Imei,$ImeiSim,$PlanId,$TipoPlanId,$Addon,$Aux,$PlazoId,$Dn,$Diferencial,$TipoPagoDiferencial,$SeguroId,$TipoVenta,$Raiz,$Opc,$fecha,$Contrato,$Comentarios){
+				$Q0="INSERT INTO TLineas
+                   SELECT NULL, '$Movimiento', EquipoId, $PlanId, $TipoPlanId, $PlazoId, '', '', $Diferencial, $TipoPagoDiferencial, '', $SeguroId
+                   FROM Inventario WHERE Serie='$Imei' LIMIT 1";
+    
+       	$tam=count($Addon);
+       	$AddonAux='';
+       	for($i=0;$i<$tam;$i++){
+       		if(i==0){
+       			$AddonAux='AddonId='.$Addon[$i];
+       		}else{
+       			$AddonAux=$AddonAux." OR AddonId=".$Addon[$i];
+       		}
+       	}
+		$this->StartTransaccion();
+		if($this->Consulta($Q0))
+		{
+		$RegistroId=mysql_insert_id();
+		$Q1="INSERT IGNORE INTO TLineasAddon
+			 SELECT $RegistroId, AddonId FROM Addon WHERE $AddonAux";
+
+		$Q2="INSERT IGNORE INTO LineasAddon
+			 SELECT $RegistroId, AddonId,0 FROM Addon WHERE $AddonAux";
+
+		/*$Q2="INSERT IGNORE INTO TLineasServicios
+			 SELECT $RegistroId, ServicioAdicionalId FROM ServiciosAdicionales WHERE ServicioAdicionalId IN ($Servicios)";*/
+
+		$Q3="INSERT INTO LFolios
+			 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 12,
+			 CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, 'x', CURDATE(), '$Imei', '', $Dn, Diferencial, TipoPagoDiferencial, SeguroId
+			 FROM TLineas AS T1
+ 	   		 LEFT JOIN LineasAddon AS T2 ON T2.RegistroId=T1.RegistroId
+		     LEFT JOIN PreciosPlanes AS T3 ON T3.PlanId=T1.PlanId AND T3.AddOnId=IFNULL(T2.AddOnId,0)
+			 WHERE T1.Registroid=$RegistroId";
+		$Q4="UPDATE LineaTemporalOpc1 SET Aux=1 WHERE LineaTemporalId=$LineaTemporalId";
+		$fechaAux=$this->CambiarFormatoFecha($fecha);
+		$Q5="UPDATE LFolios
+			SET EstatusId=14,
+			FechaEstatus='$fechaAux',
+			Contrato='$Contrato',
+			Comentario='$Comentarios',
+			Dn='$Dn'
+			WHERE RegistroId=$RegistroId";
+
+		$Q6="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, '$fechaAux', '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.RegistroId=$RegistroId
+			LIMIT 1";
+
+		$Q7="UPDATE Inventario AS T1
+			INNER JOIN (
+		            SELECT T1.Serie, 0 AS Cantidad
+		            FROM LFolios AS T1
+		            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+		            WHERE T1.RegistroId=$RegistroId
+		            LIMIT 1
+		           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		if($this->Consulta($Q1) & $this->Consulta($Q2)  & $this->Consulta($Q3) & $this->Consulta($Q4)  & $this->Consulta($Q5)  & $this->Consulta($Q6)  & $this->Consulta($Q7) & $this->addBitacora(24, 5, $RegistroId, 'Cambio estatus', 14))
+			{
+				$this->AceptaTransaccion();
+				//if($codigo_sim!='0')
+				//	$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
+				//echo '<span class="notificacion">¡Venta Registrada satisfactoriamente!'.$RegistroId.'</span>';
+				return 1;
+			}else{
+				$this->CancelaTransaccion();
+				echo '<span class="alerta">¡Error al Registrar la Venta!</span>';
+				return 0;
+			}
+		}else{
+
+			$this->CancelaTransaccion();
+			echo '<span class="alerta">¡Error al Registrar la Venta!</span>';
+			return 0;
+		}
+		//return utf8_decode('<span class="alerta">¡No fue posible realizar el registro!</span>');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+	}
 }//fin clase
 ?>

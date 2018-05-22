@@ -14,10 +14,42 @@
 	$Herramientas= new Tools($_SESSION['UsuarioId']);
 	$HerramientasHtml= new ToolsHtml($_SESSION['UsuarioId']);	
 	
+	$Folio='';
+	$Movimiento='';
 
 	$Folio=$_POST['MiFolio'];	
 	$Movimiento=$_POST['Movimiento'];
+	if($Folio==''){
+		$Folio=$_GET['id1'];
+		$Movimiento=$_GET['id2'];
+	}
+
+	$queryTotal="SELECT Aux FROM LineaTemporalOpc1 WHERE Folio='$Folio' AND Aux=1";
+	$resultadoTotal=$Herramientas->Consulta($queryTotal);
+	$totalTemporal=mysql_num_rows($resultadoTotal);
+	if($totalTemporal>0){
+		echo "<script>alert('Ya se ha cerrado este folio');</script>";
+		echo "<script>window.close();</script>";  
+	}
+
+
+
+
+
+
+
 	$PlataformaId=$Herramientas->getPlataformaFolio($Folio);
+	$Herramientas->eliminaLineaTemporal($Folio);
+
+
+
+
+
+
+
+
+
+
 
 ?>
 
@@ -28,6 +60,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <link href="style/styleVentana.css" rel="stylesheet" type="text/css" />
 <link href="style/tabla.css" rel="stylesheet" type="text/css" />
+<link href="style/style.css" rel="stylesheet" type="text/css" />
 <link href="style/jquery-ui.css" rel="stylesheet" type="text/css" />
 
 <script type="text/javascript" src="js/jquery-1.8.1.js"></script>
@@ -42,29 +75,13 @@
 </head>
 </head>
 <body>
+<h4 class="migas"><span class="blue">1</span>Selecciona la familia del plan</h4>
+	<div align="center">
 	
-		<form id="foo" name="foo" method="post" >
-		<div id="TituloVentana">CambiaEstatus</div>
-		<input type="hidden" name="MiFolio" id="MiFolio" value="<?php echo $Folio; ?>" />
-		<input type="hidden" name="Movimiento" id="Movimiento" value="<?php echo $Movimiento; ?>" />
-		<input type="hidden" name="ModuloId" id="ModuloId" value="0" />		
-			<br>			
-			<div align="center" id="resultados"></div>
-			<div id="display" name="display">	
-
-			<?php				
-				$HerramientasHtml->drawaddEquipo($PlataformaId);
-			?>	
-
-			<HR width=98% align="center">
-			<?php				
-				$HerramientasHtml->drawTablaEstatusEquipos($Folio);
-			?>
-			<div id="dvData">
-			</div>
-			</div>
-		</form>
-		
+		<?php
+			$HerramientasHtml->displayFamiliasPlanes($Folio,$Movimiento,$PlataformaId);
+		?>
+	</div>	
 	
 
 </body>

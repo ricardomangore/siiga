@@ -369,6 +369,9 @@ function inicializarEventos()
   $("#CreaUsuario").click(CrearUsuario);
   $("#Reingresar").click(ReingresarPersonal);
   $("#Edit").live('click',editaColonia);
+  $("#FinVenta").click(FinVenta);
+
+
 
   $("#ActualizaFolio").live('click',ActualizaHFolios);
 
@@ -1481,12 +1484,16 @@ function ValidaDatos()
 
 				break;
 		case '22':
-
+       if($("#PlataformaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Plataforma");
+        return false
+        }
 
 
 				if($("#TipoContratacionId").attr("value")=="0")
 				{
-				alert("Debes elegir el tipo de conrtratacion");
+				alert("Debes elegir el tipo de contratacion");
 				return false
 				}
 
@@ -1674,9 +1681,15 @@ function ValidaDatos()
 
 		case '26':
 
+        if($("#PlataformaId").attr("value")=="0")
+        {
+        alert("Debes elegir la plataforma");
+        return false;
+        }
+
 				if($("#TipoContratacionId").attr("value")=="0")
 				{
-				alert("Debes elegir el tipo de conrtratacion");
+				alert("Debes elegir el tipo de contratacion");
 				return false;
 				}
 
@@ -3620,9 +3633,10 @@ function guardarVu()
 	v10=$("#Comentarios").attr("value");
 	v11=$("#Clave").attr("value");
   v12=$("#ContratacionId").attr("value");
+  v13=$("#PlataformaId").attr("value");
 
 	$.post("Acciones.php",{Folio:v1, FechaContrato:v2, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6,
-		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, ContratacionId:v12, modulo:22, opc:5},getAltaVu);
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, ContratacionId:v12,PlataformaId:v13, modulo:22, opc:5},getAltaVu);
 
 }
 
@@ -3636,9 +3650,10 @@ function guardarOrsInv()
 	v8=$("#TipoContratacionId").attr("value");
 	v9=$("#TipoPagoId").attr("value");
 	v10=$("#Comentarios").attr("value");
+  v11=$("#PlataformaId").attr("value");
 
 	$.post("Acciones.php",{Folio:v1, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6,
-		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, modulo:26, opc:5},getAltaVu);
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10,PlataformaId:v11, modulo:26, opc:5},getAltaVu);
 
 }
 
@@ -3719,8 +3734,8 @@ function addEquipos(Folio, Movimiento)
 	$("#MiFolio").val(Folio);
 	$("#Movimiento").val(Movimiento);
 
-	ancho=900;
-	alto=350;
+	ancho=1000;
+	alto=650;
 
 	AbrirVentana(ancho, alto, 'AgregarEquipos');
 	$("#foo").submit();
@@ -3905,11 +3920,44 @@ function calculaMontosAcc()
 
 function AgregaLineaOr()
 {
-	if($("#Equipo").attr("value")=="")
+  /*if($("#csequipoAux").attr("value")=="1"){
+    if (!$('input[name="csequipo"]').is(':checked')) {
+        alert('Linea Con equipo o sin equipo');
+        return false;
+    }
+
+
+  }*/
+
+if($("#csequipoAux").attr("value")=="1"){
+      if($("#csequipo").attr("value")=="0")
+    {
+     alert("Debes Elegir el tipo de venta");
+      return false
+    }
+}
+/*Validacion del tipo de venta*/
+
+
+
+	if(($("#Equipo").attr("value")=="") && ($("#csequipoAux").attr("value")==0))
 	{
 	alert("Debes ingresar el Equipo");
 	return false
 	}
+
+  if(($("#Equipo").attr("value")=="") && ($("#csequipoAux").attr("value")==1) && ($("#csequipo").attr("value")==1))
+  {
+  alert("Debes ingresar el Equipo");
+  return false
+  }
+
+  if(($("#DSim").attr("value")=="")){
+      alert("Debes ingresar el SIM");
+      return false
+  }
+
+
 
 	if($("#PlanId").attr("value")=="0")
 	{
@@ -3917,17 +3965,29 @@ function AgregaLineaOr()
 	return false
 	}
 
+  if($("#Dn").attr("value")=="")
+  {
+  alert("Debes ingresar el Dn");
+  return false
+  }
+
+  if($("#PlazoId").attr("value")=="0")
+  {
+  alert("Debes elegir el Plazo");
+  return false
+  }
+
   if($("#AddOnes").attr("value")=="")
   {
     alert("Debes elegir al menos un AddOn")
     return false
   }
 
-	if($("#PlazoId").attr("value")=="0")
-	{
-	alert("Debes elegir el Plazo");
-	return false
-	}
+  if($("#SeguroId").attr("value")=="0")
+  {
+    alert("Debes elegir un Seguro")
+    return false
+  }
 
 	if($("#Diferencial").attr("value")!="" & $("#Diferencial").attr("value")!="0")
 		if($("#TipoPagoId").attr("value")=="0")
@@ -3936,7 +3996,7 @@ function AgregaLineaOr()
 			return false;
 		}
 
-  if(($("#DSim").attr("value")=="") && ($("#PlanId").attr("value")!="81")  && ($("#PlanId").attr("value")!="282") 
+/*  if(($("#DSim").attr("value")=="") && ($("#PlanId").attr("value")!="81")  && ($("#PlanId").attr("value")!="282") 
      && ($("#PlanId").attr("value")!="283")  && ($("#PlanId").attr("value")!="284")  && ($("#PlanId").attr("value")!="285") 
       && ($("#PlanId").attr("value")!="286")  && ($("#PlanId").attr("value")!="287")  && ($("#PlanId").attr("value")!="288") 
        && ($("#PlanId").attr("value")!="314")  && ($("#PlanId").attr("value")!="315")  && ($("#PlanId").attr("value")!="328") 
@@ -3950,6 +4010,10 @@ function AgregaLineaOr()
   {
   alert("Debes ingresar el SIM");
   return false
+  }*/
+  if(($("#DSim").attr("value")=="") || ($("#codigo_sim").attr("value")=="")){
+      alert("Debes ingresar el SIM");
+      return false
   }
 
 
@@ -3958,7 +4022,7 @@ function AgregaLineaOr()
 	var v3=$("#PlanId").attr("value");
 	var v4=$("#TipoPlanId").attr("value");
 	var v5=$("#AddOnes").attr("value")+'0';
-	var v6=$("#OtrosServ").attr("value")+'0';
+	var v6=$("#Dn").attr("value");
 	var v7=$("#PlazoId").attr("value");
 	var v8=$("#Movimiento").attr("value");
 
@@ -3969,12 +4033,38 @@ function AgregaLineaOr()
 	var v12=$("#TipoPagoId").attr("value");
   var v13=$("#SeguroId").attr("value");
 
+
 	if(v11=='')
 		v11=0;
   var v14=$("#codigo_sim").attr("value");
+  var v15=$("#csequipoAux").attr("value");
+  var v16=$("#csequipo").attr("value");
+  if(v15=='1' && v16==2){
+    v1='0';
+  }
+	//$.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, modulo:24, opc:7},getResultadoOrg);
+  $.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, Dn:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, tipoVentaAux: v15, tipoVenta: v16,modulo:24, opc:9},getResultadoOrg);    
 
-	$.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, modulo:24, opc:7},getResultadoOrg);
 
+
+}
+function FinVenta(){
+  if($("#FechaSS").attr("value")=="")
+  {
+    alert("Ingresa la fecha de Activacion")
+    return false
+  }
+
+
+  if($("#Contrato").attr("value")=="")
+  {
+    alert("Ingresa el contrato")
+    return false
+  }
+  var v1=$("#FechaSS").attr("value");
+  var v2=$("#Contrato").attr("value");
+
+$.post("Acciones.php",{FechaSS:v1,Contrato:v2,modulo:24, opc:10},getResultadoOrg);
 
 }
 
