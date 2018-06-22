@@ -5311,7 +5311,7 @@ function displayDepositos()
 					<select name="TipoDepositoId" id="TipoDepositoId">
 							<option value="0">Elige</option>
 				';
-							 $this->Scroll('TiposDepositos','TipoDepositoId','TipoDeposito',0, 'TRUE', 'TipoDeposito');
+							 $this->Scroll('TiposDepositos','TipoDepositoId','TipoDeposito',0, 'TRUE AND Activo=1', 'TipoDeposito');
 				echo '
 					</select>
 			<br><br>
@@ -6541,6 +6541,212 @@ function drawTablaEstatusEquipos2V3($Folio)
 		</fieldset>
 		';
 
+	}
+	
+		function drawTablaFinVenta1($Folio)
+	{
+
+		$Fecha=$this->getFechaEstatus($Folio);
+		echo '<span><b>Fecha de Activacion: '.$Fecha.'</b></span>';
+		$Contrato=$this->getContrato($Folio);
+		echo '<br><span><b>No. Contrato: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$Contrato.'</b></span>';
+		$Comentarios=$this->getComentarios($Folio);
+	    echo '<br><span><b>Comentarios: </b></span><br>';
+	    echo '<textarea disabled>'.$Comentarios.'</textarea>';
+
+		$R0=$this->getLineasFin($Folio);
+
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Estatus</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		/*Addones*/
+
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[0]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+		/*Fin de Addones*/
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$A0[4].'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		<td>'.$A0[10].'</td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+function drawTablaFinVenta2($Folio)
+	{
+
+		$Fecha=$this->getFechaEstatus($Folio);
+		echo '<span><b>Fecha de Activacion: '.$Fecha.'</b></span>';
+		$Contrato=$this->getContrato($Folio);
+		echo '<br><span><b>No. Contrato: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$Contrato.'</b></span>';
+		$Comentarios=$this->getComentarios($Folio);
+	    echo '<br><span><b>Comentarios: </b></span><br>';
+	    echo '<textarea disabled>'.$Comentarios.'</textarea>';
+
+		$R0=$this->getLineasFin($Folio);
+
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Imei Sim</th>
+				<th bgcolor="#BFD5EA" >Sim Activacion</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Estatus</th>
+				
+
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+		/*Addones*/
+
+		$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[0]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+		$sim=$this->getModelo($A0[11]);
+		/*Fin de Addones*/
+		echo'<tr>
+		<td>'.$A0[1].'</td>
+		<td>'.$A0[2].'</td>
+		<td>'.$A0[3].'</td>
+		<td>'.$A0[11].'</td>
+		<td>'.$sim.'</td>
+		<td>'.$A0[4].'</td>
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		<td>'.$A0[10].'</td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
+	}
+
+	function drawTablaFinVenta3($Folio)
+	{
+		$Fecha=$this->getFechaEstatus($Folio);
+		echo '<span><b>Fecha de Activacion: '.$Fecha.'</b></span>';
+		$Contrato=$this->getContrato($Folio);
+		echo '<br><span><b>No. Contrato: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.$Contrato.'</b></span>';
+		$Comentarios=$this->getComentarios($Folio);
+	    echo '<br><span><b>Comentarios: </b></span><br>';
+	    echo '<textarea disabled>'.$Comentarios.'</textarea>';
+		$R0=$this->getLineasFin2($Folio);
+
+	echo '<input type="hidden" id="Modo" name="Modo" value="2"><br>
+		
+			<table id="myTable" cellpadding="0" cellspacing="0"  border="0" class="tablesorter">
+			<thead class="fixedHeader"><tr>
+				<th bgcolor="#BFD5EA" >Raiz</th>
+				<th bgcolor="#BFD5EA" >Tipo Venta</th>
+				<th bgcolor="#BFD5EA" >Plan</th>
+				<th bgcolor="#BFD5EA" >Imei</th>
+				<th bgcolor="#BFD5EA" >Equipo</th>
+				<th bgcolor="#BFD5EA" >Seguro</th>
+				<th bgcolor="#BFD5EA" >AddOn</th>
+				<th bgcolor="#BFD5EA" >Dn</th>
+				<th bgcolor="#BFD5EA" >Estatus</th>
+			</tr></thead>
+		<tbody class="scrollContent">
+		';
+		while($A0=mysql_fetch_row($R0))
+		{
+				if($A0[10]==1){
+					$tipoVenta="Con Equipo";
+					$serie=$A0[0];
+					$modelo=$this->getModelo($serie);
+				}elseif($A0[10]==2){
+					$tipoVenta="Sin Equipo";
+					$serie=$A0[3];
+					$modelo=$this->getModelo($serie);
+
+				}
+
+		/*inicio Addones*/
+				$query="SELECT Addon FROM AddonTemporal AS T1 INNER JOIN Addon AS T2 ON T1.AddonId=T2.AddonId WHERE T1.LineaTemporalId=$A0[2]";
+		$R1=$this->Consulta($query);
+		$addones="";
+		$i=0;
+		while($A1=mysql_fetch_row($R1)){
+			if($i==0){
+				$addones=$A1[0];
+			}else{
+				$addones=$addones." / "."$A1[0]";
+			}
+			$i++;
+		}
+
+
+		/*Fin de Addones*/
+
+
+		echo'<tr>
+		<td>'.$A0[11].'</td>
+		<td>'.$tipoVenta.'</td>
+		<td>'.$A0[1].'</td>
+		<td>'.$serie.'</td>
+		<td>'.$modelo.'</td>
+		<td>'.$A0[4].'</td>
+		<!--<td>'.$A0[5].'</td>-->
+		<td>'.$addones.'</td>
+		<td>'.$A0[6].'</td>
+		<td>'.$A0[12].'</td>
+		</tr>';
+		}
+		echo '
+		</tbody></table>
+		';
 	}
 }//Fin Clase
 ?>

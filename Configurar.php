@@ -24,8 +24,8 @@ if(isset($_POST['bkPV']))
 }
 if(isset($_POST['DbkPV']))
 {
-	if (isset($_POST['PuntoVentaId']))
-		$Herramientas->desbloquearPunto($_POST['PuntoVentaId']);
+	if (isset($_POST['PuntoVentaIdB']))
+		$Herramientas->desbloquearPunto($_POST['PuntoVentaIdB']);
 	if (isset($_POST['CanalVentaId']))
 			$Herramientas->DesbloquearCanal($_POST['CanalVentaId']);
 }
@@ -51,8 +51,8 @@ $Permisos=$Herramientas->getPermisosModulo($ModuloId);
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<head><meta http-equiv="Content-Type" content="text/html; charset=euc-jp">
+
 <?php $HerramientasHtml->getTituloWeb(); ?>
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <link href="style/tabla.css" rel="stylesheet" type="text/css" />

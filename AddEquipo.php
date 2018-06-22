@@ -16,20 +16,19 @@
 	
 	$Folio='';
 	$Movimiento='';
-
 	$Folio=$_POST['MiFolio'];	
 	$Movimiento=$_POST['Movimiento'];
 	if($Folio==''){
 		$Folio=$_GET['id1'];
 		$Movimiento=$_GET['id2'];
 	}
-
+	$borrar=0;
 	$queryTotal="SELECT Aux FROM LineaTemporalOpc1 WHERE Folio='$Folio' AND Aux=1";
 	$resultadoTotal=$Herramientas->Consulta($queryTotal);
 	$totalTemporal=mysql_num_rows($resultadoTotal);
 	if($totalTemporal>0){
-		echo "<script>alert('Ya se ha cerrado este folio');</script>";
-		echo "<script>window.close();</script>";  
+		header("Location: InfoVenta.php?id=$Folio");
+		$borrar=1;
 	}
 
 
@@ -37,10 +36,10 @@
 
 
 
-
-	$PlataformaId=$Herramientas->getPlataformaFolio($Folio);
-	$Herramientas->eliminaLineaTemporal($Folio);
-
+	if($borrar==0){
+		$PlataformaId=$Herramientas->getPlataformaFolio($Folio);
+		$Herramientas->eliminaLineaTemporal($Folio);
+	}	
 
 
 

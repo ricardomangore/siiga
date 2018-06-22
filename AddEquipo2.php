@@ -27,8 +27,7 @@
 	$resultadoTotal=$Herramientas->Consulta($queryTotal);
 	$totalTemporal=mysql_num_rows($resultadoTotal);
 	if($totalTemporal>0){
-		echo "<script>alert('Ya se ha cerrado este folio');</script>";
-		echo "<script>window.close();</script>";  
+		header("Location: InfoVenta.php?id=$Folio");
 	}
 
 
