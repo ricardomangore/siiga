@@ -42,13 +42,21 @@ class Security extends Conectar
 	list($UsuarioId, $EmpleadoId, $Empleado, $Bloqueo, $Activo) = mysql_fetch_row($R0);
 		if(isset($UsuarioId))
 		{
+			$Query="SELECT TipoBloqueoId,TipoBloqueoId2 FROM Usuarios WHERE UsuarioId=$UsuarioId";
+			$res=$this->Consulta($Query);
+			$row=mysql_fetch_array($res);
+			$TipoBloqueo1=$row[0];
+			$TipoBloqueo2=$row[1];
+
+
+
 			if($Activo=='0')
 			{
 			$this->Mensaje='Usuario inactivo';
 			return false;
 			}
 
-			if($Bloqueo=='0')
+			if($Bloqueo=='0' && $TipoBloqueo1==0 && $TipoBloqueo2==0)
 			{
 			session_start();
 			$_SESSION['UsuarioId']=$UsuarioId;
@@ -61,10 +69,23 @@ class Security extends Conectar
 
 			return true;
 			}
-			else
+			elseif($TipoBloqueo1!=0 || $TipoBloqueo2!=0)
 			{
-				$this->Mensaje=$Bloqueo;
-				return false;
+				if($TipoBloqueo1==1 && $TipoBloqueo2==1){
+					$this->Mensaje="El Usuario Presenta Bloqueo de Tesoreria E Inventarios";
+					return false;
+				}elseif($TipoBloqueo1==1 && $TipoBloqueo2==0){
+					$this->Mensaje="Bloqueo Falta Inventario Semanal";
+					return false;
+				}elseif($TipoBloqueo1==0 && $TipoBloqueo2==1){
+					$this->Mensaje="Bloqueo Por Tesoreria";
+					return false;
+				}else{
+					$this->Mensaje=$Bloqueo;
+					return false;
+				}
+
+				
 			}
 		}
 		$this->Mensaje='Usuario y/o contraseña no validos';

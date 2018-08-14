@@ -4,7 +4,7 @@ header("Content-type: application/vnd.ms-excel");
 header("Content-Disposition: attachment; filename=reporteCortes.xls");
 header("Pragma: no-cache");
 header("Expires: 0");
-
+$fechaAux=date("Y-m-d");
 
 //obtenemos el archivo .csv
 $tipo = $_FILES['archivo']['type'];
@@ -27,6 +27,7 @@ $lineas = file($archivotmp);
  			<td style="background: #000000;  color: #FFFFFF;">Monto Cobrado Real</td>
  			<td style="background: #000000;  color: #FFFFFF;">Ficha Deposito</td>
  			<td style="background: #000000;  color: #FFFFFF;">Estatus</td>
+ 		    <td style="background: #000000;  color: #FFFFFF;">Estatus Referencia</td>
  		</tr>';
 foreach ($lineas as $linea_num => $linea)
 { 
@@ -45,7 +46,10 @@ foreach ($lineas as $linea_num => $linea)
 	   $fecha=trim($datos[1]);
 	   $importe=trim($datos[2]);
 	   $referencia=trim($datos[3]);
-	   $query="SELECT Monto, Ficha FROM Depositos WHERE Deposito='$referencia' AND TipoDepositoId=9";
+	   //$query="SELECT Monto, Ficha FROM Depositos WHERE (Deposito='$referencia' OR ) AND TipoDepositoId=9";
+	   
+	   $query="SELECT T1.PuntoVentaId, Monto, Ficha,Deposito FROM Depositos AS T1 INNER JOIN PuntosATT AS T2 ON T1.PuntoVentaId=T2.PuntoVentaId
+ WHERE TipoDepositoId=9 AND Fecha='$fechaAux' AND (PuntosDepositos LIKE '%$tienda%' OR Deposito='$referencia')";
 	   if($res=mysql_query($query)){
 	   		if(mysql_num_rows($res)>0){
 	   			$row=mysql_fetch_array($res);
@@ -53,7 +57,12 @@ foreach ($lineas as $linea_num => $linea)
 	   				$estatus='Coincide';
 	   			}else{
 	   				$estatus='No Coincide';
-	   			}	
+	   			}
+	   			if($referencia==$row[Deposito]){
+	   			    	$estatusR='Coincide';
+	   			}else{
+	   			    	$estatusR='No Coincide Referencia';
+	   			}
 	   			echo '
 	   				<tr>
 			 			<td>'.$fecha.'</td>
@@ -63,6 +72,7 @@ foreach ($lineas as $linea_num => $linea)
  						<td>$ '.number_format($importe,2,'.',',').'</td>
  						<td><a href="http://www.solucell.com.mx/siiga/'.$row["Ficha"].'">Ver Ficha</a></td>
  						<td>'.$estatus.'</td>
+ 						<td>'.$estatusR.'</td>
  					</tr>';
 	   		}
 	   }
@@ -82,11 +92,11 @@ foreach ($lineas as $linea_num => $linea)
 
 
 //funcion para ver puntos que no subieron corte
-$Q0="SELECT PV.PuntoVentaId, PV.PuntoVenta FROM PuntosVenta AS PV  WHERE PV.Activo=1 AND PV.TipoPuntoId!=3 AND PV.PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,534) ORDER BY PuntoVenta";
+$Q0="SELECT PV.PuntoVentaId, PV.PuntoVenta FROM PuntosVenta AS PV  WHERE PV.Activo=1 AND PV.TipoPuntoId!=3 AND PV.PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,545,549,534) ORDER BY PuntoVenta";
 
 if($res2=mysql_query($Q0)){
 	while ($row2=mysql_fetch_array($res2)) {
-		$Q2="SELECT PuntoVentaId FROM Depositos WHERE TipoDepositoId=9 AND PuntoVentaId=$row2[0] AND Fecha='$fecha'";
+		$Q2="SELECT PuntoVentaId FROM Depositos WHERE TipoDepositoId=9 AND PuntoVentaId=$row2[0] AND Fecha='$fechaAux'";
 		if($res3=mysql_query($Q2)){
 			if(mysql_num_rows($res3)==0){
 				echo '
@@ -98,6 +108,7 @@ if($res2=mysql_query($Q0)){
  						<td>0</td>
  						<td>No Disponible</td>
  						<td>No realizo Deposito</td>
+ 							<td>No Existe Referencia</td>
  					</tr>';
 			}
 		}

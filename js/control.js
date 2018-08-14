@@ -2170,6 +2170,18 @@ function ValidaDatos()
         return false
         }
 
+
+        if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+
         if($("#MontoRecargaId").attr("value")=="0")
         {
         alert("Debes elegir el monto de la recarga");
@@ -2431,6 +2443,17 @@ function ValidaDatos()
         return false
         }
 
+       if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+
         if($("#MontoRecargaId").attr("value")=="0")
         {
         alert("Debes elegir el monto de la recarga");
@@ -2477,6 +2500,17 @@ function ValidaDatos()
         alert("Debes Ingresar el numero telefonico");
         return false
         }
+
+
+           if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
 
         if($("#MontoRecargaId").attr("value")=="0")
         {
@@ -2529,6 +2563,15 @@ function ValidaDatos()
         alert("Debes Ingresar el numero telefonico");
         return false
         }
+               if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
 
         if($("#MontoRecargaId").attr("value")=="0")
         {

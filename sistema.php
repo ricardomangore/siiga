@@ -14,10 +14,12 @@
 	$HerramientasHtml= new ToolsHtml($_SESSION['UsuarioId']);
 
 	if((date('w')!=0) && (date('w'))!=6){
-		if((date("H:i:s")>="23:00:00") && (date("H:i:s")<="23:01:00")){
+		if((date("H:i:s")>="23:59:00") && (date("H:i:s")<="23:59:59")){
 			$Herramientas->bloqueoFaltaCorte();
-		}elseif((date("H:i:s")>="13:00:00") && (date("H:i:s")<="13:01:00")){
+			$Herramientas->addBitacora(61, 4, 0, 'Bloqueo Tesoreria Automatico del sistema cortes','Bloqueo');
+		}elseif((date("H:i:s")>="13:00:00") && (date("H:i:s")<="13:00:59")){
 			$Herramientas->bloqueoFaltaDeposito();
+			$Herramientas->addBitacora(61, 4, 0, 'Bloqueo Tesoreria Automatico del sistema depositos','Bloqueo');
 		}
 	}
 ?>
