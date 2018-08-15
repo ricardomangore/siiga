@@ -19,7 +19,6 @@ class LayoutDAO extends Conectar{
 		$sqlStr = 'SELECT * FROM tw_layout';
 		$object = NULL; 
 		$Layouts=mysql_query("$sqlStr", $this->conexion);
-		//$object = $Layouts;
 		if(mysql_num_rows($Layouts)!=0){
 			
 			while($fila =mysql_fetch_array($Layouts)){
@@ -36,6 +35,7 @@ class LayoutDAO extends Conectar{
 		return $object;
 	}
 
+
 	/**
 	 * method: saveLayout()
 	 * description: Save a layout record in the tw_layout table in Data Base
@@ -43,7 +43,7 @@ class LayoutDAO extends Conectar{
 	 * return <Boolean>
 	 */
 	public function saveLayout($layout){
-		$returnValue = FALSE;
+		$returnValue = NULL;
 		if(isset($layout) && is_a($layout,'Layout'))
 			if($layout->isEmpty()){
 				$idUsuario = $layout->getIdUsuario();
@@ -51,7 +51,6 @@ class LayoutDAO extends Conectar{
 				$hora = $layout->getHora();
 				$idTipoLayout = $layout->getIdTipoLayout();
 				$sqlStr = "INSERT INTO tw_layout (id_usuario,fecha,hora,id_tipo_layout) VALUES ($idUsuario,'" . $fecha . "', '" . $hora . "' ,$idTipoLayout)";
-				//var_dump($sqlStr);
 				$isInsert = mysql_query("$sqlStr", $this->conexion);
 			
 				$returnValue = $isInsert;
@@ -94,16 +93,32 @@ class LayoutDAO extends Conectar{
 	}
 
 
+	/**
+	 * method: updateLayout()
+	 * description: Update a record in the tw_layout table in Data Base
+	 * params: <Objet> Layout 
+	 * return <Boolean> 
+	 */
 	public function updateLayout($layout){
 		$returnValue = FALSE;
 		if(isset($layout) && is_a($layout,'Layout')){
 			if($layout->isEmpty()){
+				$idLayout = $layout->getIdLayout();
 				$idUsuario = $layout->getIdUsuario();
 				$fecha = $layout->getFecha();
 				$hora = $layout->getHora();
 				$idTipoLayout = $layout->getIdTipoLayout();
-				$sqlStr = "UPDATE FROM tw_layout set id_usuario=";
+				$sqlStr = "UPDATE tw_layout SET id_usuario=$idUsuario,fecha='" . $fecha . "',hora='" . $hora . "',id_tipo_layout=$idTipoLayout WHERE id_layout=$idLayout";
+				$isUpdate = mysql_query("$sqlStr", $this->conexion);
+				$returnValue = $isUpdate;
+				if(!$returnValue){
+					throw new Exception("No se pudo actualizar");
+				}
+			}else{
+				throw new Exception("El objeto esta vacio");
 			}
+		}else{
+			return $returnValue;
 		}
 	}
 	
