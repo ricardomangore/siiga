@@ -4,37 +4,107 @@ include_once "/../../includes/Conectar.php";
 include_once "/../pojos/Layout.php";
 
 class LayoutDAO extends Conectar{
-	
-	/*public function list(){
-		$layout = new Layout();
-		$sqlStr = 'SELECT * FROM tw_layout';
-		$Query=mysql_query("$sqlStr", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
-		return $Query;
-		return "hello";
-	}*/
 
-	public function layoutList(){$layout = new Layout();
+	protected $table_name = 'tw_layout';
+
+	/**
+	 * method: getLayoutList()
+	 * description: Return a Layout Objects List
+	 * params: 
+	 * return <Array> List
+	 */
+	public function getLayoutList(){
+		$layout = new Layout();
 		$array_layout = array();
 		$sqlStr = 'SELECT * FROM tw_layout';
 		$object = NULL; 
-		$Layouts=mysql_query("$sqlStr", $this->conexion);// or die("Error al Consultar: $sql ".mysql_error());
+		$Layouts=mysql_query("$sqlStr", $this->conexion);
 		//$object = $Layouts;
 		if(mysql_num_rows($Layouts)!=0){
-			$layoutObj = new Layout();
+			
 			while($fila =mysql_fetch_array($Layouts)){
+				$layoutObj = new Layout();
 				$layoutObj->setIdLayout($fila[0]);
 				$layoutObj->setIdUsuario($fila[1]);
 				$layoutObj->setFecha($fila[2]);
 				$layoutObj->setHora($fila[3]);
 				$layoutObj->setIdTipoLayout($fila[4]);
+				array_push($array_layout, $layoutObj);
 			}
-			$object = $layoutObj;
+			$object = $array_layout;
 		}
-		
-		/*while(mysql_fetch_array($Layouts)){
-			array_push($array_layout, $layout);
-		}*/
 		return $object;
+	}
+
+	/**
+	 * method: saveLayout()
+	 * description: Save a layout record in the tw_layout table in Data Base
+	 * params: <Object> Layout
+	 * return <Boolean>
+	 */
+	public function saveLayout($layout){
+		$returnValue = FALSE;
+		if(isset($layout) && is_a($layout,'Layout'))
+			if($layout->isEmpty()){
+				$idUsuario = $layout->getIdUsuario();
+				$fecha = $layout->getFecha();
+				$hora = $layout->getHora();
+				$idTipoLayout = $layout->getIdTipoLayout();
+				$sqlStr = "INSERT INTO tw_layout (id_usuario,fecha,hora,id_tipo_layout) VALUES ($idUsuario,'" . $fecha . "', '" . $hora . "' ,$idTipoLayout)";
+				//var_dump($sqlStr);
+				$isInsert = mysql_query("$sqlStr", $this->conexion);
+			
+				$returnValue = $isInsert;
+				if(!$returnValue){
+					throw new Exception('no se pudo insertar');
+				}
+			}else{
+				throw new Exception('El Objecto esta vacio');
+			}
+		else
+			return $returnValue;
+	}
+
+
+	/**
+	 * method: findLayout()
+	 * description: Find a layout in the tw_layout table in Data Base
+	 * params: <int> 
+	 * return <Objet> Layout
+	 */
+	public function findLayout($idLayout){
+		$returnValue = NULL;
+		if(isset($idLayout)){
+			$sqlStr = "SELECT * FROM tw_layout WHERE id_layout=" . $idLayout;
+			$isSelect = mysql_query("$sqlStr",$this->conexion);
+			if(mysql_num_rows($isSelect)!=0){
+				$layout = mysql_fetch_array($isSelect);
+				$layoutObj = new Layout();
+				$layoutObj->setIdLayout($layout[0]);
+				$layoutObj->setIdUsuario($layout[1]);
+				$layoutObj->setFecha($layout[2]);
+				$layoutObj->setHora($layout[3]);
+				$layoutObj->setIdTipoLayout($layout[4]);
+				$returnValue = $layoutObj;
+			}
+		}else{
+			throw new Exception("El id del layout esta vacio");
+		}
+		return $returnValue;
+	}
+
+
+	public function updateLayout($layout){
+		$returnValue = FALSE;
+		if(isset($layout) && is_a($layout,'Layout')){
+			if($layout->isEmpty()){
+				$idUsuario = $layout->getIdUsuario();
+				$fecha = $layout->getFecha();
+				$hora = $layout->getHora();
+				$idTipoLayout = $layout->getIdTipoLayout();
+				$sqlStr = "UPDATE FROM tw_layout set id_usuario=";
+			}
+		}
 	}
 	
 

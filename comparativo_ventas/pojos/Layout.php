@@ -25,7 +25,7 @@ class Layout{
 	}
 
 	public function setIdUsuario($id_usuario){
-		$this->id_layout = $id_usuario;
+		$this->id_usuario = $id_usuario;
 	}
 
 	public function getFecha(){
@@ -33,7 +33,7 @@ class Layout{
 	}
 
 	public function setFecha($fecha){
-		$this->id_layout = $fecha;
+		$this->fecha = $fecha;
 	}	
 
 	public function getHora(){
@@ -41,7 +41,7 @@ class Layout{
 	}
 
 	public function setHora($hora){
-		$this->id_layout = $hora;
+		$this->hora = $hora;
 	}
 
 	public function getIdTipoLayout(){
@@ -49,8 +49,21 @@ class Layout{
 	}
 
 	public function setIdTipoLayout($id_tipo_layout){
-		$this->id_layout = $id_tipo_layout;
+		$this->id_tipo_layout = $id_tipo_layout;
 	}
+
+	public function isEmpty(){
+		$returnValue = FALSE;
+		$idUsuario  = $this->getIdUsuario();
+		$fecha = $this->getFecha();
+		$hora = $this->getHora();
+		$idTipoLayout = $this->getIdTipoLayout();
+		if(isset($idUsuario) && isset($fecha) && isset($hora) && isset($idTipoLayout))
+			$returnValue = TRUE;
+
+		return $returnValue;
+	}
+
 }
 
 ?>
