@@ -5,7 +5,7 @@ class Connect{
 	private $link;
 
 	public function __construct () {
-		$this->link =  new mysqli("solucell.com.mx", "solucell_tester", "1nt3rm3zz0$", "solucell_siigatest");
+		$this->link =  new mysqli("SERVER", "USER", "PASSWORD", "DB_NAME");
 		if (mysqli_connect_errno()) {
 			throw new Exception('Error de conexión a base de datos: ' . mysqli_connect_error() );
 		}

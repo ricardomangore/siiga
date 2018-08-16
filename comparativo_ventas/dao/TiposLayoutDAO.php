@@ -1,6 +1,7 @@
 <?php
 
-require_once ('/../includes/Connect.php');
+require_once('/../includes/Connect.php');
+require_once('/../pojos/TiposLayout.php');
 
 class TiposLayoutDAO extends Connect{
 
@@ -13,7 +14,6 @@ class TiposLayoutDAO extends Connect{
 			if($prepare = $this->getLink()->prepare($sqlStr)){
 				$prepare->bind_param("ss", $tipo_layout,$activo);
 				$prepare->execute();
-				
 				$tipoLayout->setIdTipoLayout($this->getLink()->insert_id);
 				$prepare->close();
 			}
