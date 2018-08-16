@@ -146,12 +146,12 @@ class PostPago
 
 	public function getNoContatoImpreso()
 	{
-	    return $this->no_contato_impreso;
+	    return $this->no_contrato_impreso;
 	}
 	
-	public function setNoContatoImpreso($no_contato_impreso)
+	public function setNoContatoImpreso($no_contrato_impreso)
 	{
-	    $this->no_contato_impreso = $no_contato_impreso;
+	    $this->no_contrato_impreso = $no_contrato_impreso;
 	}
 
 	public function getIdOrdenContratacion()
@@ -164,14 +164,14 @@ class PostPago
 	    $this->id_orden_contratacion = $id_orden_contratacion;
 	}
 
-	public function getFechaContatacion()
+	public function getFechaContratacion()
 	{
-	    return $this->fecha_contatacion;
+	    return $this->fecha_contratacion;
 	}
 	
-	public function setFechaContatacion($fecha_contatacion)
+	public function setFechaContratacion($fecha_contratacion)
 	{
-	    $this->fecha_contatacion = $fecha_contatacion;
+	    $this->fecha_contratacion = $fecha_contratacion;
 	}
 
 	public function getPriceGroup()
@@ -544,14 +544,14 @@ class PostPago
 	    $this->nir = $nir;
 	}
 
-	public function getMdnIncial()
+	public function getMdnInicial()
 	{
-	    return $this->mdn_incial;
+	    return $this->mdn_inicial;
 	}
 	
-	public function setMdnIncial($mdn_incial)
+	public function setMdnInicial($mdn_inicial)
 	{
-	    $this->mdn_incial = $mdn_incial;
+	    $this->mdn_inicial = $mdn_inicial;
 	}
 
 	public function getPropiedad()

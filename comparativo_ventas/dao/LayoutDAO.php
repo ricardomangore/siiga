@@ -69,7 +69,7 @@ class LayoutDAO extends Conectar{
 	 * method: findLayout()
 	 * description: Find a layout in the tw_layout table in Data Base
 	 * params: <int> 
-	 * return <Objet> Layout
+	 * return <Object> Layout
 	 */
 	public function findLayout($idLayout){
 		$returnValue = NULL;
