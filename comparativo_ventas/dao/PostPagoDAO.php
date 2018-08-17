@@ -306,14 +306,130 @@ class PostPagoDao extends Connect{
 	}
 
 
+
+	/**
+	 * method: findAllPostPagoDAO()
+	 * description: Search all records in tw_postpago table
+	 * params: <>
+	 * return array<Object> PostPago
+	 */
 	public function findAllPostPagoDAO(){
 		$returnValue = NULL;
 		$arraypostPago = array();
 		$sqlStr = "SELECT * FROM tw_postpago";
-		$prepare = $this->getLink()->query($sqlStr))
-		if(mysql_num_rows($Layouts)!=0)
-
-		
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$postPagoObj = new PostPago();
+				$postPagoObj->setIdRegistro($fila[0]);
+				$postPagoObj->setIDLayout($fila[1]);
+				$postPagoObj->setFolio($fila[2]);
+				$postPagoObj->setNoContatoImpreso($fila[3]);
+				$postPagoObj->setIdOrdenContratacion($fila[4]);
+				$postPagoObj->setFechaContratacion($fila[5]);
+				$postPagoObj->setPriceGroup($fila[6]);
+				$postPagoObj->setCuentaCliente($fila[7]);
+				$postPagoObj->setNombreCliente($fila[8]);
+				$postPagoObj->setTipoPersona($fila[9]);
+				$postPagoObj->setSubtipoPersona($fila[10]);
+				$postPagoObj->setTipoVenta($fila[11]);
+				$postPagoObj->setStatusOrden($fila[12]);
+				$postPagoObj->setFechaStatusOrden($fila[13]);
+				$postPagoObj->setEmpresa($fila[14]);
+				$postPagoObj->setCveUnicaPdv($fila[15]);
+				$postPagoObj->setNombrePdvUnico($fila[16]);
+				$postPagoObj->setPdvEstatus($fila[17]);
+				$postPagoObj->setMasterPdv($fila[18]);
+				$postPagoObj->setKam($fila[19]);
+				$postPagoObj->setCveUnicaEjecutivo($fila[20]);
+				$postPagoObj->setNombreEjecutivoUnico($fila[21]);
+				$postPagoObj->setAttuidNivel2($fila[22]);
+				$postPagoObj->setNumNivel2($fila[23]);
+				$postPagoObj->setNombreNivel2($fila[24]);
+				$postPagoObj->setAttuidNivel3($fila[25]);
+				$postPagoObj->setNumNivel3($fila[26]);
+				$postPagoObj->setNombreNivel3($fila[27]);
+				$postPagoObj->setAttuidNivel4($fila[28]);
+				$postPagoObj->setNumNivel4($fila[29]);
+				$postPagoObj->setNombreNivel4($fila[30]);
+				$postPagoObj->setAttuidNivel5($fila[31]);
+				$postPagoObj->setNumNivel5($fila[32]);
+				$postPagoObj->setNombreNivel5($fila[33]);
+				$postPagoObj->setAttuidNivel6($fila[34]);
+				$postPagoObj->setNumNIvel6($fila[35]);
+				$postPagoObj->setNombreNivel6($fila[36]);
+				$postPagoObj->setAttuidNivel7($fila[37]);
+				$postPagoObj->setNumNivel7($fila[38]);
+				$postPagoObj->setNombreNivel7($fila[39]);
+				$postPagoObj->setVentas($fila[40]);
+				$postPagoObj->setIdContrato($fila[41]);
+				$postPagoObj->setNir($fila[42]);
+				$postPagoObj->setMdnInicial($fila[43]);
+				$postPagoObj->setPropiedad($fila[44]);
+				$postPagoObj->setFechaActivacion($fila[45]);
+				$postPagoObj->setMes($fila[46]);
+				$postPagoObj->setSemanaConsejo($fila[47]);
+				$postPagoObj->setMdnActual($fila[48]);
+				$postPagoObj->setFechaMdnActual($fila[49]);
+				$postPagoObj->setSim($fila[50]);
+				$postPagoObj->setImei($fila[51]);
+				$postPagoObj->setSku($fila[52]);
+				$postPagoObj->setModeloEquipo($fila[53]);
+				$postPagoObj->setMarcaEquipo($fila[54]);
+				$postPagoObj->setColorEquipo($fila[55]);
+				$postPagoObj->setCapacidadEquipo($fila[56]);
+				$postPagoObj->setModalidad($fila[57]);
+				$postPagoObj->setTecnologia($fila[58]);
+				$postPagoObj->setPlanTarifarioHomo($fila[59]);
+				$postPagoObj->setPlanTarifarioHomo2($fila[60]);
+				$postPagoObj->setPlazoForzoso($fila[61]);
+				$postPagoObj->setFamilia($fila[62]);
+				$postPagoObj->setMarcaPlan($fila[63]);
+				$postPagoObj->setRenta($fila[64]);
+				$postPagoObj->setNvaRenta($fila[65]);
+				$postPagoObj->setAccessfeeMens($fila[66]);
+				$postPagoObj->setNvaRentaSem($fila[67]);
+				$postPagoObj->setAccessfeeSeml($fila[68]);
+				$postPagoObj->setRegion($fila[69]);
+				$postPagoObj->setSubregion($fila[70]);
+				$postPagoObj->setEstado($fila[71]);
+				$postPagoObj->setCiudadComercial($fila[72]);
+				$postPagoObj->setCveMercado($fila[73]);
+				$postPagoObj->setMercado($fila[74]);
+				$postPagoObj->setVp($fila[75]);
+				$postPagoObj->setDireccionVta($fila[76]);
+				$postPagoObj->setAgrupacionCanal($fila[77]);
+				$postPagoObj->setCanalVta($fila[78]);
+				$postPagoObj->setSemanaRecarga($fila[79]);
+				$postPagoObj->setFechaPrimerAbono($fila[80]);
+				$postPagoObj->setMontoPrimerAbono($fila[81]);
+				$postPagoObj->setFechaSegundoAbono($fila[82]);
+				$postPagoObj->setMontoSegundoAbono($fila[83]);
+				$postPagoObj->setMdnDefinitivo($fila[84]);
+				$postPagoObj->setFechaPortIn($fila[85]);
+				$postPagoObj->setDonadorIn($fila[86]);
+				$postPagoObj->setReceptorIn($fila[87]);
+				$postPagoObj->setFechaPortOut($fila[88]);
+				$postPagoObj->setDonadorOut($fila[89]);
+				$postPagoObj->setReceptorOut($fila[90]);
+				$postPagoObj->setConcesionado($fila[91]);
+				$postPagoObj->setEsControl($fila[92]);
+				$postPagoObj->setEsTNext($fila[93]);
+				$postPagoObj->setEsVolte($fila[94]);
+				$postPagoObj->setCveEjecutivoCodifica($fila[95]);
+				$postPagoObj->setEjecutivoCodifica($fila[96]);
+				$postPagoObj->setCvePdvCodifica($fila[97]);
+				$postPagoObj->setPdvCodifica($fila[98]);
+				$postPagoObj->setFechaCodifica($fila[99]);
+				$postPagoObj->setFolioCodifica($fila[100]);
+				$postPagoObj->setAttuidCodifica($fila[101]);
+				$postPagoObj->setFechaMovimiento($fila[102]);
+				$postPagoObj->setDia($fila[103]);
+				$postPagoObj->setVpgm($fila[104]);
+				array_push($arraypostPago, $postPagoObj);
+			}
+			$returnValue = $arraypostPago;
+		}
 		mysqli_close($this->getLink());
 		return $returnValue;
 	}
