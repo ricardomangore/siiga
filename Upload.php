@@ -2,6 +2,8 @@
 	include("includes/Conectar.php");
 	include("includes/Security.php");
 	include("includes/Tools.php");
+	require_once ("comparativo_ventas/controllers/PostPagoController.php");/*<<--*/
+	require_once ("comparativo_ventas/includes/Validator.php");
 
 	$Seguridad=new Security();
 	if(!$Seguridad->SesionExiste())
@@ -10,6 +12,14 @@
 	$Herramientas= new Tools($_SESSION['UsuarioId']);
 
 $Opc=$_REQUEST['Opc'];
+
+/*Opcion para realizar exclusivamente el comparativo ventas*/
+
+$datoId = $_REQUEST['DatoId'];
+if($datoId == 5)
+	$Opc='8';
+
+/***********************************************************/
 
 switch ($Opc) {
 	case '1':
@@ -119,6 +129,36 @@ switch ($Opc) {
 				echo $Herramientas->guardaRecarga($_REQUEST['Folio'], $_REQUEST['CompaniaId'], $_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario'], $_REQUEST['Serie'], $_REQUEST['CompaniaPId'], $_REQUEST['NTelP'], $_REQUEST['Nombre'], $_REQUEST['Paterno'], $_REQUEST['Materno'],$_REQUEST['TelContacto'],$_REQUEST['MailContacto'],$archivador1, $_REQUEST['Nip']);
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
 				//}
+		break;
+	case '8': 
+		//Caso solo para PostPago
+		//require_once (comparativo_ventas/controllers/PostPagoController.php)
+				$Clave=$_REQUEST['Clave'];
+				$DatoId=$_REQUEST['DatoId'];
+				$return = Array('ok'=>TRUE);
+				$upload_folder ='FilesTmp/PostPago';
+				$nombre_archivo = $Clave;
+				$tipo_archivo = $_FILES['archivo']['type'];
+				$tamano_archivo = $_FILES['archivo']['size'];
+				$tmp_archivo = $_FILES['archivo']['tmp_name'];
+				$archivador = $upload_folder . '/' . $nombre_archivo;	
+				$validator = new Validator();
+				//var_dump($tmp_archivo);
+				echo __DIR__ . 'FilesTmp/PostPago'. $Clave;
+				if (!move_uploaded_file($tmp_archivo, $archivador))
+				{
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				}else{
+					echo $validator->headerPostPagoValidator("FilesTmp/PostPago/". $Clave);
+				}
+				/*else{
+					$herramientasPostpago = new PostpagoController();
+					echo $herramientasPostpago->pruebas($_SESSION['UsuarioId']);
+					Aqui ejecusion de metodos del comparativo
+					Se puede devolver solo un echo con mensaje de exito
+				}*/
+		break;
+	case '9':
 		break;
 	}
 ?>
