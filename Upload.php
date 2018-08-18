@@ -142,14 +142,15 @@ switch ($Opc) {
 				$tamano_archivo = $_FILES['archivo']['size'];
 				$tmp_archivo = $_FILES['archivo']['tmp_name'];
 				$archivador = $upload_folder . '/' . $nombre_archivo;	
-				$validator = new Validator();
+				//$validator = new Validator();
 				//var_dump($tmp_archivo);
+				$postagoController = new PostpagoController();
 				echo __DIR__ . 'FilesTmp/PostPago'. $Clave;
 				if (!move_uploaded_file($tmp_archivo, $archivador))
 				{
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
 				}else{
-					echo $validator->headerPostPagoValidator("FilesTmp/PostPago/". $Clave);
+					echo $postagoController->validateHeaders("FilesTmp/PostPago/". $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tamano_archivo);
 				}
 				/*else{
 					$herramientasPostpago = new PostpagoController();

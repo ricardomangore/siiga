@@ -53,10 +53,15 @@ class LayoutDAO extends Conectar{
 				$sqlStr = "INSERT INTO tw_layout (id_usuario,fecha,hora,id_tipo_layout) VALUES ($idUsuario,'" . $fecha . "', '" . $hora . "' ,$idTipoLayout)";
 				$isInsert = mysql_query("$sqlStr", $this->conexion);
 			
-				$returnValue = $isInsert;
-				if(!$returnValue){
+				if(!$isInsert){
+					$returnValue = $isInsert;
 					throw new Exception('no se pudo insertar');
+				}else{
+					$idLayout = mysql_insert_id();
+					$layout->setIdLayout($idLayout);
+					$returnValue = $layout;
 				}
+				return $returnValue;
 			}else{
 				throw new Exception('El Objecto esta vacio');
 			}
