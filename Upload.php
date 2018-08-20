@@ -150,7 +150,7 @@ switch ($Opc) {
 				{
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
 				}else{
-					echo $postagoController->validateHeaders("FilesTmp/PostPago/". $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tamano_archivo);
+					echo $postagoController->processPostPago("FilesTmp/PostPago/". $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tamano_archivo);
 				}
 				/*else{
 					$herramientasPostpago = new PostpagoController();

@@ -11,14 +11,16 @@ class PostpagoController
 	}
 
 
-	public function validateHeaders($fileName, $userID, $datoID, $uploadFolder, $archiveType, $archiveSize){
+	public function processPostPago($fileName, $userID, $datoID, $uploadFolder, $archiveType, $archiveSize){
 		$returnValue = NULL;
 		$validator = new Validator();
 		try{
 			if($validator->headerPostPagoValidator($fileName)){
 				$newRegisterLayout = $validator->getNewLayoutRegister($userID);
 				var_dump($newRegisterLayout);
-				$returnValue = "<br>EXITO: operacion 100% exitosa";
+
+				$MessajeReturn = $validator->getNewPostPagoRegister($fileName, $newRegisterLayout);
+				$returnValue = "<br>EXITO: operacion 100% exitosa" . "<br>" . $MessajeReturn;
 			}else{
 				$returnValue = "Alguna validacion no fue satisfctoria";
 			}
@@ -27,6 +29,9 @@ class PostpagoController
 		}
 		return $returnValue;
 	}
+
+
+
 }
 
 ?>

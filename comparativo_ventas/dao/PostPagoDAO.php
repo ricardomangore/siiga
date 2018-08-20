@@ -122,14 +122,14 @@ class PostPagoDao extends Connect{
 
 
 
-			$sqlStr = "INSERT INTO tw_postpago (id_registro, id_layout, folio, no_contrato_impreso, id_orden_contratacion, fecha_contratacion, pricegroup, cuenta_cliente, nombre_cliente, tipo_persona, subtipo_persona, tipo_venta, status_orden, fecha_status_orden, empresa, cve_unica_pdv, nombre_pdv_unico, pdv_estatus, master_pdv, kam, cve_unica_ejecutivo, nombre_ejecutivo_unico, attuid_nivel_2, num_nivel_2, nombre_nivel_2, attuid_nivel_3, num_nivel_3, nombre_nivel_3, attuid_nivel_4, num_nivel_4, nombre_nivel_4, attuid_nivel_5, num_nivel_5, nombre_nivel_5, attuid_nivel_6, num_nivel_6, nombre_nivel_6, attuid_nivel_7, num_nivel_7, nombre_nivel_7, ventas, id_contrato, nir, mdn_inicial, propiedad, fecha_activacion, mes, semana_consejo, mdn_actual, fecha_mdn_actual, sim, imei, sku, modelo_equipo, marca_equipo, color_equipo, capacidad_equipo, modalidad, tecnologia, plan_tarifario_homo, plan_tarifario_homo2, plazo_forzoso, familia, marca_plan, renta,	nva_renta, accessfee_mens, nva_renta_sem, accessfee_seml, region, subregion, estado, ciudad_comercial, cve_mercado, mercado, vp,direccion_vta, agrupacion_canal, canal_vta, semana_recarga, fecha_primer_abono, monto_primer_abono, fecha_segundo_abono, monto_segundo_abono, mdn_definitivo, fecha_port_in, donador_in, receptor_in, fecha_port_out, donador_out, receptor_out, concesionado, es_control, es_t_next, es_volte, cve_ejecutivo_codifica, ejecutivo_codifica, cve_pdv_codifica, pdv_codifica, fecha_codifica,	folio_codifica, attuid_codifica, fecha_movimiento, dia, vpgm) VALUES (?,?,?,
+			$sqlStr = "INSERT INTO tw_postpago (id_layout, folio, no_contrato_impreso, id_orden_contratacion, fecha_contratacion, pricegroup, cuenta_cliente, nombre_cliente, tipo_persona, subtipo_persona, tipo_venta, status_orden, fecha_status_orden, empresa, cve_unica_pdv, nombre_pdv_unico, pdv_estatus, master_pdv, kam, cve_unica_ejecutivo, nombre_ejecutivo_unico, attuid_nivel_2, num_nivel_2, nombre_nivel_2, attuid_nivel_3, num_nivel_3, nombre_nivel_3, attuid_nivel_4, num_nivel_4, nombre_nivel_4, attuid_nivel_5, num_nivel_5, nombre_nivel_5, attuid_nivel_6, num_nivel_6, nombre_nivel_6, attuid_nivel_7, num_nivel_7, nombre_nivel_7, ventas, id_contrato, nir, mdn_inicial, propiedad, fecha_activacion, mes, semana_consejo, mdn_actual, fecha_mdn_actual, sim, imei, sku, modelo_equipo, marca_equipo, color_equipo, capacidad_equipo, modalidad, tecnologia, plan_tarifario_homo, plan_tarifario_homo2, plazo_forzoso, familia, marca_plan, renta,	nva_renta, accessfee_mens, nva_renta_sem, accessfee_seml, region, subregion, estado, ciudad_comercial, cve_mercado, mercado, vp,direccion_vta, agrupacion_canal, canal_vta, semana_recarga, fecha_primer_abono, monto_primer_abono, fecha_segundo_abono, monto_segundo_abono, mdn_definitivo, fecha_port_in, donador_in, receptor_in, fecha_port_out, donador_out, receptor_out, concesionado, es_control, es_t_next, es_volte, cve_ejecutivo_codifica, ejecutivo_codifica, cve_pdv_codifica, pdv_codifica, fecha_codifica,	folio_codifica, attuid_codifica, fecha_movimiento, dia, vpgm) VALUES (?,?,
 				?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
 
 			if($prepare = $this->getLink()->prepare($sqlStr)){
 				$prepare->bind_param(
-					"sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
-					$id_registro, $id_layout, $folio, $no_contrato_impreso, $id_orden_contratacion, $fecha_contratacion, $pricegroup, 
+					"ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+					$id_layout, $folio, $no_contrato_impreso, $id_orden_contratacion, $fecha_contratacion, $pricegroup, 
 					$cuenta_cliente, $nombre_cliente, $tipo_persona, $subtipo_persona, $tipo_venta, $status_orden, $fecha_status_orden, 
 					$empresa, $cve_unica_pdv, $nombre_pdv_unico, $pdv_estatus, $master_pdv, $kam, $cve_unica_ejecutivo, 
 					$nombre_ejecutivo_unico, $attuid_nivel_2, $num_nivel_2, $nombre_nivel_2, $attuid_nivel_3, $num_nivel_3, $nombre_nivel_3,
@@ -150,7 +150,7 @@ class PostPagoDao extends Connect{
 				$postPago->setIdRegistro($this->getLink()->insert_id);
 				$prepare->close();
 			}
-			mysqli_close($this->getLink());
+			//mysqli_close($this->getLink());
 			$returnValue = $postPago;
 		}
 
