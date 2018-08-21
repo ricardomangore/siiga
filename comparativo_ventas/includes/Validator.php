@@ -87,7 +87,7 @@ class Validator{
 		$fp = fopen($fileName, "r");
 		$rows = array();
 		$folio = "";
-		$idLayout = $layoutRegister->getIdTipoLayout();
+		$idLayout = $layoutRegister->getIdLayout();
 		while(($row = fgets($fp)) != FALSE){
 			$tempRow = explode(',',$row);
 			array_push($rows, $tempRow);
@@ -212,7 +212,7 @@ class Validator{
 			$postPAgoDAO->savePostPagoDAO($postPagoObj);
 
 		}
-		return "###########################EXITO###########################";
+		return "########################### EXITO ###########################";
 		
 	}
 

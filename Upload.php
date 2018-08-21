@@ -3,6 +3,7 @@
 	include("includes/Security.php");
 	include("includes/Tools.php");
 	require_once ("comparativo_ventas/controllers/PostPagoController.php");/*<<--*/
+	require_once ("comparativo_ventas/controllers/SegurosController.php");
 	require_once ("comparativo_ventas/includes/Validator.php");
 
 	$Seguridad=new Security();
@@ -17,7 +18,9 @@ $Opc=$_REQUEST['Opc'];
 
 $datoId = $_REQUEST['DatoId'];
 if($datoId == 5)
-	$Opc='8';
+	$Opc = '8';
+if($datoId == 6)
+	$Opc = '9';
 
 /***********************************************************/
 
@@ -145,7 +148,7 @@ switch ($Opc) {
 				//$validator = new Validator();
 				//var_dump($tmp_archivo);
 				$postagoController = new PostpagoController();
-				echo __DIR__ . 'FilesTmp/PostPago'. $Clave;
+				//echo __DIR__ . 'FilesTmp/PostPago'. $Clave;
 				if (!move_uploaded_file($tmp_archivo, $archivador))
 				{
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
@@ -160,6 +163,24 @@ switch ($Opc) {
 				}*/
 		break;
 	case '9':
+				$Clave=$_REQUEST['Clave'];
+				$DatoId=$_REQUEST['DatoId'];
+				$return = Array('ok' => TRUE);
+				$upload_folder = 'FilesTmp/Seguros';
+				$nombre_archivo = $Clave;
+				$tipo_archivo = $_FILES['archivo']['type'];
+				$tamaño_archivo = $_FILES['archivo']['size'];
+				$tmp_archivo = $_FILES['archivo']['tmp_name'];
+				$archivador = $upload_folder . '/' . $nombre_archivo;
+				$segurosController = new SegurosController();
+				echo __DIR__ . 'FilesTmp/Seguros' . $Clave;
+				if(!move_uploaded_file($tmp_archivo, $archivador)){
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo cargarse.", 'status' => 'error');
+				}else{
+					echo $segurosController->processSeguros("FilesTmp/Seguros/" . $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tmp_archivo);
+				}
+		break;
+	case '10':
 		break;
 	}
 ?>
