@@ -20,9 +20,17 @@ class ToolsComparativoVentas
 	public function getFolio($NoContratoImpreso){
 		$returnValue = "";
 		if($NoContratoImpreso != NULL){
-			preg_match("/([\d\s]+)/", $NoContratoImpreso, $folio);
-			if(!empty($folio)){
-				$returnValue = $folio[0];
+			preg_match("/([\d\s]+)/", $NoContratoImpreso, $folioAux);
+			if(!empty($folioAux)){
+				$folioNumber = $folioAux[0];
+				$folioArray = str_split($folioNumber);
+				for($index = 0; $index < sizeof($folioArray); $index ++){
+					if($folioArray[$index]== 0)
+						array_shift($folioArray);
+					else
+						break;
+				}
+				$returnValue = implode('',$folioArray);
 			}
 		}
 		return $returnValue;
