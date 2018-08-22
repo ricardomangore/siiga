@@ -144,7 +144,7 @@ class SegurosDAO extends Connect{
 				$prepare->execute();
 				$seguroObj->setIdRegistro($this->getLink()->insert_id);
 				$prepare->close();
-				mysqli_close($this->getLink());
+				//mysqli_close($this->getLink());
 				$returnValue = $seguroObj;
 
 			}else{//Si la consulta preparada falla
