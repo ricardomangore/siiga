@@ -48,8 +48,9 @@ class ToolsComparativoVentas
 	public function getDateFormat($date){
 		$returnValue = "";
 		$fecha = "";
-		if($date != NULL && $date != ""){
-			$fecha=date("Y-m-d H:i:s",strtotime($date));
+		if($date != NULL && $date != "" && $date != "00:00.0"){
+			$tempdate = str_replace("/", "-", $date);
+			$fecha=date("Y-m-d H:i:s",strtotime($tempdate));
 			$returnValue = $fecha;
 		}
 		return $returnValue;

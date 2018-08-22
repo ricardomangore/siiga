@@ -23,7 +23,7 @@ class DiferenciasDAO extends Connect{
 				$prepare->execute();
 				$prepare->close();
 			}
-			mysqli_close($this->getLink());
+		
 			$returnValue = $diferenciasDAO;
 		}
 		return $returnValue;
@@ -53,7 +53,7 @@ class DiferenciasDAO extends Connect{
 				$returnValue = $diferenciasObj;
 			}
 		}
-		mysqli_close($this->getLink());
+	
 		return $returnValue;
 	}
 
@@ -79,7 +79,7 @@ class DiferenciasDAO extends Connect{
 			}
 			$returnValue = $arrayDiferencias;
 		}
-		mysqli_close($this->getLink());
+
 		return $returnValue;
 	}
 

@@ -16,8 +16,8 @@ class Validator{
 	/**
 	 * method: headerPostPagoValidator($fileName)
 	 * description: Validate tittle will be equals than array headersPostPago and headers'nums in the csv file
-	 * params: <String>
-	 * return <Boolean>
+	 * @param: <String>
+	 * @return: <Boolean>
 	 */
 	public function headerPostPagoValidator($fileName){
 		$fp = fopen($fileName, "r");
@@ -50,8 +50,8 @@ class Validator{
 	/**
 	 * method: getNewLayoutRegister($idUser)
 	 * description: create a new record in the table tw_layout and return a object with this data
-	 * params: <Int>
-	 * return <Object> Layout
+	 * @param: <Int>
+	 * @return: <Object> Layout
 	 */
 	public function getNewLayoutRegister($idUser){
 		$returnValue = NUll;
@@ -77,8 +77,8 @@ class Validator{
 	/**
 	 * method: getNewPostPagoRegister($fileName, $layoutRegister)
 	 * description: create a new record in the table tw_postpago
-	 * params: <String>, <Object> Layout
-	 * return <String> 
+	 * @param: <String>, <Object> Layout
+	 * @return: <String> 
 	 */
 	public function getNewPostPagoRegister($fileName, $layoutRegister){
 		$tools = new ToolsComparativoVentas();
@@ -212,7 +212,7 @@ class Validator{
 			$postPAgoDAO->savePostPagoDAO($postPagoObj);
 
 		}
-		return "########################### EXITO ###########################";
+		return "########################### EXITO AL INSERTAR ###########################";
 		
 	}
 

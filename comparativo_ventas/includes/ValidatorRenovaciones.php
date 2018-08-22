@@ -9,6 +9,15 @@ class ValidatorRenovaciones{
 	private $number_of_headers_renovaciones = 74;
 	private $headersRenovaciones = ['NO_CONTRATO_IMPRESO','SUBCATEGORIA','INCIDENTE','ID_ORDEN_RENOVACION','CUENTA_CLIENTE','FECHA_ALTA_INC','FECHA_FIRMA','FECHA_CAPTURA','STATUS_RENOVACION','FECHA_STATUS','ID_EJECUTIVO','NOMBRE_EJECUTIVO','PUESTO_EJECUTIVO','NOMBRE_PDV','CLAVE_PDV','CANAL','EMPRESA','CO_ID','FECHA_ACTIVACION_CONTRATO','NEW_SIM','NEW_IMEI','NEW_NUM_SERIE','MODELO_NUEVO','COLOR_NUEVO','SKU','PLAN_INICIAL','RENTA_INICIAL','PLAZO_ANTERIOR','SIM_ANTERIOR','IMEI_ANTERIOR','SERIE_ANTERIOR','MODELO_ANTERIOR','COLOR_ANTERIOR','SKU_ANTERIOR','FECHA_REEMPLAZO','PLAN_ACTUAL','RENTA_ACTUAL','PLAZO_ACTUAL','IMPORTE_FACTURADO','DN_ACTUAL','DESC_AREA_SERV','TECNOLOGIA','SUBINVENTARIO','USUARIO_CCI_INICIAL','USUARIO_CCI_RENOCO','DEPARTAMENTO','NOMBRE_CONTACTO','REGION','SUBREGION','ESTADO','CIUDAD_COMERCIAL','MERCADO','DIRECCION_VTA','CANAL_VTA','CVE_UNICA','NUM_COORDINADOR','COORDINADOR','NUM_GERENTE','GERENTE','OPERADO_POR','MASTER_PDV','ID_DEUDOR','VP','AGRUPACION_CANAL','KAM','KAM_CORREO','TIPO_CLIENTE','ES_CONTROL','RENTA_SERV_CONTROL','ACCESS_FEE','ACCESS_FEE_SIN_CTRL','ACCESS_FEE_SERV_CONTROL','STATUS_TENURE','TIPO_MOVIMIENTO'];
 
+
+
+
+	/**
+	 * method: headerRenovacionesValidator($fileName)
+	 * description: Validate tittle will be equals than array headersRenovaciones and headers'nums in the csv file
+	 * params: <String>
+	 * return <Boolean>
+	 */
 	public function headerRenovacionesValidator($fileName){
 		$fp = fopen($fileName, "r");
 		$linea = fgets($fp);
@@ -36,6 +45,13 @@ class ValidatorRenovaciones{
 	}
 
 
+
+	/**
+	 * method: getNewLayoutRegister($idUser)
+	 * description: create a new record in the table tw_layout and return a object with this data
+	 * params: <Int>
+	 * return <Object> Layout
+	 */
 	public function getNewLayoutRegister($idUser){
 		$returnValue = NUll;
 		if($idUser != NUll){
@@ -55,6 +71,13 @@ class ValidatorRenovaciones{
 	}
 
 
+
+	/**
+	 * method: newRenovacinesRegister($fileName, $layoutRegister)
+	 * description: create a new record in the table tw_renovcaciones
+	 * params: <String>, <Object> Layout
+	 * return <String> 
+	 */
 	public function newRenovacionesRegister($fileName, $layoutRegister){
 		$returnValue = "######################### EXITO :) ############################";
 		$tools = new ToolsComparativoVentas();

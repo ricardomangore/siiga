@@ -103,7 +103,7 @@ class TransferDAO extends Connect{
 			}else{
 				throw new Exception("No se pudo preparar la consulta");
 			}
-			mysqli_close($this->getLink());
+			//mysqli_close($this->getLink());
 			$returnValue = $transferDAO;
 		}
 		return $returnValue;

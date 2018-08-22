@@ -1,4 +1,5 @@
 <?php
+require_once("comparativo_ventas/includes/ValidatorTransfer.php");
 /**
  * 
  */
@@ -11,9 +12,18 @@ class TransferController
 
 	public function processTransfer($fileName, $userID, $datoID, $uploadFolder, $archiveType, $archiveSize){
 		$returnValores = NULL;
-		/*AQUI FALTA EL CONTENIDO PARA LAS VALIDACIONES E INSERCIONES CORRESPONDIENTE EN tw_layout y tw_transfer
-		 * VER LOS OTROS CONTROLLER COMO EJEMPLO.
-		**/
+		$validator = new ValidatorTransfer();
+		try{
+			if($validator->headerTransferValidator($fileName)){
+				$returnValores = "<br> LOS ENCABEZADOS ESTAN BIEN";
+				$layoutRegistered = $validator->getNewLayoutRegister($userID);
+				var_dump($layoutRegistered);
+				$messageReturned = $validator->newTransferRegister($fileName, $layoutRegistered);
+				$returnValores .= "<br>$messageReturned";
+			}
+		}catch(Exception $e){
+			$returnValores = $e->getMessage();
+		}
 		return $returnValores;
 	}
 }
