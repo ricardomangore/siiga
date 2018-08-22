@@ -6,7 +6,7 @@ class RenovacionesDAO extends Connect{
 
 	public function saveRenovacion($renovacionObj){
 		if(isset($renovacionObj) && is_a($renovacionObj,'Renovaciones')){
-			var_dump($renovacionObj);
+			//var_dump($renovacionObj);
 			$id_layout = $renovacionObj->getIdLayout();
 			$folio = $renovacionObj->getFolio();
 			$no_contrato_impreso = $renovacionObj->getNoContratoImpreso();
@@ -84,17 +84,17 @@ class RenovacionesDAO extends Connect{
 			$status_tenure = $renovacionObj->getStatusTenure();
 			$tipo_movimiento = $renovacionObj->getTipoMovimiento();
 
-			$sqlStr = 'INSERT INTO tw_renovaciones (id_layout,folio,no_contrato_impreso,subcategoria,incidente,id_orden_renovacion,cuenta_cliente,fecha_alta_inc,fecha_firma,fecha_captura,status_renovacion,fecha_status,id_ejecutivo,nombre_ejecutivo,puesto_ejecutivo,nombre_pdv,clave_pdv,canal,empresa,co_id,fecha_activacion_contrato,new_sim,new_imei,new_num_serie,modelo_nuevo,color_nuevo,sku,plan_inicial,renta_inicial,plazo_anterior,sim_anterior,imei_anterior,serie_anterior,modelo_anterior,color_anterior,sku_anterior,fecha_reemplazo,plan_actual,renta_actual,plazo_actual,importe_facturado,dn_actual,desc_area_serv,tecnologia,subinventario,usuario_cci_inicial,usuario_cci_renoco,departamento,nombre_contacto,region,subregion,estado,ciudad_comercial,mercado,direccion_vta,canal_vta,cve_unica,num_coordinador,coordinador,num_gerente,gerente,operado_por,master_pdv,id_deudor,vp,agrupacion_canal,kam,kam_correo,tipo_cliente,es_control,renta_serv_control,access_fee,access_fee_sin_ctrl,access_fee_serv_control,status_tenure,tipo_movimiento) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			$sqlStr = 'INSERT INTO tw_renovaciones (id_layout,folio,no_contrato_impreso,subcategoria,incidente,id_orden_renovacion,cuenta_cliente,fecha_alta_inc,fecha_firma,fecha_captura,status_renovacion,fecha_status,id_ejecutivo,nombre_ejecutivo,puesto_ejecutivo,nombre_pdv,clave_pdv,canal,empresa,co_id,fecha_activacion_contrato,new_sim,new_imei,new_num_serie,modelo_nuevo,color_nuevo,sku,plan_inicial,renta_inicial,plazo_anterior,sim_anterior,imei_anterior,serie_anterior,modelo_anterior,color_anterior,sku_anterior,fecha_reemplazo,plan_actual,renta_actual,plazo_actual,importe_facturado,dn_actual,desc_area_serv,tecnologia,subinventario,usuario_cci_inicial,usuario_cci_renoco,departamento,nombre_contacto,region,subregion,estado,ciudad_comercial,mercado,direccion_vta,canal_vta,cve_unica,num_coordinador,coordinador,num_gerente,gerente,operado_por,master_pdv,id_deudor,vp,agrupacion_canal,kam,kam_correo,tipo_cliente,es_control,renta_serv_control,access_fee,access_fee_sin_ctrl,access_fee_serv_control,status_tenure,tipo_movimiento) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 
 			if($prepare=$this->getLink()->prepare($sqlStr)){
 				$prepare->bind_param("ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",$id_layout,$folio,$no_contrato_impreso,$subcategoria,$incidente,$id_orden_renovacion,$cuenta_cliente,$fecha_alta_inc,$fecha_firma,$fecha_captura,$status_renovacion,$fecha_status,$id_ejecutivo,$nombre_ejecutivo,$puesto_ejecutivo,$nombre_pdv,$clave_pdv,$canal,$empresa,$co_id,$fecha_activacion_contrato,$new_sim,$new_imei,$new_num_serie,$modelo_nuevo,$color_nuevo,$sku,$plan_inicial,$renta_inicial,$plazo_anterior,$sim_anterior,$imei_anterior,$serie_anterior,$modelo_anterior,$color_anterior,$sku_anterior,$fecha_reemplazo,$plan_actual,$renta_actual,$plazo_actual,$importe_facturado,$dn_actual,$desc_area_serv,$tecnologia,$subinventario,$usuario_cci_inicial,$usuario_cci_renoco,$departamento,$nombre_contacto,$region,$subregion,$estado,$ciudad_comercial,$mercado,$direccion_vta,$canal_vta,$cve_unica,$num_coordinador,$coordinador,$num_gerente,$gerente,$operado_por,$master_pdv,$id_deudor,$vp,$agrupacion_canal,$kam,$kam_correo,$tipo_cliente,$es_control,$renta_serv_control,$access_fee,$access_fee_sin_ctrl,$access_fee_serv_control,$status_tenure,$tipo_movimiento);
 				$prepare->execute();
 				$renovacionObj->setIdRegistro($this->getLink()->insert_id);
 				$prepare->close();
-				mysqli_close($this->getLink());
+				//mysqli_close($this->getLink());
 				$returnValue = $renovacionObj;
 			}else{
-				throw new Exceptoin('No se puedo preparar la consulta');
+				throw new Exception('No se puede preparar la consulta');
 			}	
 		}//Temina la validación del objeto $renovacionesObj
 		return $renovacionObj;

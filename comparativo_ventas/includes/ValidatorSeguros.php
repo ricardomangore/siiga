@@ -42,7 +42,7 @@ class ValidatorSeguros{
 			$newLayoutRegister = new Layout();
 			$newLayoutRegister->setIdUsuario($idUser);
 			$newLayoutRegister->setFecha(date("Y-m-d"));
-			$newLayoutRegister->setHora(date("h:i:s A"));
+			$newLayoutRegister->setHora(date("h:i:s "));
 			$newLayoutRegister->setIdTipoLayout(4);
 			$newLayoutDAO = new LayoutDAO();
 			try{
@@ -58,7 +58,7 @@ class ValidatorSeguros{
 	public function newSegurosRegister($fileName, $layoutRegister){
 		$returnValue = "######################### EXITO :) ############################";
 		$tools = new ToolsComparativoVentas();
-		$segurosObj= new Seguros();
+		$segurosObj = new Seguros();
 		$segurosDAO = new SegurosDAO();
 		$fp = fopen($fileName, "r");
 		$rows = array();
@@ -77,7 +77,6 @@ class ValidatorSeguros{
 					$row[$i] = $dateFormat;
 				}
 			}
-
 			$segurosObj->setIdLayout($idLayout);
 			$segurosObj->setIdContrato($row[0]);
 			$segurosObj->setSnCode($row[1]);
