@@ -1,6 +1,7 @@
 <?php
 require_once ('/../includes/Connect.php');
 require_once ("/../pojos/Diferencias.php");
+require_once ('/../pojos/TipoDiferenciasDAO.php');
 
 class DiferenciasDAO extends Connect{
 
@@ -23,7 +24,7 @@ class DiferenciasDAO extends Connect{
 				$prepare->execute();
 				$prepare->close();
 			}
-			mysqli_close($this->getLink());
+
 			$returnValue = $diferenciasDAO;
 		}
 		return $returnValue;
