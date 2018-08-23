@@ -55,6 +55,21 @@ class ToolsComparativoVentas
 		return $returnValue;
 	}
 
+	/**
+	 * method: getOnlyDate($dateTime)
+	 * @description: Convert date format type 1970-01-01 00:00:00 to 1970-01-01
+	 * @params: <String> 1970-01-01 00:00:00 format
+	 * @return: <String> 1970-01-01 format
+	 */
+	public function getOnlyDate($dateTime){
+		$returnValue = '';
+		if($dateTime != NULL && $dateTime != ''){
+			$fecha=date("Y-m-d",strtotime($dateTime));
+			$returnValue = $fecha;
+		}
+		return $returnValue;
+	}
+
 
 }
 
