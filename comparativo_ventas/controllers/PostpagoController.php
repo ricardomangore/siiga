@@ -4,6 +4,7 @@ require_once("comparativo_ventas/dao/PostPagoDAO.php");
 require_once("comparativo_ventas/dao/ComparativoVentasDAO.php");
 require_once("comparativo_ventas/dao/DiferenciasDAO.php");
 require_once("comparativo_ventas/pojos/Diferencias.php");
+include_once("Comparativo_ventas/includes/ToolsComparativoVentas.php");
 /**
  * 
  */
@@ -108,14 +109,20 @@ class PostpagoController
 					}
 				}
 				echo "PROCESO FINALIZADO CORRECTAMENTE";
+
 			}else{//USA LA SIM cuando IMEI es vacio
 				//pendiente
 			}
 		}
+		/*EJEMPLO DE CREAR ARCHIVO CSV*/
+		$lista = $diferenciaDAO->findAllDiferenciasDAO();
+		$tools = new ToolsComparativoVentas();
+		$titulos = ['ID_REGISTRO','ID_TIPO_DIFERENCIA'];
+		$respuesta = $tools->createReportCsv("Diferencias" ,$layout, $lista, $titulos);
+		echo "<br>$respuesta";
+		/********************************/
+
 	}
-
-
-
 }
 
 ?>
