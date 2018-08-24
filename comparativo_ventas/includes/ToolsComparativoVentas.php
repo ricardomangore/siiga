@@ -65,50 +65,48 @@ class ToolsComparativoVentas
 	 * @param: <Objetct> Layout, <Array> Object, <array> String 
 	 * @return: <String> 
 	 */
-	public function createReportCsv($tableName, $layout, $list, $titles){
-		$returnValue = NULL;
+	public function createReportCsv($fileName, $layout, $list, $titles=NULL){
+		$returnValue = FALSE;
 		$delimiter = ",";
 		$idlayout = $layout->getIdLayout();
-		$temp = "FilesTmp/";
 		$datos = "";
-		if($tableName != "" && !empty($list) && !empty($titles)){
-			$fileName = $temp . "$tableName layout_$idlayout " . date("Y-m-d") . ".csv";
-			$limitTile = sizeof($titles);
-			for($i = 0;$i<($limitTile-1);$i++){
-				$title = $titles[$i];
-				$datos .= "$title,";
+		if($fileName != "" && !empty($list) && $layout != NULL){
+			if($titles != NULL){
+				$limitTile = sizeof($titles);
+				for($i = 0;$i<($limitTile-1);$i++){
+					$title = $titles[$i];
+					$datos .= "$title,";
+				}
+				$finalTitle = $titles[$limitTile-1];
+				$datos .= "$finalTitle";
+				$datos .= "\r\n";
 			}
-			$finalTitle = $titles[$limitTile-1];
-			$datos .= "$finalTitle";
-			$datos .= "\r\n";
 			foreach($list as $row){
 				$tempRow = "";
 				$arrayMethods = get_class_methods($row);
 				for($i = 1; $i<sizeof($arrayMethods); $i++){
 					$method = $arrayMethods[$i];
 					$subStr = substr($method,0,3);
-					var_dump($subStr);
 					if($subStr == 'get'){
 						$getTemp =  $row->$method();
 						$tempRow .= $getTemp .",";
-						var_dump($method);
 					}
 				}
 				$datos .= trim($tempRow, ',');
 				$datos .= "\r\n";
 			}
 			if(!$f = fopen($fileName, "w")){
-				$returnValue = "El archivo no se pudo crear";
+				$returnValue = FALSE;
 			}else{
 				if(fwrite($f,utf8_decode($datos)) == FALSE){
-					$returnValue = "El archivo no se pude escribir";
+					$returnValue = FALSE;
 				}else{
-					$returnValue = "EXITO AL CREAR EL ARCHIVO";
+					$returnValue = TRUE;
 					fclose($f);
 				}
 			}
 		}else{
-			$returnValue = "NINGUN DATO DEBE ESTAR VACIO: ENCABEZADOS, DATOS, NOMBRE DE LA TABLA";
+			$returnValue = FALSE;
 		}
 		return $returnValue;
 	}

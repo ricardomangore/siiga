@@ -26,8 +26,8 @@ class PostpagoController
 
 				$MessajeReturn = $validator->getNewPostPagoRegister($fileName, $newRegisterLayout);
 
-				$returnValue = "<br>EXITO: operacion 100% exitosa" . "<br>" . $MessajeReturn;
-				$this->comparePostPago($newRegisterLayout);
+				$returnValue = $MessajeReturn;
+				$this->comparePostPago($newRegisterLayout, $uploadFolder);
 			}else{
 				$returnValue = "Alguna validacion no fue satisfctoria";
 			}
@@ -37,7 +37,7 @@ class PostpagoController
 		return $returnValue;
 	}
 
-	public function comparePostPago($layout){
+	public function comparePostPago($layout, $uploadFolder){
 		$postPagoDAO = new PostPagoDAO();
 		$comparativoVentasDAO = new ComparativoVentasDAO();
 		$diferenciaDAO = new DiferenciasDAO();
@@ -108,21 +108,25 @@ class PostpagoController
 						}
 					}
 				}
-				echo "PROCESO FINALIZADO CORRECTAMENTE";
 
 			}else{//USA LA SIM cuando IMEI es vacio
 				//pendiente
 			}
 		}
-		/*EJEMPLO DE CREAR ARCHIVO CSV*/
-		$lista = $diferenciaDAO->findAllDiferenciasDAO();
+		$lista = $diferenciaDAO->findAllDiferenciasDAO();//<---- aqui va el resultado de la ejecusion de la consulta
 		$tools = new ToolsComparativoVentas();
-		$titulos = ['ID_REGISTRO','ID_TIPO_DIFERENCIA'];
-		$respuesta = $tools->createReportCsv("Diferencias" ,$layout, $lista, $titulos);
-		echo "<br>$respuesta";
-		/********************************/
+		//$titulos = ['ID_REGISTRO','ID_TIPO_DIFERENCIA'];
+		$idlayout = $layout->getIdLayout();
+		$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
+		$respuesta = $tools->createReportCsv($fileName ,$layout, $lista);
+		if($respuesta){
+			echo "<br><a href="">DESCARGAR REPORTE</a>";
 
+		}else{
+			echo "ALGO SALIO MAL AL GENERAR EL REPORTE";
+		}
 	}
+
 }
 
 ?>
