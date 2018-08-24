@@ -301,7 +301,7 @@ class PostPagoDao extends Connect{
 				$returnValue = $postPagoObj;
 			}
 		}
-		mysqli_close($this->getLink());
+		//mysqli_close($this->getLink());
 		return $returnValue;
 	}
 

@@ -18,7 +18,7 @@ class TiposDiferenciasDAO extends Connect{
 				array_push($returnValue, $obj);
 			}
 		}
-		mysqli_close($this->getLink());
+		//mysqli_close($this->getLink());
 		return $returnValue;
 	}
 
@@ -43,7 +43,7 @@ class TiposDiferenciasDAO extends Connect{
 			$prepare->close();
 			$returnValue = $tipoDiferencias;
 		}
-		mysqli_close($this->getLink());
+		//mysqli_close($this->getLink());
 		return $returnValue;
 	}
 

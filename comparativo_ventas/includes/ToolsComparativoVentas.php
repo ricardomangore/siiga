@@ -57,6 +57,15 @@ class ToolsComparativoVentas
 	}
 
 
+	public function getOnlyDate($date){
+		$returnValue = "";
+		if(isset($date)){
+			preg_match("/(\d+\-\d+\-\d+).+/", $date, $newDate);
+			$returnValue = $newDate[0];
+		}
+		return $returnValue;
+	}
+
 
 
 	/**

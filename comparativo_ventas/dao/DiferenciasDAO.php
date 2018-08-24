@@ -1,6 +1,7 @@
 <?php
 require_once ('/../includes/Connect.php');
 require_once ("/../pojos/Diferencias.php");
+//require_once ('/../dao/TipoDiferenciasDAO.php');
 
 class DiferenciasDAO extends Connect{
 
@@ -23,8 +24,12 @@ class DiferenciasDAO extends Connect{
 				$prepare->execute();
 				$prepare->close();
 			}
+//<<<<<<< HEAD
 		
-			$returnValue = $diferenciasDAO;
+//=======
+
+//>>>>>>> remotes/origin/work-ric-150818
+//			$returnValue = $diferenciasDAO;
 		}
 		return $returnValue;
 	}

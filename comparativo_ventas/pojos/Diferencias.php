@@ -30,5 +30,6 @@ class Diferencias
 	{
 	    $this->id_tipo_diferencia = $id_tipo_diferencia;
 	}
+
 }
 ?>

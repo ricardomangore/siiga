@@ -1164,7 +1164,6 @@ class PostPago
 	    $this->vpgm = $vpgm;
 	}
 
-
 }
 
 ?>
