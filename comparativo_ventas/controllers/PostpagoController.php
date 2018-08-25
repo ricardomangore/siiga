@@ -18,6 +18,13 @@ class PostpagoController
 	}
 
 
+
+	/**
+	 * method: processPostPago()
+	 * description: This method is responsible for processing(execute) all validation of postpago
+	 * @param: <string,int,int,string,string,string>
+	 * @return <string>
+	 */
 	public function processPostPago($fileName, $userID, $datoID, $uploadFolder, $archiveType, $archiveSize){
 		$returnValue = NULL;
 		$validator = new Validator();
@@ -39,6 +46,15 @@ class PostpagoController
 		return $returnValue;
 	}
 
+
+
+	/**
+	 * method: comparePostPago()
+	 * description: Compare different incident case and insert a record in the tw_diferencias table. Run the method 
+	 * to create a new csv file with information of all records in tw_diferencias table.
+	 * @param: <Object, string> Layout
+	 * @return <string>
+	 */
 	public function comparePostPago($layout, $uploadFolder){
 		$arrayIncidencias = array();
 		$postPagoDAO = new PostPagoDAO();

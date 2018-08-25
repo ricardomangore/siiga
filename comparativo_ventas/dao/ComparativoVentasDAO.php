@@ -24,7 +24,7 @@ class ComparativoVentasDAO extends Connect{
 				$prepare->bind_result($param);
 				$prepare->fetch();
 				
-				var_dump($param);
+				//var_dump($param);
 
 				if($param!=''){
 					$returnValue = TRUE;
@@ -55,7 +55,7 @@ class ComparativoVentasDAO extends Connect{
 				$prepare->bind_result($param);
 				$prepare->fetch();
 				
-				var_dump($param);
+				//var_dump($param);
 
 				if($param!=''){
 					$returnValue = TRUE;

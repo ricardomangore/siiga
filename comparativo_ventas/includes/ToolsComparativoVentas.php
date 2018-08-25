@@ -57,6 +57,7 @@ class ToolsComparativoVentas
 	}
 
 
+	/*ESTE METODO SE AGREGO POR QUE EN LAS CONSULTAS SE HACIA USO DE EL PERO NO EXISTIA*/
 	public function getOnlyDate($date){
 		$returnValue = "";
 		if(isset($date)){
