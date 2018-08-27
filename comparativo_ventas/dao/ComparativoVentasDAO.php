@@ -2,7 +2,8 @@
 
 require_once('/../includes/Connect.php');
 require_once('/../pojos/PostPago.php');
-require_once('comparativo_ventas/includes/ToolsComparativoVentas.php');
+require_once('/../pojos/Transfer.php');
+require_once('/../includes/ToolsComparativoVentas.php');
 
 class ComparativoVentasDAO extends Connect{
 
@@ -24,7 +25,7 @@ class ComparativoVentasDAO extends Connect{
 				$prepare->bind_result($param);
 				$prepare->fetch();
 				
-				//var_dump($param);
+				var_dump($param);
 
 				if($param!=''){
 					$returnValue = TRUE;
@@ -603,6 +604,58 @@ class ComparativoVentasDAO extends Connect{
 		return $returnValue;
 	}*/
 
+
+
+
+
+/*######################################################################################################################
+  ######################################################################################################################
+  ######################################################################################################################
+	  
+	 AQUI COMIENZAN LOS METODOS PARA TRANSFER.
+
+  ######################################################################################################################
+  ######################################################################################################################
+#######################################################################################################################*/
+
+
+
+/*************************************************************************************************************
+	El siguiente grupo de funciones comapra los registros de Transfer por diversos parametros
+	como Nombre pdv, Fecha activacion contrato, New sim, New imei, Plan actual, Plazo actual, Dn actual y SIM 
+**************************************************************************************************************/
+
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Nombre pdv
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByNombrePdvSim($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$sim = $transfer->getNewSim();
+			$nombre = $transfer->getNombrePdv();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN PuntosATT ON HFolios.PuntoventaId=PuntosATT.PuntoVentaId WHERE HFolios.Folio LIKE ? AND LFolios.Serie=? AND PuntosATT.NombreATT=?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss', $idOrdenRenovacion,$sim,$nombre);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
 
 
 }//Termina la clase CorporativoVentasDAO

@@ -23,7 +23,7 @@ class PostpagoController
 	 * method: processPostPago()
 	 * description: This method is responsible for processing(execute) all validation of postpago
 	 * @param: <string,int,int,string,string,string>
-	 * @return <string>
+	 * @return: <string>
 	 */
 	public function processPostPago($fileName, $userID, $datoID, $uploadFolder, $archiveType, $archiveSize){
 		$returnValue = NULL;
@@ -53,7 +53,7 @@ class PostpagoController
 	 * description: Compare different incident case and insert a record in the tw_diferencias table. Run the method 
 	 * to create a new csv file with information of all records in tw_diferencias table.
 	 * @param: <Object, string> Layout
-	 * @return <string>
+	 * @return: <string>
 	 */
 	public function comparePostPago($layout, $uploadFolder){
 		$arrayIncidencias = array();
@@ -197,7 +197,7 @@ class PostpagoController
 			}
 		}
 
-
+		$idlayout = $layout->getIdLayout();
 		$lista = $diferenciaDAO->findAllDiferenciasDAO();
 		
 		$tipoDiferencia = new TiposDiferenciasDAO();
@@ -205,22 +205,24 @@ class PostpagoController
 		//$titulos = ['ID_REGISTRO','ID_TIPO_DIFERENCIA'];
 		foreach($lista as $diferencia){
 			$posPagoData = $postPagoDAO->findPostPagoDAO($diferencia->getIdRegistro());
-			$nameTipoDiferencia = $tipoDiferencia->findTipoDiferencia($diferencia->getIdTipoDiferencia());
-			$viewPostPagoObj = new ViewPostPago();
-			$viewPostPagoObj->setIdRegistro($posPagoData->getIdRegistro());
-			$viewPostPagoObj->setIdLayout($posPagoData->getIdLayout());
-			$viewPostPagoObj->setFolio($posPagoData->getFolio());
-			$viewPostPagoObj->setNoContratoImpreso($posPagoData->getNoContatoImpreso());
-			$viewPostPagoObj->setIdOrdenContratacion($posPagoData->getIdOrdenContratacion());
-			$viewPostPagoObj->setNombreCliente($posPagoData->getNombreCliente());
-			$viewPostPagoObj->setTipoVenta($posPagoData->getTipoVenta());
-			$viewPostPagoObj->setNombreEjecutivoUnico($posPagoData->getNombreEjecutivoUnico());
-			$viewPostPagoObj->setSim($posPagoData->getSim());
-			$viewPostPagoObj->setImei($posPagoData->getImei());
-			$viewPostPagoObj->setPlazoForzoso($posPagoData->getPlazoForzoso());
-			$viewPostPagoObj->setIdTipoDiferencia($nameTipoDiferencia->getIdTipoDiferencia());
-			$viewPostPagoObj->setTipoDiferencia($nameTipoDiferencia->getTipoDiferencia());
-			array_push($arrayIncidencias, $viewPostPagoObj);
+			if($idlayout == $posPagoData->getIdLayout()){
+				$nameTipoDiferencia = $tipoDiferencia->findTipoDiferencia($diferencia->getIdTipoDiferencia());
+				$viewPostPagoObj = new ViewPostPago();
+				$viewPostPagoObj->setIdRegistro($posPagoData->getIdRegistro());
+				$viewPostPagoObj->setIdLayout($posPagoData->getIdLayout());
+				$viewPostPagoObj->setFolio($posPagoData->getFolio());
+				$viewPostPagoObj->setNoContratoImpreso($posPagoData->getNoContatoImpreso());
+				$viewPostPagoObj->setIdOrdenContratacion($posPagoData->getIdOrdenContratacion());
+				$viewPostPagoObj->setNombreCliente($posPagoData->getNombreCliente());
+				$viewPostPagoObj->setTipoVenta($posPagoData->getTipoVenta());
+				$viewPostPagoObj->setNombreEjecutivoUnico($posPagoData->getNombreEjecutivoUnico());
+				$viewPostPagoObj->setSim($posPagoData->getSim());
+				$viewPostPagoObj->setImei($posPagoData->getImei());
+				$viewPostPagoObj->setPlazoForzoso($posPagoData->getPlazoForzoso());
+				$viewPostPagoObj->setIdTipoDiferencia($nameTipoDiferencia->getIdTipoDiferencia());
+				$viewPostPagoObj->setTipoDiferencia($nameTipoDiferencia->getTipoDiferencia());
+				array_push($arrayIncidencias, $viewPostPagoObj);
+			}
 		}
 		$idlayout = $layout->getIdLayout();
 		$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
