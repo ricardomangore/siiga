@@ -1,5 +1,5 @@
 <?php
-require_once("comparativo_ventas/includes/ValidatorRenovaciones.php");
+include_once("comparativo_ventas/includes/ValidatorRenovaciones.php");
 /**
  * 
  */

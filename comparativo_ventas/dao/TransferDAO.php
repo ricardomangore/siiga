@@ -1,6 +1,6 @@
 <?php
-require_once ('/../includes/Connect.php');
-require_once ("/../pojos/Transfer.php");
+include_once ('/../includes/Connect.php');
+include_once ("/../pojos/Transfer.php");
 
 class TransferDAO extends Connect{
 

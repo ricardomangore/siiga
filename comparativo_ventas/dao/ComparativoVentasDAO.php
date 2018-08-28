@@ -1,9 +1,9 @@
 <?php
 
-require_once('/../includes/Connect.php');
-require_once('/../pojos/PostPago.php');
-require_once('/../pojos/Transfer.php');
-require_once('/../includes/ToolsComparativoVentas.php');
+include_once('/../includes/Connect.php');
+include_once('/../pojos/PostPago.php');
+include_once('/../pojos/Transfer.php');
+include_once('/../includes/ToolsComparativoVentas.php');
 
 class ComparativoVentasDAO extends Connect{
 

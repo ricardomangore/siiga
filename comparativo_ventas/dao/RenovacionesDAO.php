@@ -1,6 +1,6 @@
 <?php
-require_once('/../includes/Connect.php');
-require_once('/../pojos/Renovaciones.php');
+include_once('/../includes/Connect.php');
+include_once('/../pojos/Renovaciones.php');
 
 class RenovacionesDAO extends Connect{
 

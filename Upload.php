@@ -2,11 +2,11 @@
 	include("includes/Conectar.php");
 	include("includes/Security.php");
 	include("includes/Tools.php");
-	require_once ("comparativo_ventas/controllers/PostPagoController.php");/*<<--*/
-	require_once ("comparativo_ventas/controllers/SegurosController.php");
-	require_once ("comparativo_ventas/controllers/RenovacionesController.php");
-	require_once ("comparativo_ventas/controllers/TransferController.php");
-	require_once ("comparativo_ventas/includes/Validator.php");
+	include_once ("comparativo_ventas/controllers/PostPagoController.php");/*<<--*/
+	include_once ("comparativo_ventas/controllers/SegurosController.php");
+	include_once ("comparativo_ventas/controllers/RenovacionesController.php");
+	include_once ("comparativo_ventas/controllers/TransferController.php");
+	include_once ("comparativo_ventas/includes/Validator.php");
 
 	$Seguridad=new Security();
 	if(!$Seguridad->SesionExiste())
@@ -141,7 +141,6 @@ switch ($Opc) {
 		break;
 	case '8': 
 		//Caso solo para PostPago
-		//require_once (comparativo_ventas/controllers/PostPagoController.php)
 				$Clave=$_REQUEST['Clave'];
 				$DatoId=$_REQUEST['DatoId'];
 				$return = Array('ok'=>TRUE);

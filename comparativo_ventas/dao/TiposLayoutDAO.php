@@ -1,7 +1,7 @@
 <?php
 
-require_once('/../includes/Connect.php');
-require_once('/../pojos/TiposLayout.php');
+include_once('/../includes/Connect.php');
+include_once('/../pojos/TiposLayout.php');
 
 class TiposLayoutDAO extends Connect{
 

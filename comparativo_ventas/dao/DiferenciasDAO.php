@@ -1,7 +1,7 @@
 <?php
-require_once ('/../includes/Connect.php');
-require_once ("/../pojos/Diferencias.php");
-//require_once ('/../dao/TipoDiferenciasDAO.php');
+include_once ('/../includes/Connect.php');
+include_once ("/../pojos/Diferencias.php");
+//include_once ('/../dao/TipoDiferenciasDAO.php');
 
 class DiferenciasDAO extends Connect{
 

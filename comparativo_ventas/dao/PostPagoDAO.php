@@ -1,7 +1,7 @@
 <?php
 
-require_once ('/../includes/Connect.php');
-require_once ("/../pojos/PostPago.php");
+include_once ('/../includes/Connect.php');
+include_once ("/../pojos/PostPago.php");
 
 class PostPagoDao extends Connect{
 

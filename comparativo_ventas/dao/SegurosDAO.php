@@ -1,6 +1,6 @@
 <?php
-require_once('/../includes/Connect.php');
-require_once('/../pojos/Seguros.php');
+include_once('/../includes/Connect.php');
+include_once('/../pojos/Seguros.php');
 
 class SegurosDAO extends Connect{
 

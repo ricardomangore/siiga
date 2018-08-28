@@ -1,5 +1,5 @@
 <?php
-require_once("comparativo_ventas/includes/ValidatorTransfer.php");
+include_once("comparativo_ventas/includes/ValidatorTransfer.php");
 /**
  * 
  */

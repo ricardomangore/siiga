@@ -1,5 +1,5 @@
 <?php
-require_once("comparativo_ventas/includes/ValidatorSeguros.php");
+include_once("comparativo_ventas/includes/ValidatorSeguros.php");
 /**
  * 
  */
