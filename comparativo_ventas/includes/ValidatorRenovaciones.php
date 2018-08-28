@@ -1,6 +1,6 @@
 <?php
-include_once "/../pojos/Layout.php";
-include_once "/../pojos/Renovaciones.php";
+include_once "siiga/comparativo_ventas/pojos/Layout.php";
+include_once "siiga/comparativo_ventas/pojos/Renovaciones.php";
 include_once "ToolsComparativoVentas.php";
 include_once "comparativo_ventas/dao/LayoutDAO.php";
 include_once "comparativo_ventas/dao/RenovacionesDAO.php";

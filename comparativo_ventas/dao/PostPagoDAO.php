@@ -1,7 +1,7 @@
 <?php
 
-include_once ('/../includes/Connect.php');
-include_once ("/../pojos/PostPago.php");
+include_once ('siiga/comparativo_ventas/includes/Connect.php');
+include_once ("siiga/comparativo_ventas/pojos/PostPago.php");
 
 class PostPagoDao extends Connect{
 

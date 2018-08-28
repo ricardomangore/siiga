@@ -1,12 +1,12 @@
 <?php
-include_once ("comparativo_ventas/includes/Validator.php");
-include_once("comparativo_ventas/dao/PostPagoDAO.php");
-include_once("comparativo_ventas/dao/ComparativoVentasDAO.php");
-include_once("comparativo_ventas/dao/DiferenciasDAO.php");
-include_once("comparativo_ventas/dao/TiposDiferenciasDAO.php");
-include_once("comparativo_ventas/pojos/Diferencias.php");
-include_once("comparativo_ventas/pojos/ViewPostPago.php");
-include_once("Comparativo_ventas/includes/ToolsComparativoVentas.php");
+include_once ("siiga/comparativo_ventas/includes/Validator.php");
+include_once("siiga/comparativo_ventas/dao/PostPagoDAO.php");
+include_once("siiga/comparativo_ventas/dao/ComparativoVentasDAO.php");
+include_once("siiga/comparativo_ventas/dao/DiferenciasDAO.php");
+include_once("siiga/comparativo_ventas/dao/TiposDiferenciasDAO.php");
+include_once("siiga/comparativo_ventas/pojos/Diferencias.php");
+include_once("siiga/comparativo_ventas/pojos/ViewPostPago.php");
+include_once("siiga/comparativo_ventas/includes/ToolsComparativoVentas.php");
 /**
  * 
  */
