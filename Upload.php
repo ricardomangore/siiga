@@ -2,7 +2,7 @@
 	include("includes/Conectar.php");
 	include("includes/Security.php");
 	include("includes/Tools.php");
-	include_once ("comparativo_ventas/controllers/PostPagoController.php");/*<<--*/
+	include_once ("comparativo_ventas/controllers/PostpagoController.php");/*<<--*/
 	include_once ("comparativo_ventas/controllers/SegurosController.php");
 	include_once ("comparativo_ventas/controllers/RenovacionesController.php");
 	include_once ("comparativo_ventas/controllers/TransferController.php");
