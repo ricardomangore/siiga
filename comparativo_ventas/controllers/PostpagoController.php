@@ -71,8 +71,7 @@ class PostpagoController
 							$diferencia->setIdRegistro($postPago->getIdRegistro());
 							$diferencia->setIdTipoDiferencia(1);//Tomado del caso que coincide con id_tipo_diferencia
 							$diferenciaDAO->saveDiferenciasDAO($diferencia);
-						}
-
+						} 
 					}
 					case 2: {//CASO 2: NOMBRE DEL PDV NO COINCIDE (id_tipo_diferencia = 2)
 						if(!$comparativoVentasDAO->comparePostPagoByNombrePDV($postPago)){

@@ -5,14 +5,14 @@
 class ViewTransfer
 {
 	private $id_orden_renovacion;
-	private $nomnbre_pdv;
+	private $nombre_pdv;
 	private $fecha_activacion_contrato;
 	private $new_sim;
 	private $new_imei;
 	private $plan_actual;
 	private $plazo_actual;
 	private $dn_actual;
-	private $tipo_incidencia;
+	private $tipo_diferencia;
 	
 	function __construct(){
 
@@ -28,14 +28,14 @@ class ViewTransfer
 	    $this->id_orden_renovacion = $id_orden_renovacion;
 	}
 
-	public function getNomnbrePdv()
+	public function getNombrePdv()
 	{
-	    return $this->nomnbre_pdv;
+	    return $this->nombre_pdv;
 	}
 	
-	public function setNomnbrePdv($nomnbre_pdv)
+	public function setNombrePdv($nombre_pdv)
 	{
-	    $this->nomnbre_pdv = $nomnbre_pdv;
+	    $this->nombre_pdv = $nombre_pdv;
 	}
 
 	public function getFechaActivacionContrato()
@@ -98,14 +98,14 @@ class ViewTransfer
 	    $this->dn_actual = $dn_actual;
 	}
 
-	public function getTipoIncidencia()
+	public function getTipoDiferencia()
 	{
-	    return $this->tipo_incidencia;
+	    return $this->tipo_diferencia;
 	}
 	
-	public function setTipoIncidencia($tipo_incidencia)
+	public function setTipoDiferencia($tipo_diferencia)
 	{
-	    $this->tipo_incidencia = $tipo_incidencia;
+	    $this->tipo_diferencia = $tipo_diferencia;
 	}
 }
 ?>

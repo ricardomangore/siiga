@@ -196,7 +196,7 @@ switch ($Opc) {
 				$tmp_archivo = $_FILES['archivo']['tmp_name'];
 				$archivador = $upload_folder . '/' . $nombre_archivo;
 				$transferController = new TransferController();
-				echo __DIR__. 'FilesTmp/Transfer' . $Clave;
+				//echo __DIR__. 'FilesTmp/Transfer' . $Clave;
 				if(!move_uploaded_file($tmp_archivo, $archivador)){
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo cargarse", 'status'=>'error');
 				}else{
