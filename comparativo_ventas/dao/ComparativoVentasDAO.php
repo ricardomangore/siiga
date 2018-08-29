@@ -2,6 +2,7 @@
 
 include_once('/../includes/Connect.php');
 include_once('/../pojos/PostPago.php');
+include_once('/../pojos/Renovaciones.php');
 include_once('/../pojos/Transfer.php');
 include_once('/../includes/ToolsComparativoVentas.php');
 
@@ -608,6 +609,533 @@ class ComparativoVentasDAO extends Connect{
 
 
 
+
+/*######################################################################################################################
+  ######################################################################################################################
+  ######################################################################################################################
+	  
+	 AQUI COMIENZAN LOS METODOS PARA RENOVACIONES.
+
+  ######################################################################################################################
+  ######################################################################################################################
+#######################################################################################################################*/
+
+
+
+/*************************************************************************************************************
+	El siguiente grupo de funciones comapra los registros de Renovaciones por diversos parametros
+	como Nombre pdv, Fecha activacion contrato, New sim, New imei, Plan actual, Plazo actual, Dn actual e IMEI 
+**************************************************************************************************************/
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y Nombre del Punto de Venta registrado en ATT
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNombrePDVImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$nombrePdv = $renovacion->getNombrePdv();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio 
+				INNER JOIN TiposContratacion ON TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId INNER JOIN PuntosATT ON 
+				PuntosATT.PuntoVentaId=HFolios.PuntoVentaId WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND PuntosATT.NombreATT = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$nombrePdv);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y Fecha activacion contrato
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByFechaActivacionContratoImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$tools = new ToolsComparativoVentas();
+			$fechaActivacionContrato=$tools->getOnlyDate($renovacion->getFechaActivacionContrato());
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio INNER JOIN TiposContratacion ON
+				TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND 
+				HFolios.FechaContrato = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$nombrePdv);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y New Sim
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNewSimImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion 
+				ON TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$sim);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y New Imei
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNewImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion 
+				ON TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$imei);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y Plan Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByPlanActualImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$planActual = $renovacion->getPlanActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio INNER JOIN TiposContratacion ON 
+				TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId INNER JOIN Planes ON LFolios.PlanId = Planes.PlanId
+				WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND Planes.Plan = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$planActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y Plazo Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByPlazoActualImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$plazoActual = $renovacion->getPlazoActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion ON
+				TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId INNER JOIN Plazos ON LFolios.PlazoId = Plazos.PlazoId
+				WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND Plazos.PlazoId = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$plazoActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, IMEI y Dn Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByDnActualImei($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$dnActual = $renovacion->getDnActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion ON 
+				TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ? AND LFolios.Dn = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$dnActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+
+/*************************************************************************************************************
+	El siguiente grupo de funciones comapra los registros de Renovaciones por diversos parametros
+	como Nombre pdv, Fecha activacion contrato, New sim, New imei, Plan actual, Plazo actual, Dn actual e SIM 
+**************************************************************************************************************/
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Nombre del Punto de Venta registrado en ATT
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNombrePDVSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$nombrePdv = $renovacion->getNombrePdv();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio 
+				INNER JOIN TiposContratacion ON TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId INNER JOIN PuntosATT ON 
+				PuntosATT.PuntoVentaId=HFolios.PuntoVentaId WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND PuntosATT.NombreATT = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$sim,$nombrePdv);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Fecha activacion contrato
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByFechaActivacionContratoSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$tools = new ToolsComparativoVentas();
+			$fechaActivacionContrato=$tools->getOnlyDate($renovacion->getFechaActivacionContrato());
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio INNER JOIN TiposContratacion ON
+				TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND 
+				HFolios.FechaContrato = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$sim,$nombrePdv);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y New Sim
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNewSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion 
+				ON TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$sim);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y New Imei
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByNewImeiSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$imei = $renovacion->getNewImei();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion 
+				ON TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$imei);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Plan Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByPlanActualSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$planActual = $renovacion->getPlanActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio=HFolios.Folio INNER JOIN TiposContratacion ON 
+				TiposContratacion.TipoContratacionId=HFolios.TipoContratacionId INNER JOIN Planes ON LFolios.PlanId = Planes.PlanId
+				WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND Planes.Plan = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$sim,$planActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Plazo Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByPlazoActualSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$plazoActual = $renovacion->getPlazoActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion ON
+				TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId INNER JOIN Plazos ON LFolios.PlazoId = Plazos.PlazoId
+				WHERE LFolios.Folio = ? AND LFolios.Serie = ? AND Plazos.PlazoId = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$sim,$plazoActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+
+	/**
+	 * Determina si un objeto Renovaciones es igual a un registro de ventas dentro del SIIGA
+	 * a partir del id orden renovacion, SIM y Dn Actual
+	 * @param <Object> Renovacion
+	 * @return <boolean>
+	 */
+	public function compareRenovacionesByDnActualSim($renovacion){
+		$returnValue = FALSE;
+		if(isset($renovacion) && is_a($renovacion,'Renovaciones')){
+			$idOrdenRenovacion = $renovacion->getIdOrdenRenovacion();
+			$sim = $renovacion->getNewSim();
+			$dnActual = $renovacion->getDnActual();
+			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON LFolios.Folio = HFolios.Folio INNER JOIN TiposContratacion ON 
+				TiposContratacion.TipoContratacionId = HFolios.TipoContratacionId WHERE LFolios.Folio = ? AND 
+				LFolios.Serie = ? AND LFolios.Dn = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$sim,$dnActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				//var_dump($param);
+
+				if($param!=''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+
+		return $returnValue;
+	}
+
+
+
+
 /*######################################################################################################################
   ######################################################################################################################
   ######################################################################################################################
@@ -622,7 +1150,7 @@ class ComparativoVentasDAO extends Connect{
 
 /*************************************************************************************************************
 	El siguiente grupo de funciones comapra los registros de Transfer por diversos parametros
-	como Nombre pdv, Fecha activacion contrato, New sim, New imei, Plan actual, Plazo actual, Dn actual y SIM 
+	como  y SIM 
 **************************************************************************************************************/
 
 	/**

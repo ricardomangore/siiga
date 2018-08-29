@@ -224,7 +224,6 @@ class PostpagoController
 				array_push($arrayIncidencias, $viewPostPagoObj);
 			}
 		}
-		$idlayout = $layout->getIdLayout();
 		$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
 		$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
 		if($respuesta){
