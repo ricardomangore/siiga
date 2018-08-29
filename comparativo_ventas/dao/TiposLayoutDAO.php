@@ -1,7 +1,7 @@
 <?php
 
-include_once('siiga/comparativo_ventas/includes/Connect.php');
-include_once('siiga/comparativo_ventas/pojos/TiposLayout.php');
+include_once('comparativo_ventas/includes/Connect.php');
+include_once('comparativo_ventas/pojos/TiposLayout.php');
 
 class TiposLayoutDAO extends Connect{
 

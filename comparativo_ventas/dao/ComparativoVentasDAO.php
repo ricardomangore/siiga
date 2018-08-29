@@ -1,17 +1,11 @@
 <?php
 
-<<<<<<< HEAD
-include_once('siiga/comparativo_ventas/includes/Connect.php');
-include_once('siiga/comparativo_ventas/pojos/PostPago.php');
-include_once('siiga/comparativo_ventas/pojos/Transfer.php');
-include_once('siiga/comparativo_ventas/includes/ToolsComparativoVentas.php');
-=======
-include_once('/../includes/Connect.php');
-include_once('/../pojos/PostPago.php');
-include_once('/../pojos/Renovaciones.php');
-include_once('/../pojos/Transfer.php');
-include_once('/../includes/ToolsComparativoVentas.php');
->>>>>>> remotes/toxquifork/work-raf-150818
+include_once('comparativo_ventas/includes/Connect.php');
+include_once('comparativo_ventas/pojos/PostPago.php');
+include_once('comparativo_ventas/pojos/Transfer.php');
+include_once('comparativo_ventas/pojos/Renovaciones.php');
+include_once('comparativo_ventas/includes/ToolsComparativoVentas.php');
+
 
 class ComparativoVentasDAO extends Connect{
 

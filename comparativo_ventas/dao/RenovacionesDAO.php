@@ -1,6 +1,6 @@
 <?php
-include_once('siiga/comparativo_ventas/includes/Connect.php');
-include_once('siiga/comparativo_ventas/pojos/Renovaciones.php');
+include_once('comparativo_ventas/includes/Connect.php');
+include_once('comparativo_ventas/pojos/Renovaciones.php');
 
 class RenovacionesDAO extends Connect{
 

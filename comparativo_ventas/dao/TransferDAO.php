@@ -1,6 +1,6 @@
 <?php
-include_once ('siiga/comparativo_ventas/includes/Connect.php');
-include_once ("siiga/comparativo_ventas/pojos/Transfer.php");
+include_once ('comparativo_ventas/includes/Connect.php');
+include_once ("comparativo_ventas/pojos/Transfer.php");
 
 class TransferDAO extends Connect{
 

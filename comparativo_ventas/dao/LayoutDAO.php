@@ -1,7 +1,7 @@
 <?php
 
 include_once "siiga/includes/Conectar.php";
-include_once "siiga/comparativo_ventas/pojos/Layout.php";
+include_once "comparativo_ventas/pojos/Layout.php";
 
 class LayoutDAO extends Conectar{
 

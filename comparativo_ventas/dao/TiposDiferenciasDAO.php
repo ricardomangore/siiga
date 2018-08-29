@@ -1,6 +1,6 @@
 <?php
-include_once('siiga/comparativo_ventas/includes/Connect.php');
-include_once('siiga/comparativo_ventas/pojos/TiposDiferencias.php');
+include_once('comparativo_ventas/includes/Connect.php');
+include_once('comparativo_ventas/pojos/TiposDiferencias.php');
 
 class TiposDiferenciasDAO extends Connect{
 
