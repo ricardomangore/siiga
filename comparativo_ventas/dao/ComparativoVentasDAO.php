@@ -4,10 +4,179 @@ include_once('comparativo_ventas/includes/Connect.php');
 include_once('comparativo_ventas/pojos/PostPago.php');
 include_once('comparativo_ventas/pojos/Transfer.php');
 include_once('comparativo_ventas/pojos/Renovaciones.php');
+include_once('comparativo_ventas/pojos/ViewPostPago.php');
+include_once('comparativo_ventas/pojos/ViewRenovaciones.php');
+include_once('comparativo_ventas/pojos/ViewTransfer.php');
+include_once('comparativo_ventas/pojos/ViewSeguros.php');
 include_once('comparativo_ventas/includes/ToolsComparativoVentas.php');
 
 
 class ComparativoVentasDAO extends Connect{
+
+	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ Consultas para los Incidentes $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+
+	/**
+	 * getListPostPagoIncidents()
+	 * Obtiene el listado de incidentes de postpago segun el id_layout
+	 * @param <int> 
+	 * @return <array> ViewPostPago
+	 */
+	public function getListPostPagoIncidents($idLayout){
+		$returnValue = Null;
+		$arrayPostpagos = array();
+		$sqlStr = "SELECT tw_postpago.id_registro,tw_postpago.id_layout,tw_postpago.folio,tw_postpago.no_contrato_impreso,
+			tw_postpago.id_orden_contratacion,tw_postpago.nombre_cliente,tw_postpago.tipo_venta,tw_postpago.nombre_ejecutivo_unico,
+			tw_postpago.sim,tw_postpago.imei,tw_postpago.plazo_forzoso, tc_tipos_diferencias.id_tipo_diferencia,
+			tc_tipos_diferencias.tipo_diferencia FROM tw_diferencias INNER JOIN tw_postpago ON tw_postpago.id_registro = 
+			tw_diferencias.id_registro INNER JOIN tc_tipos_diferencias ON tc_tipos_diferencias.id_tipo_diferencia = 
+			tw_diferencias.id_tipo_diferencia WHERE tw_postpago.id_layout = ".$idLayout;
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$viewPostPagoObj = new ViewPostPago();
+				$viewPostPagoObj->setIdRegistro($fila[0]);
+				$viewPostPagoObj->setIdLayout($fila[1]);
+				$viewPostPagoObj->setFolio($fila[2]);
+				$viewPostPagoObj->setNoContratoImpreso($fila[3]);
+				$viewPostPagoObj->setIdOrdenContratacion($fila[4]);
+				$viewPostPagoObj->setNombreCliente($fila[5]);
+				$viewPostPagoObj->setTipoVenta($fila[6]);
+				$viewPostPagoObj->setNombreEjecutivoUnico($fila[7]);
+				$viewPostPagoObj->setSim($fila[8]);
+				$viewPostPagoObj->setImei($fila[9]);
+				$viewPostPagoObj->setPlazoForzoso($fila[10]);
+				$viewPostPagoObj->setIdTipoDiferencia($fila[11]);
+				$viewPostPagoObj->setTipoDiferencia($fila[12]);
+				array_push($arrayPostpagos, $viewPostPagoObj);
+			}//Termina WHILE
+			$returnValue = $arrayPostpagos;
+		}//Termina IF
+		return $returnValue;
+
+	}
+
+
+
+
+	/**
+	 * getListRenovacionesIncidents()
+	 * Obtiene el listado de incidentes de renovaciones segun el id_layout
+	 * @param <int> 
+	 * @return <array> ViewPostPago
+	 */
+	public function getListRenovacionesIncidents($idLayout){
+		$returnValue = Null;
+		$arrayRenovaciones = array();
+		$sqlStr = "SELECT tw_renovaciones.id_orden_renovacion,tw_renovaciones.nombre_pdv,tw_renovaciones.fecha_activacion_contrato,
+			tw_renovaciones.new_sim,tw_renovaciones.new_imei,tw_renovaciones.plan_actual,tw_renovaciones.plazo_actual,
+			tw_renovaciones.dn_actual,tc_tipos_diferencias.tipo_diferencia FROM tw_diferencias INNER JOIN tw_renovaciones ON 
+			tw_renovaciones.id_registro = tw_diferencias.id_registro INNER JOIN tc_tipos_diferencias ON 
+			tc_tipos_diferencias.id_tipo_diferencia = tw_diferencias.id_tipo_diferencia 
+			WHERE tw_renovaciones.id_layout = ".$idLayout;
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$viewRenovacion = new ViewRenovaciones();
+				$viewRenovacion->setIdOrdenRenovacion($fila[0]);
+				$viewRenovacion->setNombrePdv($fila[1]);
+				$viewRenovacion->setFechaActivacionContrato($fila[2]);
+				$viewRenovacion->setNewSim($fila[3]);
+				$viewRenovacion->setNewImei($fila[4]);
+				$viewRenovacion->setPlanActual($fila[5]);
+				$viewRenovacion->setPlazoActual($fila[6]);
+				$viewRenovacion->setDnActual($fila[7]);
+				$viewRenovacion->setTipoDiferencia($fila[8]);
+				array_push($arrayRenovaciones, $viewRenovacion);
+			}//Termina WHILE
+			$returnValue = $arrayRenovaciones;
+		}//Termina IF
+		return $returnValue;
+
+	}
+
+
+
+	/**
+	 * getListTransferIncidents()
+	 * Obtiene el listado de incidentes de transfer segun el id_layout
+	 * @param <int> 
+	 * @return <array> ViewTransfer
+	 */
+	/*public function getListTransferIncidents($idLayout){
+		$returnValue = Null;
+		$arrayTransfer = array();
+		$sqlStr = "SELECT tw_transfer.id_orden_renovacion,tw_transfer.nombre_pdv,tw_transfer.fecha_activacion_contrato,
+			tw_transfer.new_sim,tw_transfer.new_imei,tw_transfer.plan_actual,tw_transfer.plazo_actual,tw_transfer.dn_actual,
+			tc_tipos_diferencias.tipo_diferencia FROM tw_diferencias INNER JOIN tw_transfer ON tw_transfer.id_registro = 
+			tw_diferencias.id_registro INNER JOIN tc_tipos_diferencias ON tc_tipos_diferencias.id_tipo_diferencia = 
+			tw_diferencias.id_tipo_diferencia WHERE tw_transfer.id_layout = ".$idLayout;
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$viewTransferObj = new ViewTransfer();
+				$viewTransferObj->setIdOrdenRenovacion($fila[0]);
+				$viewTransferObj->setNombrePdv($fila[1]);
+				$viewTransferObj->setFechaActivacionContrato($fila[2]);
+				$viewTransferObj->setNewSim($fila[3]);
+				$viewTransferObj->setNewImei($fila[4]);
+				$viewTransferObj->setPlanActual($fila[5]);
+				$viewTransferObj->setPlazoActual($fila[6]);
+				$viewTransferObj->setDnActual($fila[7]);
+				$viewTransferObj->setTipoDiferencia($fila[8]);
+				array_push($arrayTransfer, $viewTransferObj);
+			}//Termina WHILE
+			$returnValue = $arrayRenovaciones;
+		}//Termina IF
+		return $returnValue;
+
+	}*/
+
+
+
+
+		/**
+	 * getListSegurosIncidents()
+	 * Obtiene el listado de incidentes de Seguros segun el id_layout
+	 * @param <int> 
+	 * @return <array> ViewSeguros
+	 */
+	public function getListSegurosIncidents($idLayout){
+		$returnValue = Null;
+		$arraySeguros = array();
+		$sqlStr = "SELECT tw_seguros.id_contrato,tw_seguros.renta,tw_seguros.fecha_act_seg,tc_tipos_diferencias.tipo_diferencia
+			FROM tw_diferencias INNER JOIN tw_seguros ON tw_seguros.id_registro = tw_diferencias.id_registro INNER JOIN 
+			tc_tipos_diferencias ON tc_tipos_diferencias.id_tipo_diferencia = tw_diferencias.id_tipo_diferencia WHERE 
+			tw_seguros.id_layout = ".$idLayout;
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$viewTransferObj = new ViewTransfer();
+				$viewTransferObj->setIdOrdenRenovacion($fila[0]);
+				$viewTransferObj->setNombrePdv($fila[1]);
+				$viewTransferObj->setFechaActivacionContrato($fila[2]);
+				$viewTransferObj->setNewSim($fila[3]);
+				$viewTransferObj->setNewImei($fila[4]);
+				$viewTransferObj->setPlanActual($fila[5]);
+				$viewTransferObj->setPlazoActual($fila[6]);
+				$viewTransferObj->setDnActual($fila[7]);
+				$viewTransferObj->setTipoDiferencia($fila[8]);
+				array_push($arrayTransfer, $viewTransferObj);
+			}//Termina WHILE
+			$returnValue = $arrayRenovaciones;
+		}//Termina IF
+		return $returnValue;
+
+	}
+
+
+	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
+
+
+
+
+
 
 	/**
 	 * comaparePostPagoByFolio()

@@ -156,34 +156,21 @@ class RenovacionesController
 			}//termina else
 
 		}//Termina foreach
-		$idLayout = $layout->getIdLayout();
-		$lista = $diferenciaDAO->findAllDiferenciasDAO();
-		$tipoDiferenciaDao = new TiposDiferenciasDAO();
+		$idlayout = $layout->getIdLayout();
 		$tools = new ToolsComparativoVentas();
-		foreach($lista as $diferencia){
-			$renovacion = $renovacionesDAO->findRenovacionesDAO($diferencia->getIdRegistro());
-			if($idLayout == $renovacion->getIdLayout()){
-				$nameTipoDiferencia = $tipoDiferenciaDao->findTipoDiferencia($diferencia->getIdTipoDiferencia());
-				$viewRenovacion = new ViewRenovaciones();
-				$viewRenovacion->setIdOrdenRenovacion($renovacion->getIdOrdenRenovacion());
-				$viewRenovacion->setNombrePdv($renovacion->getNombrePdv());
-				$viewRenovacion->setFechaActivacionContrato($renovacion->getFechaActivacionContrato());
-				$viewRenovacion->setNewSim($renovacion->getNewSim());
-				$viewRenovacion->setNewImei($renovacion->getNewImei());
-				$viewRenovacion->setPlanActual($renovacion->getPlanActual());
-				$viewRenovacion->setPlazoActual($renovacion->getPlazoActual());
-				$viewRenovacion->setDnActual($renovacion->getDnActual());
-				$viewRenovacion->setTipoDiferencia($nameTipoDiferencia->getTipoDiferencia());
-				array_push($arrayIncidencias, $viewRenovacion);
+		$listaIncidentes = $comparativoVentasDAO->getListRenovacionesIncidents($idlayout);
+		if($listaIncidentes != NULL){			
+			$arrayIncidencias = $listaIncidentes;
+			$fileName = $uploadFolder . "/" ."Renovaciones layout_$idlayout " . date("Y-m-d") . ".csv";
+			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
+			if($respuesta){
+				echo '<br>---> <a href="'. $fileName .'">DESCARGAR REPORTE</a> <---<br>';
+	
+				}else{
+					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
 			}
-		}
-		$fileName = $uploadFolder . "/" ."Renovaciones layout_$idLayout " . date("Y-m-d") . ".csv";
-		$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
-		if($respuesta){
-			echo '<br>---> <a href="'. $fileName .'">DESCARGAR REPORTE</a> <---<br>';
-
-		}else{
-			echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
+		}else{//Termina IF
+			echo "No se pudo completar la consulta de los incidentes<br>";
 		}
 
 

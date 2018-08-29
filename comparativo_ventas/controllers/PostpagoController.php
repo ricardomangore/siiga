@@ -5,7 +5,6 @@ include_once("comparativo_ventas/dao/ComparativoVentasDAO.php");
 include_once("comparativo_ventas/dao/DiferenciasDAO.php");
 include_once("comparativo_ventas/dao/TiposDiferenciasDAO.php");
 include_once("comparativo_ventas/pojos/Diferencias.php");
-include_once("comparativo_ventas/pojos/ViewPostPago.php");
 include_once("comparativo_ventas/includes/ToolsComparativoVentas.php");
 /**
  * 
@@ -198,41 +197,21 @@ class PostpagoController
 		}
 
 		$idlayout = $layout->getIdLayout();
-		$lista = $diferenciaDAO->findAllDiferenciasDAO();
-		
-		$tipoDiferencia = new TiposDiferenciasDAO();
 		$tools = new ToolsComparativoVentas();
-		//$titulos = ['ID_REGISTRO','ID_TIPO_DIFERENCIA'];
-		foreach($lista as $diferencia){
-			$posPagoData = $postPagoDAO->findPostPagoDAO($diferencia->getIdRegistro());
-			if($idlayout == $posPagoData->getIdLayout()){
-				$nameTipoDiferencia = $tipoDiferencia->findTipoDiferencia($diferencia->getIdTipoDiferencia());
-				$viewPostPagoObj = new ViewPostPago();
-				$viewPostPagoObj->setIdRegistro($posPagoData->getIdRegistro());
-				$viewPostPagoObj->setIdLayout($posPagoData->getIdLayout());
-				$viewPostPagoObj->setFolio($posPagoData->getFolio());
-				$viewPostPagoObj->setNoContratoImpreso($posPagoData->getNoContatoImpreso());
-				$viewPostPagoObj->setIdOrdenContratacion($posPagoData->getIdOrdenContratacion());
-				$viewPostPagoObj->setNombreCliente($posPagoData->getNombreCliente());
-				$viewPostPagoObj->setTipoVenta($posPagoData->getTipoVenta());
-				$viewPostPagoObj->setNombreEjecutivoUnico($posPagoData->getNombreEjecutivoUnico());
-				$viewPostPagoObj->setSim($posPagoData->getSim());
-				$viewPostPagoObj->setImei($posPagoData->getImei());
-				$viewPostPagoObj->setPlazoForzoso($posPagoData->getPlazoForzoso());
-				$viewPostPagoObj->setIdTipoDiferencia($nameTipoDiferencia->getIdTipoDiferencia());
-				$viewPostPagoObj->setTipoDiferencia($nameTipoDiferencia->getTipoDiferencia());
-				array_push($arrayIncidencias, $viewPostPagoObj);
+		$listaIncidentes = $comparativoVentasDAO->getListPostPagoIncidents($idlayout);
+		if($listaIncidentes != NULL){			
+			$arrayIncidencias = $listaIncidentes;
+			$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
+			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
+			if($respuesta){
+				echo '<br>---> <a href="'. $fileName .'">DESCARGAR REPORTE</a> <---<br>';
+	
+				}else{
+					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
 			}
+		}else{//Termina IF
+			echo "No se pudo completar la consulta de los incidentes<br>";
 		}
-		$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
-		$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
-		if($respuesta){
-			echo '<br>---> <a href="'. $fileName .'">DESCARGAR REPORTE</a> <---<br>';
-
-		}else{
-			echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
-		}
-
 		
 	}
 
