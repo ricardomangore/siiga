@@ -79,7 +79,7 @@ class ValidatorRenovaciones{
 	 * return <String> 
 	 */
 	public function newRenovacionesRegister($fileName, $layoutRegister){
-		$returnValue = "######################### EXITO ############################";
+		$returnValue = "<center>######################### EXITO ############################</center>";
 		$tools = new ToolsComparativoVentas();
 		$renovacionObj = new Renovaciones();
 		$renovacionesDAO = new RenovacionesDAO();

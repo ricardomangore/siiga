@@ -164,7 +164,7 @@ class RenovacionesController
 			$fileName = $uploadFolder . "/" ."Renovaciones layout_$idlayout " . date("Y-m-d") . ".csv";
 			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
 			if($respuesta){
-				echo '<br>---> <a href="'. $fileName .'">DESCARGAR REPORTE</a> <---<br>';
+				echo '<br><center><a href="'. $fileName .'"><img src="img/otros/Lista.png"></img></a></center><br>';
 	
 				}else{
 					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
