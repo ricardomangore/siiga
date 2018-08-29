@@ -76,7 +76,7 @@ class ValidatorTransfer{
 	 * return <String> 
 	 */
 	public function newTransferRegister($fileName, $layoutRegister){
-		$returnValue = "######################### EXITO :) ############################";
+		$returnValue = "######################### EXITO ############################";
 		$tools = new ToolsComparativoVentas();
 		$transferObj = new Transfer();
 		$transferDAO = new TransferDAO();

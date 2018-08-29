@@ -91,7 +91,7 @@ class RenovacionesController
 							$diferenciaDAO->saveDiferenciasDAO($diferencia);
 						}						
 					}
-					case 7:{// CASO 7 : DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)
+					case 7:{// CASO 7 : DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
 						if(!$comparativoVentasDAO->compareRenovacionesByDnActualImei($renovacion)){
 							$diferencia->setIdRegistro($renovacion->getIdRegistro());
 							$diferencia->setIdTipoDiferencia(1);
@@ -144,7 +144,7 @@ class RenovacionesController
 							$diferenciaDAO->saveDiferenciasDAO($diferencia);
 						}						
 					}
-					case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)
+					case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
 						if(!$comparativoVentasDAO->compareRenovacionesByDnActualSim($renovacion)){
 							$diferencia->setIdRegistro($renovacion->getIdRegistro());
 							$diferencia->setIdTipoDiferencia(1);

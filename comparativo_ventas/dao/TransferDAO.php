@@ -211,7 +211,7 @@ class TransferDAO extends Connect{
 				$returnValue = $transferObject;
 			}
 		}
-		mysqli_close($this->getLink());
+		//mysqli_close($this->getLink());
 		return $returnValue;
 	}
 
@@ -312,9 +312,111 @@ class TransferDAO extends Connect{
 			}
 			$returnValue = $arrayTransfer;
 		}
-		mysqli_close($this->getLink());
+		//mysqli_close($this->getLink());
 		return $returnValue;
 	}
+
+
+
+	/**
+	 * method: findTransferByIdLayoutDAO()
+	 * description: Search all records in tw_transfer table by id_layout
+	 * params: <int> 
+	 * return array<Object> transfer
+	 */
+	public function findTransferByIdLayoutDAO($idLayout){
+		$returnValue = NULL;
+		$arrayTransfer = array();
+		$sqlStr = "SELECT * FROM tw_transfer WHERE id_layout=".$idLayout;
+		$query = $this->getLink()->query($sqlStr);
+		if($query->num_rows != 0){
+			while($fila = $query->fetch_array(MYSQLI_NUM)){
+				$transferObj = new Transfer();
+				$transferObj->setIdRegistro($fila[0]);
+				$transferObj->setIdLayout($fila[1]);
+				$transferObj->setFolio($fila[2]);
+				$transferObj->setNoContratoImpreso($fila[3]);
+				$transferObj->setSubcategoria($fila[4]);
+				$transferObj->setIncidente($fila[5]);
+				$transferObj->setIdOrdenRenovacion($fila[6]);
+				$transferObj->setCuentaCliente($fila[7]);
+				$transferObj->setFechaAltaInc($fila[8]);
+				$transferObj->setFechaFirma($fila[9]);
+				$transferObj->setFechaCaptura($fila[10]);
+				$transferObj->setStatusRenovacion($fila[11]);
+				$transferObj->setFechaStatus($fila[12]);
+				$transferObj->setIdEjecutivo($fila[13]);
+				$transferObj->setNombreEjecutivo($fila[14]);
+				$transferObj->setPuestoEjecutivo($fila[15]);
+				$transferObj->setNombrePdv($fila[16]);
+				$transferObj->setClavePdv($fila[17]);
+				$transferObj->setCanal($fila[18]);
+				$transferObj->setEmpresa($fila[19]);
+				$transferObj->setCoId($fila[20]);
+				$transferObj->setFechaActivacionContrato($fila[21]);
+				$transferObj->setNewSim($fila[22]);
+				$transferObj->setNewImei($fila[23]);
+				$transferObj->setNewNumSerie($fila[24]);
+				$transferObj->setModeloNuevo($fila[25]);
+				$transferObj->setColorNuevo($fila[26]);
+				$transferObj->setSku($fila[27]);
+				$transferObj->setPlanInicial($fila[28]);
+				$transferObj->setRentaInicial($fila[29]);
+				$transferObj->setPlazoAnterior($fila[30]);
+				$transferObj->setSimAnterior($fila[31]);
+				$transferObj->setImeiAnterior($fila[32]);
+				$transferObj->setSerieAnterior($fila[33]);
+				$transferObj->setModeloAnterior($fila[34]);
+				$transferObj->setColorAnterior($fila[35]);
+				$transferObj->setSkuAnterior($fila[36]);
+				$transferObj->setFechaReemplazo($fila[37]);
+				$transferObj->setPlanActual($fila[38]);
+				$transferObj->setRentaActual($fila[39]);
+				$transferObj->setPlazoActual($fila[40]);
+				$transferObj->setImporteFacturado($fila[41]);
+				$transferObj->setDnActual($fila[42]);
+				$transferObj->setDescAreaServ($fila[43]);
+				$transferObj->setTecnologia($fila[44]);
+				$transferObj->setSubinventario($fila[45]);
+				$transferObj->setUsuarioCciInicial($fila[46]);
+				$transferObj->setUsuarioCciRenoco($fila[47]);
+				$transferObj->setDepartamento($fila[48]);
+				$transferObj->setNombreContacto($fila[49]);
+				$transferObj->setRegion($fila[50]);
+				$transferObj->setSubregion($fila[51]);
+				$transferObj->setEstado($fila[52]);
+				$transferObj->setCiudadComercial($fila[53]);
+				$transferObj->setMercado($fila[54]);
+				$transferObj->setDireccionVta($fila[55]);
+				$transferObj->setCanalVta($fila[56]);
+				$transferObj->setCveUnica($fila[57]);
+				$transferObj->setNumCoordinador($fila[58]);
+				$transferObj->setCoordinador($fila[59]);
+				$transferObj->setNumGerente($fila[60]);
+				$transferObj->setGerente($fila[61]);
+				$transferObj->setOperadoPor($fila[62]);
+				$transferObj->setMasterPdv($fila[63]);
+				$transferObj->setIdDeudor($fila[64]);
+				$transferObj->setVp($fila[65]);
+				$transferObj->setAgrupacionCanal($fila[66]);
+				$transferObj->setKam($fila[67]);
+				$transferObj->setKamCorreo($fila[68]);
+				$transferObj->setTipoCliente($fila[69]);
+				$transferObj->setEsControl($fila[70]);
+				$transferObj->setRentaServControl($fila[71]);
+				$transferObj->setAccessFee($fila[72]);
+				$transferObj->setAccessFeeSinCtrl($fila[73]);
+				$transferObj->setAccessFeeServControl($fila[74]);
+				$transferObj->setStatusTenure($fila[75]);
+				$transferObj->setTipoMovimiento($fila[76]);
+				array_push($arrayTransfer, $transferObj);
+			}
+			$returnValue = $arrayTransfer;
+		}
+		//mysqli_close($this->getLink());
+		return $returnValue;
+	}
+
 
 
 }

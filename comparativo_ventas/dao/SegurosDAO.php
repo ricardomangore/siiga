@@ -156,6 +156,89 @@ class SegurosDAO extends Connect{
 		return $returnValue;
 	}//Termina el metodo saveSeguro()
 
+
+
+	public function findSegurosByIdlayout($idLayout){
+		$returnValue = NULL;
+		$arraySeguros = array();
+		$sqlStr = "SELECT * FROM tw_seguros WHERE id_layout = ".$idLayout;
+		$prepare = $this->getLink()->query($sqlStr);
+		if($prepare->num_rows != 0){
+			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
+				$seguroObj = new Seguros();
+				$seguroObj->setIdRegistro($fila[0]);
+				$seguroObj->setIdLayout($fila[1]);
+				$seguroObj->setIdContrato($fila[2]);
+				$seguroObj->setSnCode($fila[3]);
+				$seguroObj->setSeguro($fila[4]);
+				$seguroObj->setRenta($fila[5]);
+				$seguroObj->setFechaActSeg($fila[6]);
+				$seguroObj->setIdContrato2($fila[7]);
+				$seguroObj->setCuentaCliente($fila[8]);
+				$seguroObj->setEstatusActSeg($fila[9]);
+				$seguroObj->setFechaUltmodSeg($fila[10]);
+				$seguroObj->setEmpresa($fila[11]);
+				$seguroObj->setOrderId($fila[12]);
+				$seguroObj->setOrderActionId($fila[13]);
+				$seguroObj->setOrderStatusDescription($fila[14]);
+				$seguroObj->setCveUnicaPdv($fila[15]);
+				$seguroObj->setNombrePdvUnico($fila[16]);
+				$seguroObj->setPdvEstatus($fila[17]);
+				$seguroObj->setMasterPdv($fila[18]);
+				$seguroObj->setKam($fila[19]);
+				$seguroObj->setCveUnicaEjecutivo($fila[20]);
+				$seguroObj->setNombreEjecutivoUnico($fila[21]);
+				$seguroObj->setAttuidNivel2($fila[22]);
+				$seguroObj->setNumNivel2($fila[23]);
+				$seguroObj->setNombreNivel2($fila[24]);
+				$seguroObj->setAttuidNivel3($fila[25]);
+				$seguroObj->setNumNivel3($fila[26]);
+				$seguroObj->setNombreNivel3($fila[27]);
+				$seguroObj->setAttuidNivel4($fila[28]);
+				$seguroObj->setNumNivel4($fila[29]);
+				$seguroObj->setNombreNivel4($fila[30]);
+				$seguroObj->setAttuidNivel5($fila[31]);
+				$seguroObj->setNumNivel5($fila[32]);
+				$seguroObj->setNombreNivel5($fila[33]);
+				$seguroObj->setAttuidNivel6($fila[34]);
+				$seguroObj->setNumNivel6($fila[35]);
+				$seguroObj->setNombreNivel6($fila[36]);
+				$seguroObj->setAttuidNivel7($fila[37]);
+				$seguroObj->setNumNivel7($fila[38]);
+				$seguroObj->setNombreNivel7($fila[39]);
+				$seguroObj->setVentas($fila[40]);
+				$seguroObj->setFechaActContr($fila[41]);
+				$seguroObj->setMdn($fila[42]);
+				$seguroObj->setMes($fila[43]);
+				$seguroObj->setSemanaConsejo($fila[44]);
+				$seguroObj->setSku($fila[45]);
+				$seguroObj->setModeloEquipo($fila[46]);
+				$seguroObj->setMarcaEquipo($fila[47]);
+				$seguroObj->setColorEquipo($fila[48]);
+				$seguroObj->setCapacidadEquipo($fila[49]);
+				$seguroObj->setPlanTarifarioOrigen($fila[50]);
+				$seguroObj->setPlanTarifarioFinal($fila[51]);
+				$seguroObj->setFamilia($fila[52]);
+				$seguroObj->setMarcaPlan($fila[53]);
+				$seguroObj->setRegion($fila[54]);
+				$seguroObj->setSubregion($fila[55]);
+				$seguroObj->setEstado($fila[56]);
+				$seguroObj->setCiudadComercial($fila[57]);
+				$seguroObj->setCveMercado($fila[58]);
+				$seguroObj->setMercado($fila[59]);
+				$seguroObj->setVp($fila[60]);
+				$seguroObj->setDireccionVta($fila[61]);
+				$seguroObj->setAgrupacionCanal($fila[62]);
+				$seguroObj->setCanalVta($fila[63]);
+				$seguroObj->setVpgm($fila[64]);
+				array_push($arraySeguros, $seguroObj);
+			}//Termina WHILE
+			$returnValue = $arraySeguros;
+		}//Termina IF
+		return $returnValue;
+	}//Termina metodo findSegurosByIdlayout()
+
+
 }//TErmian la clase SegurosDAO
 
 ?>
