@@ -1355,5 +1355,195 @@ class ComparativoVentasDAO extends Connect{
 		return $returnValue;
 	}
 
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir de la SIM 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferBySim($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$sim = $transfer->getNewSim();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio WHERE HFolios.Folio =? AND LFolios.Serie= ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$sim);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir de la IMEI 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByImei($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$imei = $transfer->getNewImei();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio WHERE HFolios.Folio =? AND LFolios.Serie= ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$idOrdenRenovacion,$imei);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir de la Plan Nuevo y el IMEI 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByPlanImei($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$imei = $transfer->getNewImei();
+			$planActual = $transfer->getPlanActual();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Serie= ? AND Planes.Plan = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$planActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir del Plazo Contratado y el IMEI 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByPlazoImei($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$imei = $transfer->getNewImei();
+			$plazoActual = $transfer->getPlazoActual();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Plazos ON Plazos.PlazoId=LFolios.PlazoId WHERE HFolios.Folio = ? AND LFolios.Serie= ? AND Plazos.Plazo=?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$plazoActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
+	/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir del DN, IMEI y Folio 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByDnImei($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$imei = $transfer->getNewImei();
+			$dnActual = $transfer->getDnActual();
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio WHERE HFolios.Folio = ? AND LFolios.Serie= ? AND LFolios.Dn = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('sss',$idOrdenRenovacion,$imei,$dnActual);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
+/**
+	 * Determina si un objeto Transfer es igual a un registro de ventas dentro del SIIGA
+	 * a partir del DN, IMEI y Folio 
+	 * @param <Object> Transfer
+	 * @return <boolean>
+	 */
+	public function compareTransferByFechaActivacionImei($transfer){
+		$returnValue = FALSE;
+		if(isset($transfer) && is_a($transfer,'Transfer')){
+			$idOrdenRenovacion = $transfer->getIdOrdenRenovacion();
+			$imei = $transfer->getNewImei();
+			$fechaActivacionContrato = $transfer->getFechaActivacionContrato();
+			$sqlStr = "SELECT Inventario.Activacion FROM Inventario WHERE Inventario.EquipoId=(SELECT LFolios.EquipoId FROM LFolios WHERE LFolios.Folio=? AND LFolios.Serie=?) AND Inventario.Serie=? AND Inventario.Cantidad=-1 AND Inventario.Activacion=?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ssss',$idOrdenRenovacion,$imei,$imei,$fechaActivacionContrato);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+
+				//var_dump($param);
+
+				$prepare->close();
+				if($param != '' || !is_null($param)){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw  new Exception('No se puedo preparar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+
 
 }//Termina la clase CorporativoVentasDAO
