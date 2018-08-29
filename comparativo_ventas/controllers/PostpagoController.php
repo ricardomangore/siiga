@@ -1,5 +1,5 @@
 <?php
-include_once ("comparativo_ventas/includes/Validator.php");
+include_once("comparativo_ventas/includes/Validator.php");
 include_once("comparativo_ventas/dao/PostPagoDAO.php");
 include_once("comparativo_ventas/dao/ComparativoVentasDAO.php");
 include_once("comparativo_ventas/dao/DiferenciasDAO.php");
