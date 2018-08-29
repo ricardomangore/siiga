@@ -212,7 +212,7 @@ class Validator{
 			$postPAgoDAO->savePostPagoDAO($postPagoObj);
 
 		}
-		return "########################### EXITO ###########################";
+		return "<center>######################### EXITO ############################</center>";
 		
 	}
 

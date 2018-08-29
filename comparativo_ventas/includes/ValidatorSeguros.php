@@ -56,7 +56,7 @@ class ValidatorSeguros{
 
 
 	public function newSegurosRegister($fileName, $layoutRegister){
-		$returnValue = "######################### EXITO ############################";
+		$returnValue = "<center>######################### EXITO ############################</center>";
 		$tools = new ToolsComparativoVentas();
 		$segurosObj = new Seguros();
 		$segurosDAO = new SegurosDAO();
