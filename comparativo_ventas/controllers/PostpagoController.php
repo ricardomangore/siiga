@@ -105,7 +105,11 @@ class PostpagoController
 
 					}
 					case 7:{//CASO 7: IMEI NO COINCIDE (id_tipo_diferencia = 7)
-
+						if(!$comparativoVentasDAO->comparePostPagoByImei($postPago)){
+							$diferencia->setIdRegistro($postPago->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(7);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
 					}
 					case 8:{//CASO 8: MODELO EQUIPO NO COINCIDE (id_tipo_diferencia = 8)
 						if(!$comparativoVentasDAO->comparePostPagoByModeloEquipo($postPago)){
@@ -167,7 +171,11 @@ class PostpagoController
 
 					}
 					case 7:{//CASO 7: IMEI NO COINCIDE (id_tipo_diferencia = 7)
-
+						if(!$comparativoVentasDAO->comparePostPagoByImei($postPago)){
+							$diferencia->setIdRegistro($postPago->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(7);
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
 					}
 					case 8:{//CASO 8: MODELO EQUIPO NO COINCIDE (id_tipo_diferencia = 8)
 						if(!$comparativoVentasDAO->comparePostPagoByModeloEquipoSim($postPago)){
@@ -203,8 +211,12 @@ class PostpagoController
 			$fileName = $uploadFolder . "/" ."PostPago layout_$idlayout " . date("Y-m-d") . ".csv";
 			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
 			if($respuesta){
-				echo '<br><center><a href="'. $fileName .'"><img src="img/otros/Lista.png"></img></a></center><br>';
-	
+				echo '
+					<br><center><table><tr><td align="center"><a href="#"><img src="img/otros/Reportes.png"><br>Click View</a></td>
+					<td><div style="width: 50px"></td>
+					<td colspan="2" align="center"><a href="'. $fileName .'"><img src="img/otros/Lista.png"><br>Descargar csv</a></td>
+					<td><div style="width: 50px"></td>
+					<td align="center"><a href="#"><img src="img/Fuentes/1348167888_app_48.png"><br>Cargar en Siiga</a></td></tr></table></center><br>';
 				}else{
 					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
 			}

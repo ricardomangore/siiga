@@ -66,8 +66,12 @@ class SegurosController
 			$fileName = $uploadFolder . "/" ."Seguros layout_$idlayout " . date("Y-m-d") . ".csv";
 			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
 			if($respuesta){
-				echo '<br><center><a href="'. $fileName .'"><img src="img/otros/Lista.png"></img></a></center><br>';
-	
+				echo '
+					<br><center><table><tr><td align="center"><a href="#"><img src="img/otros/Reportes.png"><br>Click View</a></td>
+					<td><div style="width: 50px"></td>
+					<td colspan="2" align="center"><a href="'. $fileName .'"><img src="img/otros/Lista.png"><br>Descargar csv</a></td>
+					<td><div style="width: 50px"></td>
+					<td align="center"><a href="#"><img src="img/Fuentes/1348167888_app_48.png"><br>Cargar en Siiga</a></td></tr></table></center><br>';
 				}else{
 					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
 			}
