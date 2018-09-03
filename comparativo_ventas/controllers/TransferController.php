@@ -158,15 +158,22 @@ class TransferController
 		$listaIncidentes = $comparativoVentasDAO->getListTransferIncidents($idlayout);
 		if($listaIncidentes != NULL){			
 			$arrayIncidencias = $listaIncidentes;
+			$titles = array(
+				'Id_Orden_Renovacion', 'Nombre_Pdv', 'Fecha_Activacion_Contrato', 'New_Sim', 'New_Imei', 'Plan_Actual',
+				'Plazo_Actual', 'Dn_Actual', 'Tipo_Diferencia'
+			);
 			$fileName = $uploadFolder . "/" ."Transfer layout_$idlayout " . date("Y-m-d") . ".csv";
-			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias);
+			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias, $titles);
 			if($respuesta){
 				echo '
 					<br><center><table><tr><td align="center"><a href="#"><img src="img/otros/Reportes.png"><br>Click View</a></td>
 					<td><div style="width: 50px"></td>
 					<td colspan="2" align="center"><a href="'. $fileName .'"><img src="img/otros/Lista.png"><br>Descargar csv</a></td>
 					<td><div style="width: 50px"></td>
-					<td align="center"><a href="#"><img src="img/Fuentes/1348167888_app_48.png"><br>Cargar en Siiga</a></td></tr></table></center><br>';
+					<td align="center"><a href="#"><img src="img/Fuentes/1348167888_app_48.png"><br>Cargar en Siiga</a></td></tr></table></center><br>
+					<br><br><br>
+					<center><a href="#" onclick="location.reload()"><img src="img/Siguiente.png"></a></center><br><br><br>
+					';
 				}else{
 					echo "<br>ALGO SALIO MAL AL GENERAR EL REPORTE";
 			}

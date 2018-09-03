@@ -4009,6 +4009,9 @@ function pasoNext()
 	{
 		var paso=parseInt($("#paso").attr("value")) + 1;
 		var DatoId=$("#DatoId").attr("value");
+    if(paso == 5 && DatoId >= 5){
+      $('#siguiente').hide('fast');
+    }
 		asistenteImprtar(DatoId, paso);
 	}
 
@@ -4084,7 +4087,7 @@ function sendFile()
 	var datoId=$('#DatoId').attr("value");
 	var data = new FormData();
 
-	$("#contenido").html("La informacion se esta importando, el proceso puede tardar algunos minutos");
+	$("#contenido").html("La informacion se esta importando, el proceso puede tardar algunos minutos <center><img src='img/upload.gif'></center> ");
 
 	data.append('archivo',file);
 	data.append('Clave', clave);
