@@ -169,9 +169,9 @@ class RenovacionesController
 			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias, $titles);
 			if($respuesta){
 				echo '
-					<br><center><table><tr><td align="center"><a href="#"><img src="img/otros/Reportes.png"><br>Click View</a></td>
+					<br><center><table><tr><td align="center"><a href="#"><img src="img/Otros/Reportes.png"><br>Click View</a></td>
 					<td><div style="width: 50px"></td>
-					<td colspan="2" align="center"><a href="'. $fileName .'"><img src="img/otros/Lista.png"><br>Descargar csv</a></td>
+					<td colspan="2" align="center"><a href="'. $fileName .'"><img src="img/Otros/Lista.png"><br>Descargar csv</a></td>
 					<td><div style="width: 50px"></td>
 					<td align="center"><a href="#"><img src="img/Fuentes/1348167888_app_48.png"><br>Cargar en Siiga</a></td></tr></table></center><br>
 					<br><br><br>
