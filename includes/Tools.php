@@ -17,7 +17,17 @@ class Tools extends Conectar{
 		$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
 	return $Query;
 	}//Consulta
+	function MarcaEquipo($sql){
+		if($sql==''){
 
+			return true;
+		}else{
+			$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
+			$resultado=mysql_fetch_array($query);
+			$MarcaId=$resultado["MarcaId"];
+			return $MarcaId;
+		}
+	}//MarcaEquipo
 	function Insertar($sql){
 		$query=mysql_query("$sql", $this->conexion) or die("Error al Insertar: $sql ".mysql_error());
 		$Identificador= mysql_insert_id($this->conexion);
@@ -243,6 +253,70 @@ class Tools extends Conectar{
 		return $MisPuntos;
 	}
 
+
+
+
+	function getMisPuntos2()
+	{
+		$Venta=$this->getClasificacionVenta();
+
+		if($this->isRestringido())
+		$Q0="SELECT T1.PuntoVentaId AS Puntos
+			FROM PuntosVenta AS T1
+			INNER JOIN
+			(SELECT T1.PuntoVentaId, Corporativo
+			 FROM HistorialPuntosEmpleados AS T1
+			 LEFT JOIN Usuarios AS T2 ON T2.EmpleadoId=T1.EmpleadoId
+			 LEFT JOIN PuntosVenta AS T3 ON T3.PuntoVentaId=T1.PuntoVentaId
+			 WHERE UsuarioId=$this->UsuarioId AND Fisico=1 AND FechaBaja='0000-00-00'
+			) AS T2 ON T2.PuntoVentaId=T1.PuntoVentaId
+			";
+		else
+		{
+
+		if($this->isNacional())
+		$Q0="SELECT PuntoVentaId AS Puntos
+			FROM PuntosVenta AS T1 WHERE ClasificacionPersonalVenta IN ($Venta)";
+		else
+		$Q0="SELECT PuntoVentaId AS Puntos
+			FROM PuntosVenta AS T1
+			INNER JOIN
+			(SELECT PlazaId, Corporativo
+			 FROM HistorialPuntosEmpleados AS T1
+			 LEFT JOIN Usuarios AS T2 ON T2.EmpleadoId=T1.EmpleadoId
+			 LEFT JOIN PuntosVenta AS T3 ON T3.PuntoVentaId=T1.PuntoVentaId
+			 WHERE UsuarioId=$this->UsuarioId
+			) AS T2 ON T2.PlazaId=T1.PlazaId
+			WHERE ClasificacionPersonalVenta IN ($Venta)
+			";
+		}
+	$R0=$this->Consulta($Q0);
+	$MisPuntos='0';
+		while($A0=mysql_fetch_row($R0))
+		{
+			$MisPuntos.=",".$A0[0];
+		}
+
+		return $MisPuntos;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	function getFiltro($Opc)
 	{
 		$Q0="SELECT Corporativo FROM Usuarios WHERE UsuarioId=".$this->UsuarioId;
@@ -425,7 +499,7 @@ class Tools extends Conectar{
 			$EmpleadoId=mysql_insert_id();
 
 		$Q1="INSERT INTO HistorialPuestosEmpleados (HistorialPuestoEmpleadoId, EmpleadoId, PuestoId, SubCategoriaId, FechaAlta, FechaBaja, CausaBajaId, Operador, Porcentaje, ClasificacionPersonalVentaId, Finiquito)
-			 VALUES (NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaAltaPuesto', '0000-00-00', 0, $Operador, $Porcentaje, $ClasificacionPersonalVentaId, 0)";
+			 VALUES (NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaAltaPuesto', '0000-00-00', 0, '$Operador', $Porcentaje, $ClasificacionPersonalVentaId, 0)";
 
 		$Q2="INSERT INTO HistorialPuntosEmpleados
 			 SELECT NULL, $EmpleadoId, PuntoVentaId, '$FechaAltaPunto', '0000-00-00', 0 FROM PuntosVenta WHERE PuntoVentaId IN ($PuntoVentaId $Fisico)";
@@ -582,7 +656,7 @@ class Tools extends Conectar{
 			 WHERE EmpleadoId=$EmpleadoId AND FechaBaja='0000-00-00'";
 
 		$Q2="INSERT INTO HistorialPuestosEmpleados (HistorialPuestoEmpleadoId, EmpleadoId, PuestoId, SubCategoriaId, FechaAlta, FechaBaja, CausaBajaId, Operador, Porcentaje,ClasificacionPersonalVentaId)
-			 VALUES (NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaAltaPuesto', '0000-00-00', 0, $Operador, $Porcentaje, $ClasificacionPersonalVentaId)";
+			 VALUES (NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaAltaPuesto', '0000-00-00', 0, '$Operador', $Porcentaje, $ClasificacionPersonalVentaId)";
 
 		$CometarioBTCR.='- Agrego historial de Puestos';
 		}
@@ -1237,6 +1311,60 @@ function getDatos($ModuloId)
 							AND T1.PuntoVentaId IN ($MisPuntos)
 							";
 				break;
+				case '73':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,
+					PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=73
+					";
+				break;
+				case '74':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,
+					PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=74
+					";
+				break;
+				case '75':
+					$MisPuntos=$this->getMisPuntos();
+					$Q0="SELECT 'Folio','Punto de Venta', 'Fecha', 'Compañia', 'Numero Telefonico', 'Monto Recarga', 'Vendedor', 'Coordinado', 'Comentario'
+					UNION
+					SELECT Folio,PuntoVenta, DATE_FORMAT(T1.Fecha, '%d/%m/%Y'),Compania, NTel, MontoRecarga, CONCAT_WS(' ', T6.Nombre, T6.Paterno, T6.Materno),
+					       CONCAT_WS(' ', T7.Nombre, T7.Paterno, T7.Materno), T1.Comentario
+					FROM Recargas AS T1
+					INNER JOIN Companias AS T2 ON T2.CompaniaId=T1.CompaniaId
+					INNER JOIN MontoRecargas AS T3 ON T3.MontoRecargaId=T1.MontoRecargaId
+					INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T1.PuntoVentaId
+					INNER JOIN HistorialPuestosEmpleados AS T5 ON T5.HistorialPuestoEmpleadoId=T1.VendedorId
+					INNER JOIN Empleados AS T6 ON T6.EmpleadoId=T5.EmpleadoId
+					INNER JOIN Empleados AS T7 ON T7.EmpleadoId=T1.CoordinadorId
+					INNER JOIN Bitacora AS T8 ON T1.Folio=T8.Comentario
+					WHERE T1.PuntoVentaId IN ($MisPuntos) AND T8.ModuloId=75
+					";
+				break;
+
 		default:
 				$Q0="SELECT CURDATE()";
 		break;
@@ -3028,7 +3156,56 @@ function getDatos($ModuloId)
 						</table>';
 		return $Cadena;
 	}
+	function getListaPlanesV2($FamiliaPlanId)
+	{
+		$Venta=$this->getClasificacionVenta();
+		$Cadena='<table id="MiTabla7" >
+					<thead>
+						<tr>
+							<th>#Plan</th>
+							<th>#TipoPlan</th>
+							<th>Plan</th>
+							<th>Descripcion</th>
+							<th>Elige</th>
+						</tr>
+					</thead>
+					<tbody>';
+		$t=true;
+		if($FamiliaPlanId==4){
+		    	$Q0= "SELECT T1.PlanId, T1.TipopLanId, CONCAT_WS(' ',T3.TipoPlan, T2.Plan), Sigi FROM TiposPlanPlanes AS T1
+			  LEFT JOIN Planes AS T2 ON T2.PlanId=T1.PlanId
+			  LEFT JOIN TiposPlan AS T3 ON T3.TipoPlanId=T1.TipoPlanId
+  			  WHERE T2.Activo=1 AND ClasificacionPersonalVentaId IN ($Venta) AND (FamiliaPlanId=$FamiliaPlanId OR T2.PlanId=367)";
+		}else{
+		    $Q0= "SELECT T1.PlanId, T1.TipopLanId, CONCAT_WS(' ',T3.TipoPlan, T2.Plan), Sigi FROM TiposPlanPlanes AS T1
+			  LEFT JOIN Planes AS T2 ON T2.PlanId=T1.PlanId
+			  LEFT JOIN TiposPlan AS T3 ON T3.TipoPlanId=T1.TipoPlanId
+  			  WHERE T2.Activo=1 AND ClasificacionPersonalVentaId IN ($Venta) AND FamiliaPlanId=$FamiliaPlanId";
+		}
+	
 
+//  			echo $Q0;
+
+		$R0=$this->Consulta($Q0);
+		while($A0=mysql_fetch_row($R0))
+		{
+			if($t) $Clase='';
+			else $Clase='class="alt"';
+				$Cadena.='
+						<tr '.$Clase.'>
+							<td>'.$A0[0].'</td>
+							<td>'.$A0[1].'</td>
+							<td>'.$A0[2].'</td>
+							<td>'.$A0[3].'</td>
+							<td align="center"><input type="radio" name="PlanId" id="PlanId" class="Pt" value="'.$A0[0].','.$A0[1].'" onclick="setEleccion(this,6)"/></td>
+						</tr>
+				';
+			$t=(!$t);
+		}
+				$Cadena.='</tbody>
+						</table>';
+		return $Cadena;
+	}
 //:: Ventanilla Unica :::::::::::::::::::::::::::::::::::::::::::::::::::::::::://
 
 
@@ -3170,7 +3347,7 @@ function getDatos($ModuloId)
 	}
 
 function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $CoordinadorId, $ClienteId,
-        $TipoContratacionId, $TipoPagoId, $Comentarios='', $Clave, $ContratacionId)
+        $TipoContratacionId, $TipoPagoId, $Comentarios='', $Clave, $ContratacionId,$PlataformaId)
 {
 	$FechaContrato=$this->CambiarFormatoFecha($FechaContrato);
 
@@ -3179,9 +3356,9 @@ function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coordin
 
 	$this->StartTransaccion();
 	$Q0="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
-                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado,PlataformaId)
 					 VALUES(UCASE('$Folio'), CURDATE(), '$FechaContrato', '$FechaContrato', $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, $ClienteId,
-        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Clave',0, 1, $ContratacionId, 0)";
+        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Clave',0, 1, $ContratacionId, 0,$PlataformaId)";
 	$Q1="INSERT INTO LFolios
 		 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 9,
 		 CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, T1.Comentario, '$FechaContrato', '', '', Dn, 0, 0,0
@@ -3211,7 +3388,7 @@ function altaFolioVU($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coordin
 }
 
 function altaFolioOrsIn($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $CoordinadorId, $ClienteId,
-        $TipoContratacionId, $TipoPagoId, $Comentarios='')
+        $TipoContratacionId, $TipoPagoId, $Comentarios='',$PlataformaId)
 {
 	$FechaContrato=$this->CambiarFormatoFecha($FechaContrato);
 
@@ -3224,9 +3401,9 @@ function altaFolioOrsIn($Folio,$FechaContrato, $PuntoVentaId, $VendedorId, $Coor
 	$MovimientoId=mysql_insert_id();
 
 	$Q0="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
-                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, Validado)
+                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, Validado,PlataformaId)
 					 VALUES('$Folio', CURDATE(), '$FechaContrato', '0000-00-00', $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, $ClienteId,
-        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Folio',$MovimientoId, 1, 0)";
+        					$TipoContratacionId, $TipoPagoId, '$Comentarios', '$Folio',$MovimientoId, 1, 0,$PlataformaId)";
 	$Q1="INSERT INTO LFolios
 		 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 9,
 		 		CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, '', CURDATE(), '', Contrato, Dn, 0, 0,0
@@ -3366,7 +3543,7 @@ function getConsultaVU()
 		'Coordinador',	'Ejecutivo',	'Categoria',	'SubCategoria',	'TipoPersona',	'Cliente',	'RFC',
 		'TipoPago',	'RegistroId',	'Marca',	'Equipo',	'PlanBum',	'RentaPlan',	'RentaSIVA',
 		'RentaSImpuesto',	'Plazo',	'Estatus',	'Comentario',	'FechaEntrega',	'FechaFacturado',
-		'Evento',	'Familia',	'ClavePlan', 'Tipo Contratacion', 'Fecha de Ingreso SVU', 'TipoPunto', 'Fecha Captura'
+		'Evento',	'Familia',	'ClavePlan', 'Tipo Contratacion', 'Fecha de Ingreso SVU', 'TipoPunto', 'Fecha Captura','Plataforma'
 		UNION
 		SELECT
 		DATE_FORMAT(FechaSS, '%Y') AS Año,
@@ -3416,7 +3593,8 @@ ClavePlan,
 TipoContratacion,
 DATE_FORMAT(FechaSS,'%d/%m/%Y'),
 TipoPunto,
-DATE_FORMAT(FechaCaptura,'%d/%m/%Y')
+DATE_FORMAT(FechaCaptura,'%d/%m/%Y'),
+Plataforma
 FROM HFolios AS T1
 LEFT JOIN PuntosVenta AS T2 ON T2.PuntoVentaId=T1.PuntoVentaId
 LEFT JOIN Plazas AS T3 ON T3.PlazaId=T2.PlazaId
@@ -3470,6 +3648,7 @@ LEFT JOIN (
         ) AS T14 ON T14.Folio=T1.Folio
 LEFT JOIN TiposContratacion AS T15 ON T15.TipoContratacionId=T1.TipoContratacionId
 LEFT JOIN TipoPuntos AS T16 ON T16.TipoPuntoId=T2.TipoPuntoId
+LEFT JOIN Plataformas AS T17 ON T1.PlataformaId=T17.PlataformaId
 WHERE MovimientoId=0 AND EnReporte=1 AND ClasificacionPersonalVenta IN ($Venta)
 GROUP BY T14.RegistroId";
 return $this->Consulta($Q0);
@@ -4011,7 +4190,8 @@ function validaSeriePunto($Serie, $PuntoVentaId)
 			{
 				$FechaMin=$A0[1];
 			}
-			if(($Serie==$A0[0] & $FechaMin==$A0[1]) || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO'))
+			if(($Serie==$A0[0] & $FechaMin==$A0[1]) || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO') || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY IUSA') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT')  || ($Serie==$A0[0] & $A0[2]=='TRIO SIMCARD V6.1 DISPLAY UNEF') || ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY UNEF') ||
+			    ($Serie==$A0[0] & $A0[2]=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO'))
 				return $A0[2];
 			$t++;
 		}
@@ -4124,6 +4304,15 @@ function addLineaOr($Serie, $Folio)
 
 function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, $PlazoId, $Movimiento, $Diferencial, $TipoPagoDiferencial, $SeguroId, $codigo_sim)
 	{
+		$sql="SELECT E.MarcaId AS MarcaId FROM Inventario AS I  INNER JOIN Equipos AS E ON E.EquipoId=I.EquipoId WHERE I.Serie='$Serie'";
+		$Query=mysql_query("$sql", $this->conexion) or die("Error al Consultar: $sql ".mysql_error());
+		$resultadoMarca=mysql_fetch_array($Query);
+		$MarcaId=$resultadoMarca["MarcaId"];
+		$cont=0;
+		if($MarcaId==13){
+			$cont=1;
+		}
+
 		$Q0="INSERT INTO TLineas
                    SELECT NULL, '$Movimiento', EquipoId, $PlanId, $TipoPlanId, $PlazoId, '', '', $Diferencial, $TipoPagoDiferencial, '', $SeguroId
                    FROM Inventario WHERE Serie='$Serie' LIMIT 1";
@@ -4154,7 +4343,7 @@ function altaLineaOrg($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Servicios, 
 		if($this->Consulta($Q1) & $this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4))
 			{
 				$this->AceptaTransaccion();
-				if($codigo_sim!='0')
+				if($codigo_sim!='0' && $PlanId!=81  && $PlanId!=282  && $PlanId!=283  && $PlanId!=284  && $PlanId!=285  && $PlanId!=286  && $PlanId!=287 && $PlanId!=288  && $PlanId!=314  && $PlanId!=315  && $PlanId!=328  && $PlanId!=329  && $PlanId!=330  && $PlanId!=331  && $PlanId!=332  && $PlanId!=333  && $PlanId!=334  && $PlanId!=335  && $PlanId!=336  && $PlanId!=337  && $PlanId!=278  && $PlanId!=279  && $PlanId!=280  && $PlanId!=281  && $PlanId!=312  && $PlanId!=365  && $PlanId!=289  && $PlanId!=290  && $PlanId!=291  && $PlanId!=292 && $PlanId!=313 && $cont!=1)
 					$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
 				return 'ok';
 			}
@@ -4517,13 +4706,13 @@ function getOriginacion()
 	$MisPuntos=$this->getMisPuntos();
 
 $Q0="SELECT 'Canal de Venta',
-    'Año',  'Mes', 'Contrato', 'Region', 'SubRegion',  'Plaza',  'PuntoVenta', 'FechaIngreso', 'Folio',
+    'Año',  'Mes', 'Contrato', 'Region', 'SubRegion',  'Plaza',  'PuntoVenta SIIGA','PuntoVenta AT&T', 'FechaIngreso', 'Folio',
     'Fecha Activacion','Coordinador',  'Ejecutivo',
     'Categoria',  'SubCategoria', 'Cliente',  'TipoPersona', 'RFC',
-    'TipoPago', 'Marca',  'Equipo', 'Plan', 'PlanBum',  'RentaPlan',  'RentaSIVA',
+    'TipoPago', 'Marca',  'Equipo','OrigenDeEquipo','TipoDeLinea','Plan', 'PlanBum',  'RentaPlan',  'RentaSIVA',
     'RentaSImpuesto', 'Plazo',  'Estatus',  'Comentario', 'FechaEntrega', 'FechaFacturado', 'AñoEntrega', 'MesEntrega',
     'AñoFacturacion', 'MesFacturacion', 'Unidades', 'SemanaPago', 'SemanaBUM',
-    'Evento', 'Familia',  'ClavePlan', 'Tipo Contratacion', 'Fecha de Ingreso SVU', 'MEID/IMEID', 'RegistroId', 'TipoPunto', 'DN', 'AddOns', 'Tipo de Venta', 'Plataforma'
+    'Evento', 'Familia',  'ClavePlan', 'Tipo Contratacion', 'Fecha de Ingreso SVU', 'MEID/IMEID', 'RegistroId', 'TipoPunto', 'DN', 'AddOns','Seguro', 'Tipo de Venta', 'Plataforma'
     UNION ALL
     SELECT T17.ClasificacionPersonalVenta,
 DATE_FORMAT(T0.Fecha, '%Y') AS Año,
@@ -4546,6 +4735,7 @@ IF(T10.EmpleadoId IN (778, 789),'CORPORATIVO',Region),
 IF(T10.EmpleadoId IN (778, 789),'CORPORATIVO',SubRegion),
 IF(T10.EmpleadoId IN (778, 789),'CORPORATIVO',Plaza),
 IF(T10.EmpleadoId IN (778, 789),'CORPORATIVO',PuntoVenta),
+NombreATT,
 DATE_FORMAT(T0.Fecha, '%d/%m/%Y'),
 CONCAT('\'',T1.Folio),
 DATE_FORMAT(T1.FechaSS, '%d/%m/%Y') AS Año,
@@ -4559,6 +4749,8 @@ T11.Rfc,
 TipoPago,
 Marca,
 Equipo,
+Origen,
+Raiz,
 Plan,
 PlanBum,
 RentaPlan,
@@ -4609,10 +4801,11 @@ TipoContratacion,
 DATE_FORMAT(FechaSS,'%d/%m/%Y'),
 CONCAT('\'',T14.Serie),
 T14.RegistroId,
-TipoPunto, Dn, T18.AddOn, IF(T1.TipoVentaId=1,'Prepago', 'Pospago'),
+TipoPunto, Dn, T18.AddOn,Seguro,IF(T1.TipoVentaId=1,'Prepago', 'Pospago'),
 T19.Plataforma
 FROM HFolios AS T1
 LEFT JOIN PuntosVenta AS T2 ON T2.PuntoVentaId=T1.PuntoVentaId
+LEFT JOIN PuntosATT AS TATT ON T2.PuntoVentaId=TATT.PuntoVentaId
 LEFT JOIN Plazas AS T3 ON T3.PlazaId=T2.PlazaId
 LEFT JOIN SubRegiones AS T4 ON T4.SubRegionId=T3.SubRegionId
 LEFT JOIN Regiones AS T5 ON T5.RegionId=T4.RegionId
@@ -4644,7 +4837,10 @@ LEFT JOIN (
                   Contrato,
                   T9.MarcaId,
                   T1.PlanId,
-                  Dn
+                  T1.Dn,
+                  Seguro,
+                  IF(T13.Raiz='Ancla','Compartelo Incluido',IF(T13.Raiz='Popote','Compartelo Adicional',IF(T1.PlanId=367 OR T1.PlanId=368,'Internet En Casa','MIX'))) AS Raiz,
+                  IF(T10.MarcaId!=13,'Con Equipo','Sin Equipo') AS Origen
             FROM LFolios AS T1
             LEFT JOIN Planes AS T2 ON T2.PlanId=T1.PlanId
             LEFT JOIN (
@@ -4658,8 +4854,10 @@ LEFT JOIN (
             LEFT JOIN Estatus AS T7 ON T7.EstatusId=T1.EstatusId
             LEFT JOIN Equipos AS T9 ON T9.EquipoId=T1.EquipoId
             LEFT JOIN Marcas AS T10 ON T10.MarcaId=T9.MarcaId
-	    INNER JOIN HFolios AS T11 ON T11.Folio=T1.Folio
-	    WHERE EnReporte=1 AND MovimientoId!=0
+	    	INNER JOIN HFolios AS T11 ON T11.Folio=T1.Folio
+	    	LEFT JOIN Seguros AS T12 ON T12.SeguroId=T1.SeguroId
+	    	LEFT JOIN LineaTemporalOpc1 AS T13 ON (T13.Imei=T1.Serie OR T13.ImeiSim=T1.Serie)
+	    WHERE EnReporte=1 AND MovimientoId!=0 AND T1.PlanId!=81 AND T1.PlanId!=255
           ) AS T14 ON T14.Folio=T1.Folio
 LEFT JOIN TiposContratacion AS T15 ON T15.TipoContratacionId=T1.TipoContratacionId
 LEFT JOIN Bitacora AS T0 ON T0.ObjetoId=T14.RegistroId
@@ -4693,7 +4891,7 @@ list($PuntoVentaId)=$this->getMiPuntoVentaFisico();
     'Categoria',  'SubCategoria', 'Cliente',  'RFC',
     'TipoPago', 'Equipo', 'PlanBum',  'RentaPlan',
     'RentaSImpuesto', 'Plazo',  'Estatus',  'FechaEntrega',
-    'Evento', 'Familia','Tipo Contratacion', 'MEID/IMEID', 'RegistroId'
+    'Evento', 'Familia','Tipo Contratacion', 'MEID/IMEID', 'RegistroId','Plataforma'
     UNION ALL
     SELECT
 Contrato,
@@ -4717,7 +4915,8 @@ IF(T1.TipoContratacionId <3, 'ACTIVACION', 'RENOVACION') AS Evento,
 Familia,
 TipoContratacion,
 CONCAT('\'',T14.Serie),
-T14.RegistroId
+T14.RegistroId,
+Plataforma
 FROM HFolios AS T1
 LEFT JOIN PuntosVenta AS T2 ON T2.PuntoVentaId=T1.PuntoVentaId
 LEFT JOIN Empleados AS T6 ON T6.EmpleadoId=T1.CoordinadorId
@@ -4758,6 +4957,7 @@ LEFT JOIN (
           ) AS T14 ON T14.Folio=T1.Folio
 LEFT JOIN TiposContratacion AS T15 ON T15.TipoContratacionId=T1.TipoContratacionId
 LEFT JOIN Bitacora AS T0 ON T0.ObjetoId=T14.RegistroId
+LEFT JOIN Plataformas AS T16 ON T1.PlataformaId=T16.PlataformaId
 WHERE T1.MovimientoId!=T1.Folio AND T1.MovimientoId>0 AND T0.Host='14' AND T1.PuntoventaId IN ($PuntoVentaId) AND EnReporte=1
 AND ClasificacionPersonalVenta IN ($Venta)
 GROUP BY T14.RegistroId
@@ -5881,6 +6081,7 @@ function getPlantilla()
 
 function desbloquearTraspasos()
 {
+	
 	$Q0="SELECT T1.Serie FROM Disponibles AS T1
 		LEFT JOIN LFolios AS T2 ON T2.Serie=T1.Serie
 		WHERE T2.Serie IS NULL";
@@ -6333,7 +6534,137 @@ $EmpleadoId=str_replace(',', '', $EmpleadoId);
 		AND T2.PuntoventaId IN ($MisPuntos)
 		GROUP BY T14.RegistroId";
 		*/
-		$Q0="SELECT 'Contrato', 'Folio', 'Fecha Activacion', 'Region', 'SubRegion', 'Plaza', 'PuntoVenta', 'TipoPunto', 'FechaIngreso',
+        	/*	$Q0="SELECT 'Contrato', 'Folio', 'Fecha Activacion', 'Region', 'SubRegion', 'Plaza', 'PuntoVenta', 'TipoPunto', 'FechaIngreso',
+       'Coordinador', 'Ejecutivo', 'Categoria', 'SubCategoria', 'Cliente', 'TipoPersona', 'RFC', 'TipoPago',
+       'Marca', 'Equipo', 'OrigenDeEquipo','TipoDeLinea','Plan', 'PlanDAV', 'PlanBum','Familia', 'RentaSImpuesto', 'Plazo', 'Evento', 'Estatus', 'Comentario',
+       'FechaEntrega', 'FechaFacturado', 'MEID/IMEID', 'RegistroId', 'DN', 'AddOn','Seguro','Canal de Venta', 'Clasificacion de Venta', 'Validado DAV',
+       'Tipo Contratacion', 'Plataforma'
+UNION
+SELECT Contrato, T1.Folio, DATE_FORMAT(T2.FechaSS,'%d/%m/%Y') AS FechaActivacion, Region, SubRegion, Plaza, PuntoVenta, TipoPunto,
+   		DATE_FORMAT(T2.FechaSS,'%d/%m/%Y') AS FechaIngreso,
+		CONCAT_WS(' ',  T9.Nombre, T9.Paterno, T9.Materno) AS Coordinador,
+		CONCAT_WS(' ',  T11.Nombre, T11.Paterno, T11.Materno) AS Ejecutivo,
+		Puesto AS Categoria, IF(T13.SubCategoriaId=4,'',T13.SubCategoria) AS SubCategoria,
+    CONCAT_WS(' ',  T14.Nombre, T14.Paterno, T14.Materno) AS Cliente, TipoPersona, T14.RFC, TipoPago, 	Marca, Equipo,IF(T18.MarcaId!=13,'Con Equipo','Sin Equipo'),
+    IF(T33.Raiz='Ancla','Compartelo Incluido',IF(T33.Raiz='Popote','Compartelo Adicional',IF(T1.PlanId=367 OR T1.PlanId=368,'Internet En Casa','MIX'))) AS Raiz,
+    CONCAT_WS(' ',Plan, T21.AddonTxt) AS Plan, PlanNextel, CONCAT_WS(' ',T2.Clave, T19.ClaveBum, IFNULL(T21.AddOn, '')) AS PlanBUM, Familia,
+    Costo/1.16/1.03 AS RentaPlan, Plazo,
+    IF(T2.TipoContratacionId <3, 'ACTIVACION', 'RENOVACION') AS Evento, Estatus, T1.Comentario,
+		DATE_FORMAT(T1.FechaEstatus,'%d/%m/%Y') AS FechaEntrega,
+		DATE_FORMAT(T1.FechaEstatus,'%d/%m/%Y') AS FechaFacturado,
+    Serie, T1.RegistroId, T1.DN,T32.Addon,Seguro, IF(T2.MovimientoId>0,'Originacion', 'Ventanilla Unica'),
+    T28.ClasificacionPersonalVenta, IF(T2.Validado, 'SI', 'NO'), T29.TipoContratacion, T30.Plataforma
+
+FROM LFolios AS T1
+INNER JOIN HFolios AS T2 ON T2.Folio=T1.Folio
+INNER JOIN PuntosVenta AS T3 ON T3.PuntoVentaId=T2.PuntoVentaId
+INNER JOIN Plazas AS T4 ON T4.PlazaId=T3.PlazaId
+INNER JOIN SubRegiones AS T5 ON T5.SubRegionId=T4.SubRegionId
+INNER JOIN Regiones AS T6 ON T6.RegionId=T5.RegionId
+INNER JOIN TipoPuntos AS T7 ON T7.TipoPuntoId=T3.TipoPuntoId
+#INNER JOIN Bitacora AS T8 ON T8.ObjetoId=T1.RegistroId
+INNER JOIN Empleados AS T9 ON T9.EmpleadoId=T2.CoordinadorId
+INNER JOIN HistorialPuestosEmpleados AS T10 ON T10.HistorialPuestoEmpleadoId=T2.HistorialPuestoEmpleadoId
+INNER JOIN Empleados AS T11 ON T11.EmpleadoId=T10.EmpleadoId
+INNER JOIN Puestos AS T12 ON T12.PuestoId=T10.PuestoId
+INNER JOIN SubCategorias AS T13 ON T13.SubCategoriaId=T10.SubCategoriaId
+INNER JOIN Clientes AS T14 ON T14.ClienteId=T2.ClienteId
+INNER JOIN TiposPersona AS T15 ON T15.TipoPersonaId=T14.TipoPersonaId
+INNER JOIN TiposPago AS T16 ON T16.TipoPagoId=T2.TipoPagoId
+INNER JOIN Equipos AS T17 ON T17.EquipoId=T1.EquipoId
+INNER JOIN Marcas AS T18 ON T18.MarcaId=T17.MarcaId
+INNER JOIN Planes AS T19 ON T19.PlanId=T1.PlanId
+INNER JOIN Plazos AS T20 ON T20.PlazoId=T1.PlazoId
+LEFT JOIN (
+		    SELECT RegistroId, GROUP_CONCAT(Clave ORDER BY Orden ASC  SEPARATOR ' ') AS AddOn,
+		              GROUP_CONCAT(AddonTxt  SEPARATOR ' ') AS AddonTxt
+		    FROM LineasAddon AS T1
+		    INNER JOIN Addon AS T2 ON T2.AddOnId=T1.AddOnId
+            WHERE T1.AddonId!=7
+		    GROUP BY RegistroId
+		      ) AS T21 ON T21.RegistroId=T1.RegistroId
+LEFT JOIN LineasPlanesNextel AS T22 ON T22.RegistroId=T1.RegistroId
+INNER JOIN Estatus AS T25 ON T25.EstatusId=T1.EstatusId
+INNER JOIN ClasificacionPersonalVenta AS T28 ON T28.ClasificacionPersonalVentaId=T3.ClasificacionPersonalVenta
+LEFT JOIN TiposContratacion AS T29 ON T29.TipoContratacionId=T2.TipoContratacionId
+LEFT JOIN Plataformas AS T30 ON T30.PlataformaId=T2.PlataformaId
+LEFT JOIN Seguros AS T31 ON T31.SeguroId=T1.SeguroId
+LEFT JOIN (SELECT RegistroId, GROUP_CONCAT(AddOn ORDER BY Addon SEPARATOR ' - ') AS AddOn FROM LineasAddon AS T1
+		   INNER JOIN Addon AS T2 ON T2.AddOnId=T1.AddOnId
+		   GROUP BY RegistroId
+		   ) AS T32 ON T1.RegistroId=T32.RegistroId
+LEFT JOIN LineaTemporalOpc1 AS T33 ON (T33.Imei=T1.Serie OR T33.ImeiSim=T1.Serie)
+WHERE EnReporte=1 AND T1.Registroid>0  AND FechaSS>=DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+AND T3.ClasificacionPersonalVenta IN ($Venta)
+AND T3.PuntoventaId IN ($MisPuntos) AND T1.PlanId!=81 AND T1.PlanId!=255
+GROUP BY T1.RegistroId
+";
+
+		return $this->Consulta($Q0);*/
+		if($this->isCorporativo()){
+				$Q0="SELECT 'Contrato', 'Folio', 'Fecha Activacion', 'Region', 'SubRegion', 'Plaza', 'PuntoVenta SIIGA','PuntoVenta AT&T', 'TipoPunto', 'FechaIngreso',
+       'Coordinador', 'Ejecutivo', 'Categoria', 'SubCategoria', 'Cliente', 'TipoPersona', 'RFC', 'TipoPago',
+       'Marca', 'Equipo', 'Plan', 'PlanDAV', 'PlanBum', 'Familia', 'RentaSImpuesto', 'Plazo', 'Evento', 'Estatus', 'Comentario',
+       'FechaEntrega', 'FechaFacturado', 'MEID/IMEID', 'RegistroId', 'DN', 'Canal de Venta', 'Clasificacion de Venta', 'Validado DAV',
+       'Tipo Contratacion', 'Plataforma'
+UNION
+SELECT Contrato, T1.Folio, DATE_FORMAT(T2.FechaSS,'%d/%m/%Y') AS FechaActivacion, Region, SubRegion, Plaza, PuntoVenta, NombreATT,TipoPunto,
+   		DATE_FORMAT(T2.FechaSS,'%d/%m/%Y') AS FechaIngreso,
+		CONCAT_WS(' ',  T9.Nombre, T9.Paterno, T9.Materno) AS Coordinador,
+		CONCAT_WS(' ',  T11.Nombre, T11.Paterno, T11.Materno) AS Ejecutivo,
+		Puesto AS Categoria, IF(T13.SubCategoriaId=4,'',T13.SubCategoria) AS SubCategoria,
+    CONCAT_WS(' ',  T14.Nombre, T14.Paterno, T14.Materno) AS Cliente, TipoPersona, T14.RFC, TipoPago, Marca, Equipo,
+    CONCAT_WS(' ',Plan, T21.AddonTxt) AS Plan, PlanNextel, CONCAT_WS(' ',T2.Clave, T19.ClaveBum, IFNULL(T21.AddOn, '')) AS PlanBUM, Familia,
+    Costo/1.16/1.03 AS RentaPlan, Plazo,
+    IF(T2.TipoContratacionId <3, 'ACTIVACION', 'RENOVACION') AS Evento, Estatus, T1.Comentario,
+		DATE_FORMAT(T1.FechaEstatus,'%d/%m/%Y') AS FechaEntrega,
+		DATE_FORMAT(T1.FechaEstatus,'%d/%m/%Y') AS FechaFacturado,
+    Serie, T1.RegistroId, T1.DN, IF(T2.MovimientoId>0,'Originacion', 'Ventanilla Unica'),
+    T28.ClasificacionPersonalVenta, IF(T2.Validado, 'SI', 'NO'), T29.TipoContratacion, T30.Plataforma
+
+FROM LFolios AS T1
+INNER JOIN HFolios AS T2 ON T2.Folio=T1.Folio
+INNER JOIN PuntosVenta AS T3 ON T3.PuntoVentaId=T2.PuntoVentaId
+LEFT JOIN PuntosATT AS TATT ON T3.PuntoVentaId=TATT.PuntoVentaId
+INNER JOIN Plazas AS T4 ON T4.PlazaId=T3.PlazaId
+INNER JOIN SubRegiones AS T5 ON T5.SubRegionId=T4.SubRegionId
+INNER JOIN Regiones AS T6 ON T6.RegionId=T5.RegionId
+INNER JOIN TipoPuntos AS T7 ON T7.TipoPuntoId=T3.TipoPuntoId
+#INNER JOIN Bitacora AS T8 ON T8.ObjetoId=T1.RegistroId
+INNER JOIN Empleados AS T9 ON T9.EmpleadoId=T2.CoordinadorId
+INNER JOIN HistorialPuestosEmpleados AS T10 ON T10.HistorialPuestoEmpleadoId=T2.HistorialPuestoEmpleadoId
+INNER JOIN Empleados AS T11 ON T11.EmpleadoId=T10.EmpleadoId
+INNER JOIN Puestos AS T12 ON T12.PuestoId=T10.PuestoId
+INNER JOIN SubCategorias AS T13 ON T13.SubCategoriaId=T10.SubCategoriaId
+INNER JOIN Clientes AS T14 ON T14.ClienteId=T2.ClienteId
+INNER JOIN TiposPersona AS T15 ON T15.TipoPersonaId=T14.TipoPersonaId
+INNER JOIN TiposPago AS T16 ON T16.TipoPagoId=T2.TipoPagoId
+INNER JOIN Equipos AS T17 ON T17.EquipoId=T1.EquipoId
+INNER JOIN Marcas AS T18 ON T18.MarcaId=T17.MarcaId
+INNER JOIN Planes AS T19 ON T19.PlanId=T1.PlanId
+INNER JOIN Plazos AS T20 ON T20.PlazoId=T1.PlazoId
+LEFT JOIN (
+		    SELECT RegistroId, GROUP_CONCAT(Clave ORDER BY Orden ASC  SEPARATOR ' ') AS AddOn,
+		              GROUP_CONCAT(AddonTxt  SEPARATOR ' ') AS AddonTxt
+		    FROM LineasAddon AS T1
+		    INNER JOIN Addon AS T2 ON T2.AddOnId=T1.AddOnId
+            WHERE T1.AddonId!=7
+		    GROUP BY RegistroId
+		      ) AS T21 ON T21.RegistroId=T1.RegistroId
+LEFT JOIN LineasPlanesNextel AS T22 ON T22.RegistroId=T1.RegistroId
+INNER JOIN Estatus AS T25 ON T25.EstatusId=T1.EstatusId
+INNER JOIN ClasificacionPersonalVenta AS T28 ON T28.ClasificacionPersonalVentaId=T3.ClasificacionPersonalVenta
+LEFT JOIN TiposContratacion AS T29 ON T29.TipoContratacionId=T2.TipoContratacionId
+LEFT JOIN Plataformas AS T30 ON T30.PlataformaId=T2.PlataformaId
+WHERE EnReporte=1 AND T1.Registroid>0  AND FechaSS>=DATE_SUB(CURDATE(), INTERVAL 3 MONTH)
+AND T3.ClasificacionPersonalVenta IN ($Venta)
+AND T3.PuntoventaId IN ($MisPuntos) AND T19.PlanId!=255
+GROUP BY T1.RegistroId
+";
+
+		return $this->Consulta($Q0);
+		}else{
+		    $Q0="SELECT 'Contrato', 'Folio', 'Fecha Activacion', 'Region', 'SubRegion', 'Plaza', 'PuntoVenta', 'TipoPunto', 'FechaIngreso',
        'Coordinador', 'Ejecutivo', 'Categoria', 'SubCategoria', 'Cliente', 'TipoPersona', 'RFC', 'TipoPago',
        'Marca', 'Equipo', 'Plan', 'PlanDAV', 'PlanBum', 'Familia', 'RentaSImpuesto', 'Plazo', 'Evento', 'Estatus', 'Comentario',
        'FechaEntrega', 'FechaFacturado', 'MEID/IMEID', 'RegistroId', 'DN', 'Canal de Venta', 'Clasificacion de Venta', 'Validado DAV',
@@ -6393,6 +6724,7 @@ GROUP BY T1.RegistroId
 ";
 
 		return $this->Consulta($Q0);
+		}
 	}
 
 	function getCumpedelmes()
@@ -8076,7 +8408,7 @@ else
 {
 	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
 
-	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO') & $this->Consulta($Q0))
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF' || $Equipo=='SIM CARD V8R TRIO DISPLAY UNEF' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  & $this->Consulta($Q0))
 
   //if($this->Consulta($Q0))
 
@@ -8145,6 +8477,252 @@ else
 
 	return 'FAIL';
 }
+//funcion para guardar venta de tiempo aire electronico
+function guardaVentaTAE($FolioR, $NTel, $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario)
+{
+	//echo 'Folio: '.$FolioR.'<br>'.'Numero para Recarga: '.$NTel.'<br>Monto de la Recarga:'.$MontoRecargaId.'<br>Punto VentaId: '.$PuntoVentaId.'<br>VendedorId: '.$VendedorId.'<br> CoordinadorId:'.$CoordinadorId.'<br>Comentario: '.$Comentario.'<br>';
+	//return 'Hola';
+$Folio='RE'.$FolioR;
+
+//	$Diferencial=0;
+/*
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+*/
+
+//$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+
+	if($this->Consulta($Q1) & $this->addBitacora(73, 2, 0, $Folio, ''))
+		{
+			$this->AceptaTransaccion();
+			return utf8_decode('<span class="alerta">¡Recarga Registrada con exito!</span>');
+			
+		}
+		else
+		{
+			$this->CancelaTransaccion();
+
+			return utf8_decode('<span class="alerta">¡Error al guardar Recarga!</span>');
+		}
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+}
+
+//Fin de la funcion para la venta de tiempo aire electronica
+
+//funcion para guardar venta de tiempo aire electronico mas activacion de sim
+function guardaVentaTAESim($FolioR, $NTel, $MontoRecargaId, $Sim, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario)
+{
+	/*echo $FolioR."<br>".$NTel."<br>".$MontoRecargaId."<br>".$Sim."<br>".$PuntoVentaId."<br>".$VendedorId."<br>".$CoordinadorId."<br>".$Comentario."<br>";
+	return 'Hola';*/
+$Folio='RE'.$FolioR;
+$Serie=$Sim;
+//	$Diferencial=0;
+
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+
+
+$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$Comentario', CURDATE(), CURTIME(), 0, '', '', '', '', '', '', '', '')";
+
+	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
+
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF'  || $Equipo=='SIM CARD V8R TRIO DISPLAY UNEF'  || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO')  & $this->Consulta($Q0))
+
+  //if($this->Consulta($Q0))
+
+
+	{
+
+		$MovimientoId=mysql_insert_id();
+
+		$Q2="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
+	                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+						 VALUES(UCASE('$Folio'), CURDATE(), CURDATE(), CURDATE(), $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, 6004,
+	        					1, 1, 'Recarga Electronica', '$Folio',$MovimientoId, 1,0, 0)";
+
+		$Q3="INSERT INTO TLineas
+	                   SELECT NULL, '$Folio', EquipoId, 255, 3, 6, '', '$NTel',  $Diferencial, 1, '',0
+	                   FROM Inventario WHERE Serie='$Serie' LIMIT 1";
+
+
+		$Q4="INSERT INTO LFolios
+				 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 14,
+				 0 AS Costo, 0 AS RentaSI, '', CURDATE(), '$Serie', '', Dn, Diferencial, TipoPagoDiferencial,0
+				 FROM TLineas AS T1
+				 WHERE T1.Clave='$Folio'";
+
+		$Q5="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, CURDATE(), '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.Folio='$Folio'
+			LIMIT 1";
+
+		$Q6="UPDATE Inventario AS T1
+			INNER JOIN (
+			            SELECT T1.Serie, 0 AS Cantidad
+			            FROM LFolios AS T1
+			            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			            WHERE T1.Folio='$Folio'
+			            LIMIT 1
+			           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
+						SELECT NULL, $this->UsuarioId, 73, 2, RegistroId, '',14, CURDATE(), CURTIME(), '".$Folio."'
+						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
+			";
+
+			if($this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4) & $this->Consulta($Q5) & $this->Consulta($Q6) & $this->Consulta($Q7) & $this->Consulta($Q1) & $this->addBitacora(74, 2, 0, $Folio, ''))
+			{
+
+				$this->AceptaTransaccion();
+				return utf8_decode('<span class="alerta">¡Venta de TAE y Activacion de Sim Exitosa!</span>');
+			}
+			else
+			{
+				$this->CancelaTransaccion();
+
+				return 'INVALID';
+			}
+	}
+		$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡Equipo Elegido no Valido!</span>');
+
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+
+	
+	//return 'prueba de envio';
+}
+function guardaVentaPortabilidad($FolioR, $NTel, $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, $Comentario, $Sim, $NTelP, $Nombre, $Paterno, $Materno, $Nip, $Portabilidad)
+{
+
+$Folio='RE'.$FolioR;
+$Serie=$Sim;
+$comentarioFin=$Comentario.' '.$Portabilidad;
+//	$Diferencial=0;
+
+if($this->getIsGratisSim($MontoRecargaId))
+	$Diferencial=0;
+else
+	$Diferencial=80;
+
+
+$Equipo=$this->validaSeriePunto($Serie, $PuntoVentaId);
+
+$this->StartTransaccion();
+$Q1="INSERT INTO Recargas (Folio, CompaniaId, NTel, MontoRecargaId, PuntoVentaId, VendedorId, CoordinadorId, Comentario, Fecha, Hora, CompaniaPId, NTelP, Nombre, Paterno, Materno, TelContacto, CorreoContacto, Ife, Nip)
+	VALUES('$Folio', 3, '$NTel', $MontoRecargaId, $PuntoVentaId, $VendedorId, $CoordinadorId, '$comentarioFin', CURDATE(), CURTIME(), 0, '$NTelP', '$Nombre', '$Paterno', '$Materno', '', '', '', '$Nip')";
+
+	$Q0="INSERT INTO Movimientos (MovimientoId) VALUES(NULL)";
+
+	if(($Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF PREPAGO' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY IUSA' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF' || $Equipo=='TRIO SIMCARD V6.1 DISPLAY UNEF' || $Equipo=='SIM CARD V8R TRIO DISPLAY ATT PREPAGO' || $Equipo=='SIM CARD V8R TRIO DISPLAY UNEF')  & $this->Consulta($Q0))
+
+  //if($this->Consulta($Q0))
+
+
+	{
+
+		$MovimientoId=mysql_insert_id();
+
+		$Q2="INSERT INTO HFolios (Folio, FechaCaptura, FechaContrato, FechaSS, PuntoventaId, UsuarioId, HistorialPuestoEmpleadoId,
+	                     CoordinadorId, ClienteId, TipoContratacionId, TipoPagoId, Comentarios, Clave, MovimientoId, EnReporte, ContratacionId, Validado)
+						 VALUES(UCASE('$Folio'), CURDATE(), CURDATE(), CURDATE(), $PuntoVentaId, $this->UsuarioId, $VendedorId, $CoordinadorId, 6004,
+	        					1, 1, 'Recarga Electronica', '$Folio',$MovimientoId, 1,0, 0)";
+
+		$Q3="INSERT INTO TLineas
+	                   SELECT NULL, '$Folio', EquipoId, 255, 3, 6, '', '$NTel',  $Diferencial, 1, '',0
+	                   FROM Inventario WHERE Serie='$Serie' LIMIT 1";
+
+
+		$Q4="INSERT INTO LFolios
+				 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 14,
+				 0 AS Costo, 0 AS RentaSI, '', CURDATE(), '$Serie', '', Dn, Diferencial, TipoPagoDiferencial,0
+				 FROM TLineas AS T1
+				 WHERE T1.Clave='$Folio'";
+
+		$Q5="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, CURDATE(), '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.Folio='$Folio'
+			LIMIT 1";
+
+		$Q6="UPDATE Inventario AS T1
+			INNER JOIN (
+			            SELECT T1.Serie, 0 AS Cantidad
+			            FROM LFolios AS T1
+			            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			            WHERE T1.Folio='$Folio'
+			            LIMIT 1
+			           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		$Q7="INSERT INTO Bitacora (BitacoraId, UsuarioId, ModuloId, OperacionId, ObjetoId, ObjetoTxt, Host, Fecha, Hora, Comentario)
+						SELECT NULL, $this->UsuarioId, 75, 2, RegistroId, '',14, CURDATE(), CURTIME(), '".$Folio."'
+						FROM TLineas AS T1 WHERE T1.Clave='$Folio'
+			";
+
+			if($this->Consulta($Q2) & $this->Consulta($Q3) & $this->Consulta($Q4) & $this->Consulta($Q5) & $this->Consulta($Q6) & $this->Consulta($Q7) & $this->Consulta($Q1) & $this->addBitacora(65, 2, 0, $Folio, ''))
+			{
+
+				$this->AceptaTransaccion();
+				return utf8_decode('<span class="alerta">¡Venta de Portabilidad registrada con Exito!</span>');
+			}
+			else
+			{
+				$this->CancelaTransaccion();
+
+				return 'INVALID';
+			}
+	}
+		$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡ Equipo Elegido no Valido!</span>');
+
+
+	$this->CancelaTransaccion();
+
+	return 'FAIL';
+
+	
+	//return 'prueba de envio';
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function getReporteChecador()
@@ -8287,14 +8865,18 @@ function bloqueraPunto($PuntoVentaId)
 	$Q0="UPDATE Usuarios SET TipoBloqueoId=1 WHERE EmpleadoId
 			IN (SELECT EmpleadoId FROM HistorialPuntosEmpleados WHERE PuntoVentaId IN ($PuntoVentaId) AND Fisico=1 AND FechaBaja='0000-00-00')";
 		$this->Consulta($Q0);
+	$this->addBitacora(61, 4, $PuntoVentaId, 'Bloqueo Inventario','Bloqueo');
 }
+
 
 function desbloquearPunto($PuntoVentaId)
 {
 	$Q0="UPDATE Usuarios SET TipoBloqueoId=0 WHERE EmpleadoId
 			IN (SELECT EmpleadoId FROM HistorialPuntosEmpleados WHERE PuntoVentaId IN ($PuntoVentaId) AND Fisico=1 AND FechaBaja='0000-00-00')";
 		$this->Consulta($Q0);
+	$this->addBitacora(61, 4, $PuntoVentaId, 'Desbloqueo Inventario','Desbloqueo');
 }
+
 
 function bloquearCanal($CanalVentaId)
 {
@@ -8934,7 +9516,7 @@ $Q0="SELECT T3.UsuarioId FROM HistorialPuestosEmpleados AS T1
 list($OldUsuarioId)=mysql_fetch_row($this->Consulta($Q0));
 
 $Q1="INSERT INTO Usuarios
-	 SELECT NULL, $EmpleadoId, md5('12345'), Corporativo, Nacionales, 1, 0,0 FROM Usuarios
+	 SELECT NULL, $EmpleadoId, md5('12345'), Corporativo, Nacionales, 1, 0,0,0 FROM Usuarios
 	 WHERE UsuarioId=$OldUsuarioId
 	";
 $this->Consulta($Q1);
@@ -8960,7 +9542,7 @@ function reingresaPersonal($EmpleadoId, $PuestoId, $SubCategoriaId, $FechaReingr
 	$EmpleadoId=str_replace(",", "", $EmpleadoId);
 	$FechaReingreso=$this->CambiarFormatoFecha($FechaReingreso);
 	$Q0="INSERT INTO HistorialPuestosEmpleados (HistorialPuestoEmpleadoId, EmpleadoId, PuestoId, SubCategoriaId, FechaAlta, FechaBaja, CausaBajaId, Operador, Porcentaje, ClasificacionPersonalVentaId, Finiquito)
-		 VALUES(NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaReingreso', '0000-00-00', 0, $Operador, $Porcentaje, $ClasificacionpersonalVenta,0)";
+		 VALUES(NULL, $EmpleadoId, $PuestoId, $SubCategoriaId, '$FechaReingreso', '0000-00-00', 0, '$Operador', $Porcentaje, $ClasificacionpersonalVenta,0)";
 	$Q1="INSERT INTO HistorialPuntosEmpleados
 		SELECT NULL, EmpleadoId, PuntoVentaId, '$FechaReingreso', '0000-00-00', 1 FROM HistorialPuntosEmpleados WHERE Fisico=1 AND EmpleadoId=$EmpleadoId ORDER BY HistorialPuntosEmpleadoId DESC LIMIT 1";
 
@@ -9107,7 +9689,7 @@ function getPermisoEspecial($Permiso){
 function getPlataformaFolio($Folio)
 {
 	$PlataformaId=0;
-	$Q0="SELECT PlataformaId FROM HFolios WHERE folio='$Folio'";
+	$Q0="SELECT PlataformaId FROM HFolios WHERE Folio='$Folio'";
 	list($PlataformaId)=mysql_fetch_row($this->Consulta($Q0));
 	return $PlataformaId;
 }
@@ -9151,7 +9733,432 @@ function getReporteValidaciones()
 		";
 	return $this->Consulta($Q0);
 }
+function getReporteRotacionEquipos()
+{
+	$Q0="SELECT 'Equipo', 'Serie', 'Punto Recepcion', 'Fecha Recepcion', 'Punto Venta', 'Fecha Venta', 'Ejecutivo', 'Dias en almacen'
+		UNION
+		SELECT T3.Equipo, T1.serie, T4.PuntoVenta AS PuntoVentaRecepcion, T2.Fecha AS FechaRecepcion,
+       	T9.PuntoVenta AS PuntoVentaVenta, T5.Activacion AS FechaVenta, CONCAT_WS(' ', T11.nombre, T11.paterno, T11.materno) AS Ejecutivo,
+       	DATEDIFF(T5.Activacion, T2.Fecha) AS dias
+		FROM Inventario AS T1
+		INNER JOIN Recepciones AS T2 ON T2.MovimientoId=T1.MovimientoId AND T2.TipoMovimientoId=1
+		INNER JOIN Equipos AS T3 ON T3.EquipoId=T1.EquipoId
+		INNER JOIN PuntosVenta AS T4 ON T4.PuntoVentaId=T2.PuntoVentaId
+		INNER JOIN Inventario AS T5 ON T5.serie=T1.serie AND T5.Activacion!='0000-00-00'
+		INNER JOIN LFolios AS T7 ON T7.serie=T5.serie
+		INNER JOIN HFolios AS T8 ON T8.Folio=T7.Folio
+		INNER JOIN PuntosVenta AS T9 ON T9.PuntoVentaId=T8.PuntoVentaId
+		INNER JOIN HistorialPuestosEmpleados AS T10 ON T10.HistorialPuestoEmpleadoId=T8.HistorialPuestoEmpleadoId
+		INNER JOIN Empleados AS T11 ON T11.EmpleadoId= T10.EmpleadoId WHERE T2.Fecha=date_sub(CURDATE(), INTERVAL 3 MONTH)
 
+		";
+		return $this->Consulta($Q0);
+}
+//funciones para nueva captura de originacion
+	function getFamiliasPlanes()
+	{
+		$Q0="SELECT * FROM FamiliaPlan WHERE Activo=1";
+		return $this->Consulta($Q0);
+	}
+
+	function getLineasTemporales($Folio)
+	{
+		$Q0="SELECT T1.LineaTemporalId,T2.Plan,T1.Imei, T4.Equipo, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		INNER JOIN Inventario AS T3 ON T3.Serie=T1.Imei
+		INNER JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1";
+		return $this->Consulta($Q0);
+	}
+	function getLineasTemporalesV2($Folio)
+	{
+		$Q0="SELECT T1.LineaTemporalId,T2.Plan,T1.Imei,T4.Equipo,T1.ImeiSim,  T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		INNER JOIN Inventario AS T3 ON T3.Serie=T1.Imei
+		INNER JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1";
+		return $this->Consulta($Q0);
+	}
+	function getLineasTemporalesV3($Folio)
+	{
+		$Q0="SELECT  DISTINCT T1.Imei,T2.Plan,T1.LineaTemporalId,T1.ImeiSim, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId,T1.TipoVenta,T1.Raiz FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		LEFT JOIN Inventario AS T3 ON T3.Serie=T1.Imei OR T3.Serie=T1.ImeiSim
+		LEFT JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		WHERE Folio='$Folio' AND T3.Cantidad=1 ORDER BY Raiz";
+		return $this->Consulta($Q0);
+	}
+	function getModelo($ImeiSim)
+	{
+		$Q0="SELECT T2.Equipo FROM Inventario AS T1 
+		INNER JOIN Equipos AS T2 ON T1.EquipoId=T2.EquipoId
+		WHERE T1.Serie='$ImeiSim' ";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}
+	function getMarca($ImeiSim)
+	{
+		$Q0="SELECT T3.Marca FROM Inventario AS T1 
+		INNER JOIN Equipos AS T2 ON T1.EquipoId=T2.EquipoId
+		INNER JOIN Marcas AS T3 ON T2.MarcaId=T3.MarcaId
+		WHERE T1.Serie='$ImeiSim' ";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}
+
+	function getAnclas($Folio){
+			$query="SELECT Raiz FROM LineaTemporalOpc1  WHERE Folio='$Folio' AND Raiz='Ancla'";
+			$resultado=$this->Consulta($query);
+			$total=mysql_num_rows($resultado);
+			return $total;
+	}
+	function getPopotes($Folio){
+			$query2="SELECT Raiz FROM LineaTemporalOpc1  WHERE Folio='$Folio' AND Raiz='Popote'";
+			$resultado2=$this->Consulta($query2);
+			$total2=mysql_num_rows($resultado2);
+			return $total2;
+	}
+	function altaLineaOrgV2($Serie, $Clave, $PlanId, $TipoPlanId, $AddOn, $Dn, $PlazoId, $Movimiento, $Diferencial, $TipoPagoDiferencial, $SeguroId, $codigo_sim,$tipoVentaAux,$tipoVenta)
+	{	
+		if($tipoVentaAux==0){
+
+			if($codigo_sim==0){
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim',$PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVentaAux,'No Aplica',1)";
+			}else{
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim',$PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVentaAux,'No Aplica',2)";
+			}
+
+			if($codigo_sim!=0){
+				if($this->getMarca($codigo_sim)!='SIMCARD'){
+				return utf8_decode('<span class="alerta">¡Elija una Sim Valida!</span>');
+				}
+			}
+
+		}elseif($tipoVentaAux==1){
+			if($PlanId==365 || $PlanId==366 || $PlanId==367){
+				$raiz="Popote";
+			}else{
+				$raiz="Ancla";
+			}
+			
+			$total=$this->getAnclas($Clave);
+			$total2=$this->getPopotes($Clave);
+
+			if($total==0 && $raiz=="Popote"){
+				return utf8_decode('<span class="alerta">"Ingresar linea ancla antes de una linea Popote"</span>');
+			}elseif($total==1 && ($raiz=='Ancla')){
+				return utf8_decode('<span class="alerta">"Ya existe la linea ancla"</span>');
+			}elseif ($total==0 && ($PlanId!=365 || $PlanId!=366)) {
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim', $PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVenta,'$raiz',3)";
+			}elseif($total==1 && ($PlanId==365 || $PlanId==366 || $PlanId==367)){
+				$Q0="INSERT INTO LineaTemporalOpc1(LineaTemporalId,Folio,Movimiento,Imei,ImeiSim,PlanId,TipoPlanId,AddonId,Aux,PlazoId,Dn,Diferencial,TipoPagoDiferencial,SeguroId,TipoVenta,Raiz,Opc)VALUES(NULL,'$Clave','$Movimiento','$Serie','$codigo_sim', $PlanId,$TipoPlanId,0,0,$PlazoId,'$Dn',$Diferencial,$TipoPagoDiferencial,$SeguroId,$tipoVenta,'$raiz',3)";
+			}elseif($total2==9) {
+				return utf8_decode('<span class="alerta">"ha llegado al limite de lineas permitidas"</span>');
+			}	
+		}
+		
+
+
+
+		$this->StartTransaccion();
+		if($this->Consulta($Q0))
+		{
+		$LineaTemporalId=mysql_insert_id();
+		$Q1="INSERT IGNORE INTO Disponibles (Serie) VALUES('$Serie')";
+		$sim="INSERT IGNORE INTO Disponibles (Serie) VALUES('$codigo_sim')";
+
+		$Q2="INSERT IGNORE INTO AddonTemporal
+			 SELECT NULL, AddonId, $LineaTemporalId FROM Addon WHERE AddonId IN ($AddOn)";
+		if($this->Consulta($Q1) & $this->Consulta($sim) & $this->Consulta($Q2))
+			{
+				$this->AceptaTransaccion();
+				return 'ok';
+			}
+		}
+			$this->CancelaTransaccion();
+		return utf8_decode('<span class="alerta">¡No fue posible realizar el registro!</span>');
+	}
+
+
+function altaLineaOrgV3($FechaSS, $Contrato)
+	{	
+		echo "string";
+			 return utf8_decode('<span class="alerta">¡Fecha : !</span>');
+		
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	function eliminaLineaTemporal($Folio){
+		$query="SELECT Imei,ImeiSim FROM LineaTemporalOpc1 WHERE '$Folio' AND Aux=0";
+		$resultado=mysql_query("$query", $this->conexion) or die(mysql_error());
+
+		while($row=mysql_fetch_row($resultado))
+		{
+			$imei=$row[0];
+			$ImeiSim=$row[1];
+			$query2="DELETE FROM Disponibles WHERE Serie='$imei' OR Serie='$ImeiSim'";
+			if(!mysql_query("$query2",$this->conexion)){
+				echo "Error: ".$query2.mysql_error();
+			}
+
+		}
+		$query3="DELETE FROM LineaTemporalOpc1 WHERE Folio='$Folio'";
+		if(!mysql_query("$query3",$this->conexion)){
+				echo "Error: ".$query3.mysql_error();
+		}
+
+	}//Scroll
+	function totalLineasTemporales($Folio){
+		$query="SELECT Folio FROM LineaTemporalOpc1 WHERE Folio='$Folio'";
+		$resultado=$this->Consulta($query);
+		$total=mysql_num_rows($resultado);
+		return $total;
+	}
+	function totalLineasAncla($Folio){
+		$query="SELECT Folio FROM LineaTemporalOpc1 WHERE Folio='$Folio' AND Raiz='Ancla'";
+		$resultado=$this->Consulta($query);
+		$total=mysql_num_rows($resultado);
+		return $total;
+	}
+
+
+
+
+
+
+	function getDatosFolioTemporal($Folio){
+		$query="SELECT T1.Folio,T2.Plataforma,T3.TipoContratacion,CONCAT(T4.Nombre, ' ',T4.Paterno,' ',T4.Materno) AS Cliente, 
+		CONCAT(T6.Nombre, ' ',T6.Paterno,' ',T6.Materno) AS Empleado, T7.Puntoventa FROM HFolios AS T1 
+		LEFT JOIN Plataformas AS T2 ON T1.PlataformaId=T2.PlataformaId 
+		LEFT JOIN TiposContratacion AS T3 ON T1.TipoContratacionId=T3.TipoContratacionId
+		LEFT JOIN Clientes AS T4 ON T1.ClienteId=T4.ClienteId
+		LEFT JOIN HistorialPuestosEmpleados AS T5 ON T1.HistorialPuestoEmpleadoId=T5.HistorialPuestoEmpleadoId
+		LEFT JOIN Empleados AS T6 ON T5.EmpleadoId=T6.EmpleadoId
+		INNER JOIN PuntosVenta AS T7 ON T1.PuntoventaId=T7.PuntoVentaId
+		WHERE T1.Folio='$Folio' ";
+
+		return  $this->Consulta($query);
+	}
+
+	function finVenta($LineaTemporalId,$Folio,$Movimiento,$Imei,$ImeiSim,$PlanId,$TipoPlanId,$Addon,$Aux,$PlazoId,$Dn,$Diferencial,$TipoPagoDiferencial,$SeguroId,$TipoVenta,$Raiz,$Opc,$fecha,$Contrato,$Comentarios){
+				$Q0="INSERT INTO TLineas
+                   SELECT NULL, '$Movimiento', EquipoId, $PlanId, $TipoPlanId, $PlazoId, '', '', $Diferencial, $TipoPagoDiferencial, '', $SeguroId
+                   FROM Inventario WHERE Serie='$Imei' LIMIT 1";
+    
+       	$tam=count($Addon);
+       	$AddonAux='';
+       	for($i=0;$i<$tam;$i++){
+       		if(i==0){
+       			$AddonAux='AddonId='.$Addon[$i];
+       		}else{
+       			$AddonAux=$AddonAux." OR AddonId=".$Addon[$i];
+       		}
+       	}
+		$this->StartTransaccion();
+		if($this->Consulta($Q0))
+		{
+		$RegistroId=mysql_insert_id();
+		$Q1="INSERT IGNORE INTO TLineasAddon
+			 SELECT $RegistroId, AddonId FROM Addon WHERE $AddonAux";
+
+		$Q2="INSERT IGNORE INTO LineasAddon
+			 SELECT $RegistroId, AddonId,0 FROM Addon WHERE $AddonAux";
+
+		/*$Q2="INSERT IGNORE INTO TLineasServicios
+			 SELECT $RegistroId, ServicioAdicionalId FROM ServiciosAdicionales WHERE ServicioAdicionalId IN ($Servicios)";*/
+
+		$Q3="INSERT INTO LFolios
+			 SELECT T1.RegistroId, '$Folio', T1.PlanId, EquipoId, PlazoId, TipoPlanId, 12,
+			 CostoPlan+IFNULL(SUM(CostoAddOn),0) AS Costo, 0 AS RentaSI, 'x', CURDATE(), '$Imei', '', $Dn, Diferencial, TipoPagoDiferencial, SeguroId
+			 FROM TLineas AS T1
+ 	   		 LEFT JOIN LineasAddon AS T2 ON T2.RegistroId=T1.RegistroId
+		     LEFT JOIN PreciosPlanes AS T3 ON T3.PlanId=T1.PlanId AND T3.AddOnId=IFNULL(T2.AddOnId,0)
+			 WHERE T1.Registroid=$RegistroId";
+		$Q4="UPDATE LineaTemporalOpc1 SET Aux=1 WHERE LineaTemporalId=$LineaTemporalId";
+		$fechaAux=$this->CambiarFormatoFecha($fecha);
+		$Q5="UPDATE LFolios
+			SET EstatusId=14,
+			FechaEstatus='$fechaAux',
+			Contrato='$Contrato',
+			Comentario='$Comentarios',
+			Dn='$Dn'
+			WHERE RegistroId=$RegistroId";
+
+		$Q6="INSERT INTO Inventario
+			SELECT T1.EquipoId, T1.Serie, IccId, -1 AS Cantidad, T3.MovimientoId, '$fechaAux', '0000-00-00', T2.AlmacenId, T2.PlataformaId
+			FROM LFolios AS T1
+			LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+			LEFT JOIN HFolios AS T3 ON T3.Folio=T1.Folio
+			WHERE T1.RegistroId=$RegistroId
+			LIMIT 1";
+		$Q7="UPDATE Inventario AS T1
+			INNER JOIN (
+		            SELECT T1.Serie, 0 AS Cantidad
+		            FROM LFolios AS T1
+		            LEFT JOIN Inventario AS T2 ON T2.Serie=T1.Serie AND T2.Cantidad>0
+		            WHERE T1.RegistroId=$RegistroId
+		            LIMIT 1
+		           ) AS T2 ON T2.Serie=T1.Serie
+			SET T1.Cantidad=T2.Cantidad
+			WHERE T1.Cantidad>0";
+		if($this->Consulta($Q1) & $this->Consulta($Q2)  & $this->Consulta($Q3) & $this->Consulta($Q4)  & $this->Consulta($Q5)  & $this->Consulta($Q6)  & $this->Consulta($Q7) & $this->addBitacora(24, 5, $RegistroId, 'Cambio estatus', 14))
+			{
+				$this->AceptaTransaccion();
+				//if($codigo_sim!='0')
+				//	$this->altaLineaOrg($codigo_sim, $Clave, 81, 3, 0, 0, $PlazoId, $Movimiento, 0, 0, 4, 0);
+				//echo '<span class="notificacion">¡Venta Registrada satisfactoriamente!'.$RegistroId.'</span>';
+				return 1;
+			}else{
+				$this->CancelaTransaccion();
+				echo '<span class="alerta">¡Error al Registrar la Venta!</span>';
+				return 0;
+			}
+		}else{
+
+			$this->CancelaTransaccion();
+			echo '<span class="alerta">¡Error al Registrar la Venta!</span>';
+			return 0;
+		}
+		//return utf8_decode('<span class="alerta">¡No fue posible realizar el registro!</span>');		
+	}
+	function getLineasFin($Folio)
+	{
+		$Q0="SELECT T1.LineaTemporalId,T2.Plan,T1.Imei, T4.Equipo, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId,T8.Estatus, T1.ImeiSim FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		INNER JOIN Inventario AS T3 ON T3.Serie=T1.Imei
+		INNER JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		INNER JOIN LFolios AS T7 ON T7.Serie=T1.Imei
+		LEFT JOIN Estatus AS T8 ON T8.EstatusId=T7.EstatusId
+		WHERE T1.Folio='$Folio' AND T3.Activacion!='0000-00-00'";
+		return $this->Consulta($Q0);
+	}
+	function getLineasFin2($Folio)
+	{
+
+		$Q0="SELECT  DISTINCT T1.Imei,T2.Plan,T1.LineaTemporalId,T1.ImeiSim, T5.Seguro,T6.Addon,T1.Dn,T1.Folio,T1.Movimiento,T2.FamiliaPlanId,T1.TipoVenta,T1.Raiz,T8.Estatus FROM LineaTemporalOpc1 AS T1
+		INNER  JOIN Planes AS T2 ON T1.PlanId=T2.PlanId
+		LEFT JOIN Inventario AS T3 ON T3.Serie=T1.Imei OR T3.Serie=T1.ImeiSim
+		LEFT JOIN Equipos AS T4 ON T3.EquipoId=T4.EquipoId
+		INNER JOIN Seguros AS T5 ON T5.SeguroId=T1.SeguroId
+		LEFT JOIN Addon AS T6 ON T6.AddonId=T1.AddonId
+		LEFT JOIN LFolios AS T7 ON T7.Serie=T1.Imei OR T7.Serie=T1.ImeiSim
+		LEFT JOIN Estatus AS T8 ON T8.EstatusId=T7.EstatusId
+		WHERE T1.Folio='$Folio' AND T3.Activacion!='0000-00-00' ORDER BY Raiz";
+		return $this->Consulta($Q0);
+
+
+	}
+	function getContrato($Folio){
+		$Q0="SELECT DISTINCT Contrato FROM LFolios WHERE Folio='$Folio'";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}	
+	function getComentarios($Folio){
+		$Q0="SELECT DISTINCT Comentario FROM LFolios WHERE Folio='$Folio' AND PlanId!=81";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}
+	function getFechaEstatus($Folio){
+		$Q0="SELECT DISTINCT FechaEstatus FROM LFolios WHERE Folio='$Folio'";
+		$resultados=$this->Consulta($Q0);
+		$row=mysql_fetch_row($resultados);
+		return $row[0];
+	}		
+	function bloqueoFaltaCorte(){
+		$fecha=date("Y-m-d");
+		//$Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND TipoPuntoId!=3 AND (PuntoVentaId!=1 OR PuntoVentaId!=33 OR PuntoVentaId!=228 OR PuntoVentaId!=357 OR PuntoVentaId!=366 OR PuntoVentaId!=152 OR PuntoVentaId!=153 OR PuntoVentaId!=159 OR PuntoVentaId!=162 OR PuntoVentaId!=426 OR PuntoVentaId!=451 OR PuntoVentaId!=250 OR PuntoVentaId!=43 OR PuntoVentaId!=181 OR PuntoVentaId!=184)";
+		
+	//	$Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND TipoPuntoId!=3 AND PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,534,553,562,563)";
+		$Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,546,534,551,553,555,559,560,562,563,572)";
+		
+		
+		if($res0=mysql_query($Q0)){
+			while ($row0=mysql_fetch_array($res0)){
+				$Q1="SELECT PuntoVentaId FROM Depositos WHERE PuntoVentaId=$row0[0] AND Fecha='$fecha' AND TipoDepositoId=5";
+				if($res1=mysql_query($Q1)){
+					if(mysql_num_rows($res1)==0){
+						$this->bloquearPuntoTesoreria($row0[0]);
+					}
+				}
+			}
+		}
+	}
+
+	function bloqueoFaltaDeposito(){
+		$fecha=date("Y-m-d");
+		//$Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND TipoPuntoId!=3 AND (PuntoVentaId!=1 OR PuntoVentaId!=33 OR PuntoVentaId!=228 OR PuntoVentaId!=357 OR PuntoVentaId!=366 OR PuntoVentaId!=152 OR PuntoVentaId!=153 OR PuntoVentaId!=159 OR PuntoVentaId!=162 OR PuntoVentaId!=426 OR PuntoVentaId!=451 OR PuntoVentaId!=250 OR PuntoVentaId!=43 OR PuntoVentaId!=181 OR PuntoVentaId!=184)";
+		
+		    //$Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND TipoPuntoId!=3 AND PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,534,553)";
+		    
+		    $Q0="SELECT PuntoVentaId, PuntoVenta FROM PuntosVenta WHERE Activo=1 AND PuntoVentaId IN (21,29,30,34,35,39,40,42,72,76,80,85,105,110,128,175,176,190,239,240,363,364,365,368,369,371,373,374,376,377,378,379,407,419,427,430,431,432,433,435,436,437,439,459,460,493,494,496,499,509,527,528,529,530,535,539,540,541,542,544,546,534,551,553,555,559,560,562,563,572)";
+		
+	
+		if($res0=mysql_query($Q0)){
+			while ($row0=mysql_fetch_array($res0)){
+				$Q1="SELECT PuntoVentaId FROM Depositos WHERE PuntoVentaId=$row0[0] AND Fecha='$fecha' AND TipoDepositoId=9";
+				if($res1=mysql_query($Q1)){
+					if(mysql_num_rows($res1)==0){
+						$this->bloquearPuntoTesoreria($row0[0]);
+					}
+				}
+			}
+		}
+}
+
+
+
+
+function bloquearPuntoTesoreria2($PuntoVentaId)
+{
+	$Q0="UPDATE Usuarios SET TipoBloqueoId2=1 WHERE EmpleadoId
+		IN (SELECT EmpleadoId FROM HistorialPuntosEmpleados WHERE PuntoVentaId IN ($PuntoVentaId) AND Fisico=1 AND FechaBaja='0000-00-00')";
+		$this->Consulta($Q0);
+		$this->addBitacora(61, 4, $PuntoVentaId, 'Bloqueo Tesoreria','Bloqueo');
+}
+
+
+function bloquearPuntoTesoreria($PuntoVentaId)
+{
+	$Q0="UPDATE Usuarios SET TipoBloqueoId2=1 WHERE EmpleadoId
+		IN (SELECT EmpleadoId FROM HistorialPuntosEmpleados WHERE PuntoVentaId IN ($PuntoVentaId) AND Fisico=1 AND FechaBaja='0000-00-00')";
+		$this->Consulta($Q0);
+		$this->addBitacora(61, 4, $PuntoVentaId, 'Bloqueo Tesoreria','Bloqueo');
+}
+function desbloquearPuntoTesoreria($PuntoVentaId)
+{
+	$Q0="UPDATE Usuarios SET TipoBloqueoId2=0 WHERE EmpleadoId
+			IN (SELECT EmpleadoId FROM HistorialPuntosEmpleados WHERE PuntoVentaId IN ($PuntoVentaId) AND Fisico=1 AND FechaBaja='0000-00-00')";
+		$this->Consulta($Q0);
+
+		$this->addBitacora(61, 4, $PuntoVentaId, 'Desbloqueo Tesoreria','Desbloqueo');
+
+}
 
 }//fin clase
 ?>

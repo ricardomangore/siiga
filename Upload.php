@@ -20,13 +20,13 @@ $Opc=$_REQUEST['Opc'];
 
 $datoId = $_REQUEST['DatoId'];
 if($datoId == 5)
-	$Opc = '8';
-if($datoId == 8)/*<<<--- cabiar a 7 si es asi, en mi local asi se agrego*/
-	$Opc = '9';
-if($datoId == 9)
-	$Opc = '10';
-if($datoId == 6)
 	$Opc = '11';
+if($datoId == 8)/*<<<--- cabiar a 7 si es asi, en mi local asi se agrego*/
+	$Opc = '12';
+if($datoId == 9)
+	$Opc = '13';
+if($datoId == 6)
+	$Opc = '14';
 
 /***********************************************************/
 
@@ -139,7 +139,47 @@ switch ($Opc) {
 					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
 				//}
 		break;
-	case '8': 
+
+	case '8':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaTAE($_REQUEST['FolioR'],$_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;
+	case '9':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaTAESim($_REQUEST['Folio'],$_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['Serie'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;
+	case '10':
+				$upload_folder ='RecargasDoc';
+				//$tmp_archivo1 = $_FILES['archivo1']['tmp_name'];
+				$tmp_archivo1 = '';
+				$archivador1 = $upload_folder . '/' . $_REQUEST['clave'].$_REQUEST['ext1'];
+				if($tmp_archivo1!='')
+				move_uploaded_file($tmp_archivo1, $archivador1);
+				//if (move_uploaded_file($tmp_archivo1, $archivador1))
+				//{
+				echo $Herramientas->guardaVentaPortabilidad($_REQUEST['FolioR'], $_REQUEST['NTel'], $_REQUEST['MontoRecargaId'], $_REQUEST['PuntoVentaId'], $_REQUEST['VendedorId'], $_REQUEST['CoordinadorId'], $_REQUEST['Comentario'], $_REQUEST['Sim'], $_REQUEST['NTelP'], $_REQUEST['Nombre'], $_REQUEST['Paterno'], $_REQUEST['Materno'],$_REQUEST['Nip'],$_REQUEST['Portabilidad']);
+					$return = Array('ok' => FALSE, 'msg' => "Ocurrio un error al subir el archivo. No pudo guardarse.", 'status' => 'error');
+				//}
+		break;/* Aterior*/
+	case '11': 
 		//Caso solo para PostPago
 				$Clave=$_REQUEST['Clave'];
 				$DatoId=$_REQUEST['DatoId'];
@@ -167,7 +207,7 @@ switch ($Opc) {
 					Se puede devolver solo un echo con mensaje de exito
 				}*/
 		break;
-	case '9':
+	case '12':
 				$Clave=$_REQUEST['Clave'];
 				$DatoId=$_REQUEST['DatoId'];
 				$return = Array('ok' => TRUE);
@@ -185,7 +225,7 @@ switch ($Opc) {
 					echo $renovacionesController->processRenovaciones("FilesTmp/Renovaciones/" . $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tmp_archivo);
 				}
 		break;
-	case '10':
+	case '13':
 				$Clave=$_REQUEST['Clave'];
 				$DatoId=$_REQUEST['DatoId'];
 				$return = Array('ok' => TRUE);
@@ -222,7 +262,9 @@ switch ($Opc) {
 					echo $segurosController->processSeguros("FilesTmp/Seguros/" . $Clave, $_SESSION['UsuarioId'], $DatoId, $upload_folder, $tipo_archivo, $tmp_archivo);
 				}
 		break;
-	case '12':
+	case '14':
 		break;
+
+
 	}
 ?>

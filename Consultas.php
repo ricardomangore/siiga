@@ -68,7 +68,15 @@
 			</div>
 			</div>
 		</form>
-		
+    <?php
+        if($Herramientas->isRestringido()){
+            ?>
+            		<h3><b><a href="reporteInventarioV2.php"><img src="img/Csv.png">Consulta de inventario</a></b></h3>
+            <?php
+        }
+    
+    ?>
+
 	</div>
 
 </body>

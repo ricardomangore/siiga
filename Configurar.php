@@ -16,18 +16,50 @@
 
 if(isset($_POST['bkPV']))
 {
-	if (isset($_POST['PuntoVentaIdB']))	
+	$puntoVenta=$_POST['PuntoVentaIdB'];
+	$TipoBloqueoId=$_POST['TipoBloqueoId'];
+	if($TipoBloqueoId==1){
+		$Herramientas->bloqueraPunto($puntoVenta);
+	}elseif($TipoBloqueoId==2){
+		$Herramientas->bloquearPuntoTesoreria($puntoVenta);
+	}
+
+
+	/*if (isset($_POST['PuntoVentaIdB']) && isset($_POST['TipoBloqueoId'])){
 		$Herramientas->bloqueraPunto($_POST['PuntoVentaIdB']);
+	}else{
+		?>
+			<script>
+				alert("Favor de llenar los datos");
+			</script>
+		<?php
+
+	}
+		
 	
-	if (isset($_POST['CanalVentaId']))
-			$Herramientas->bloquearCanal($_POST['CanalVentaId']);
-}
+	if (isset($_POST['TipoBloqueoId']))
+			$Herramientas->bloquearCanal($_POST['TipoBloqueoId']);
+
+	*/
+	}
+	
+
 if(isset($_POST['DbkPV']))
 {
-	if (isset($_POST['PuntoVentaId']))
-		$Herramientas->desbloquearPunto($_POST['PuntoVentaId']);
+	$puntoVenta=$_POST['PuntoVentaIdB'];
+	$TipoBloqueoId=$_POST['TipoBloqueoId'];
+	if($TipoBloqueoId==1){
+		$Herramientas->desbloquearPunto($puntoVenta);
+	}elseif($TipoBloqueoId==2){
+		$Herramientas->desbloquearPuntoTesoreria($puntoVenta);
+	}
+
+
+	/*if (isset($_POST['PuntoVentaIdB']))
+		$Herramientas->desbloquearPunto($_POST['PuntoVentaIdB']);
 	if (isset($_POST['CanalVentaId']))
 			$Herramientas->DesbloquearCanal($_POST['CanalVentaId']);
+	*/
 }
 if(isset($_POST['setPV']))
 	if (isset($_POST['PuntoVentaId']))
@@ -136,11 +168,11 @@ $Permisos=$Herramientas->getPermisosModulo($ModuloId);
 					<input type="text" name="PuntoVentaB" id="PuntoVentaB" readonly="readonly" style="width:400px;">
 					<input type="hidden" name="PuntoVentaIdB" id="PuntoVentaIdB" value="0"/>
 					<br>
-					<label for="CanalVentaId">Elige Canal de Venta:</label>
-					<select name="CanalVentaId" id="CanalVentaId">
+					<label for="TipoBloqueoId">Elige Tipo de Bloqueo:</label>
+					<select name="TipoBloqueoId" id="TipoBloqueoId" required>
 							<option value="0">Elige</option>
 				<?php	
-							 $Herramientas->Scroll('ClasificacionPersonalVenta','ClasificacionPersonalVentaId','ClasificacionPersonalVenta',0, 'Activo=1', 'ClasificacionPersonalVenta');
+							 $Herramientas->Scroll('TiposBloqueo','TipoBloqueoId','TipoBloqueo',0, 'Activo=1', 'TipoBloqueo');
 				?>
 					</select>	
 					
@@ -156,8 +188,8 @@ $Permisos=$Herramientas->getPermisosModulo($ModuloId);
 		</fieldset>	
 	<br><br>
 			<div id="PuntosVentaB" class="dialogo" title="Elegir Punto de Venta" >	
-				Buscar:&nbsp<input id="Busqueda2" class="Busqueda" type="text" >
-					<div id="PuntosB" class="datagrid" >';
+				Buscar:&nbsp;<input id="Busqueda2" class="Busqueda" type="text" >
+					<div id="PuntosB" class="datagrid" >
 					<?php
 				 	echo $Herramientas->getListaPuntosB();
 				 	?>

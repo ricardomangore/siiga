@@ -369,6 +369,9 @@ function inicializarEventos()
   $("#CreaUsuario").click(CrearUsuario);
   $("#Reingresar").click(ReingresarPersonal);
   $("#Edit").live('click',editaColonia);
+  $("#FinVenta").click(FinVenta);
+
+
 
   $("#ActualizaFolio").live('click',ActualizaHFolios);
 
@@ -1481,12 +1484,16 @@ function ValidaDatos()
 
 				break;
 		case '22':
-
+       if($("#PlataformaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Plataforma");
+        return false
+        }
 
 
 				if($("#TipoContratacionId").attr("value")=="0")
 				{
-				alert("Debes elegir el tipo de conrtratacion");
+				alert("Debes elegir el tipo de contratacion");
 				return false
 				}
 
@@ -1608,7 +1615,7 @@ function ValidaDatos()
 				return false
 				}
 
-				if($("#Folio").attr("value")=="")
+				if($("#FolioPO").attr("value")=="")
 				{
 				alert("Debes Ingresar el Folio");
 				return false
@@ -1674,9 +1681,15 @@ function ValidaDatos()
 
 		case '26':
 
+        if($("#PlataformaId").attr("value")=="0")
+        {
+        alert("Debes elegir la plataforma");
+        return false;
+        }
+
 				if($("#TipoContratacionId").attr("value")=="0")
 				{
-				alert("Debes elegir el tipo de conrtratacion");
+				alert("Debes elegir el tipo de contratacion");
 				return false;
 				}
 
@@ -2157,6 +2170,18 @@ function ValidaDatos()
         return false
         }
 
+
+        if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+
         if($("#MontoRecargaId").attr("value")=="0")
         {
         alert("Debes elegir el monto de la recarga");
@@ -2404,6 +2429,222 @@ function ValidaDatos()
               }
           return true;
         break;
+        case '73':
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+
+       if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;
+
+        case '74':
+
+        if($("#CompaniaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Compañia");
+        return false
+        }
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+
+
+           if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#SIM").attr("value")=="")
+        {
+        alert("Debes ingresar la serie de la sim");
+        return false
+        }
+
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;
+      case '75':
+
+        if($("#CompaniaId").attr("value")=="0")
+        {
+        alert("Debes elegir la Compañia");
+        return false
+        }
+
+        if($("#FolioR").attr("value")=="")
+        {
+        alert("Debes Ingresar el Folio");
+        return false
+        }
+
+        if($("#NTel").attr("value")=="")
+        {
+        alert("Debes Ingresar el numero telefonico");
+        return false
+        }
+               if($("#NTel").attr("value")!="")
+        {
+           tel=$("#NTel").attr("value");
+           if(tel.length!=10){
+                alert("Debes Ingresa un numero valido");
+                return false   
+           }
+        }
+
+
+        if($("#MontoRecargaId").attr("value")=="0")
+        {
+        alert("Debes elegir el monto de la recarga");
+        return false
+        }
+        if($("#SIM").attr("value")=="")
+        {
+        alert("Debes Ingresar la serie de la sim");
+        return false
+        }
+
+      if($("#NTel").attr("value")==$("#NTelP").attr("value"))
+        {
+        alert("Los numeros telefonicos deben ser diferentes");
+        return false
+        }
+
+  if($("#NTelP").attr("value")=="")
+    {
+    alert("Debes ingresar el numero para la portabilidad")
+    return false
+    }
+  if($("#Nip").attr("value")=="")
+    {
+    alert("Debes ingresar el Nip para la portabilidad")
+    return false
+    }
+
+  if($("#Nombre").attr("value")=="")
+    {
+    alert("Debes ingresar el Nombre para la portabilidad")
+    return false
+    }
+  if($("#Paterno").attr("value")=="")
+    {
+    alert("Debes ingresar el apellido paterno para la portabilidad")
+    return false
+    }
+  if($("#Materno").attr("value")=="")
+    {
+    alert("Debes ingresar el apellido materno para la portabilidad")
+    return false
+    }
+    if($("#Portabilidad").attr("value")=="0")
+    {
+    alert("Debes elegir el tipo de portabilidad realizada")
+    return false
+    }
+
+
+
+        if($("#PuntoVentaId").attr("value")=="0")
+        {
+        alert("Debes elegir el Punto de Venta");
+        return false
+        }
+
+        if($("#VendedorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Ejecutivo de ventas");
+        return false
+        }
+
+        if($("#CoordinadorId").attr("value")=="0")
+        {
+        alert("Debes elegir al Coordinado de ventas");
+        return false
+        }
+
+        return true;
+
+        break;        
 
     	}
 
@@ -2621,16 +2862,24 @@ function BtGuardar()
   case '65':
           return guardaRecarga();
       break;
-      case '66':
+  case '66':
           return guardaDeposito();
       break;
-      case '68':
+  case '68':
           return asignaClientePuntoVenta();
       break;
-      case '70':
+  case '70':
           return addValidacionVenta();
       break;
-
+  case '73':
+          return guardaVentaTAE();
+      break;
+  case '74':
+          return guardaVentaTAESim();
+      break;
+  case '75':
+          return guardaVentaPortabilidad();
+      break;
 		}
 		$("#guardar").attr("disabled", true);
 	}
@@ -3427,9 +3676,10 @@ function guardarVu()
 	v10=$("#Comentarios").attr("value");
 	v11=$("#Clave").attr("value");
   v12=$("#ContratacionId").attr("value");
+  v13=$("#PlataformaId").attr("value");
 
 	$.post("Acciones.php",{Folio:v1, FechaContrato:v2, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6,
-		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, ContratacionId:v12, modulo:22, opc:5},getAltaVu);
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, Clave:v11, ContratacionId:v12,PlataformaId:v13, modulo:22, opc:5},getAltaVu);
 
 }
 
@@ -3443,9 +3693,10 @@ function guardarOrsInv()
 	v8=$("#TipoContratacionId").attr("value");
 	v9=$("#TipoPagoId").attr("value");
 	v10=$("#Comentarios").attr("value");
+  v11=$("#PlataformaId").attr("value");
 
 	$.post("Acciones.php",{Folio:v1, PuntoVentaId:v4, VendedorId:v5, CoordinadorId:v6,
-		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10, modulo:26, opc:5},getAltaVu);
+		ClienteId:v7, TipoContratacionId:v8, TipoPagoId:v9, Comentarios:v10,PlataformaId:v11, modulo:26, opc:5},getAltaVu);
 
 }
 
@@ -3453,7 +3704,7 @@ function guardarOrsInv()
 function guardarOr()
 {
 //alert("esto es por que si actualizaste cookies")
-	v1=$("#Folio").attr("value");
+	v1=$("#FolioPO").attr("value");
 	v2=$("#FechaSS").attr("value");
 
 	v4=$("#PuntoVentaId").attr("value");
@@ -3526,8 +3777,8 @@ function addEquipos(Folio, Movimiento)
 	$("#MiFolio").val(Folio);
 	$("#Movimiento").val(Movimiento);
 
-	ancho=900;
-	alto=350;
+	ancho=1000;
+	alto=650;
 
 	AbrirVentana(ancho, alto, 'AgregarEquipos');
 	$("#foo").submit();
@@ -3712,11 +3963,44 @@ function calculaMontosAcc()
 
 function AgregaLineaOr()
 {
-	if($("#Equipo").attr("value")=="")
+  /*if($("#csequipoAux").attr("value")=="1"){
+    if (!$('input[name="csequipo"]').is(':checked')) {
+        alert('Linea Con equipo o sin equipo');
+        return false;
+    }
+
+
+  }*/
+
+if($("#csequipoAux").attr("value")=="1"){
+      if($("#csequipo").attr("value")=="0")
+    {
+     alert("Debes Elegir el tipo de venta");
+      return false
+    }
+}
+/*Validacion del tipo de venta*/
+
+
+
+	if(($("#Equipo").attr("value")=="") && ($("#csequipoAux").attr("value")==0))
 	{
 	alert("Debes ingresar el Equipo");
 	return false
 	}
+
+  if(($("#Equipo").attr("value")=="") && ($("#csequipoAux").attr("value")==1) && ($("#csequipo").attr("value")==1))
+  {
+  alert("Debes ingresar el Equipo");
+  return false
+  }
+
+  if(($("#DSim").attr("value")=="")){
+      alert("Debes ingresar el SIM");
+      return false
+  }
+
+
 
 	if($("#PlanId").attr("value")=="0")
 	{
@@ -3724,17 +4008,29 @@ function AgregaLineaOr()
 	return false
 	}
 
+  if($("#Dn").attr("value")=="")
+  {
+  alert("Debes ingresar el Dn");
+  return false
+  }
+
+  if($("#PlazoId").attr("value")=="0")
+  {
+  alert("Debes elegir el Plazo");
+  return false
+  }
+
   if($("#AddOnes").attr("value")=="")
   {
     alert("Debes elegir al menos un AddOn")
     return false
   }
 
-	if($("#PlazoId").attr("value")=="0")
-	{
-	alert("Debes elegir el Plazo");
-	return false
-	}
+  if($("#SeguroId").attr("value")=="0")
+  {
+    alert("Debes elegir un Seguro")
+    return false
+  }
 
 	if($("#Diferencial").attr("value")!="" & $("#Diferencial").attr("value")!="0")
 		if($("#TipoPagoId").attr("value")=="0")
@@ -3743,10 +4039,24 @@ function AgregaLineaOr()
 			return false;
 		}
 
-  if($("#DSim").attr("value")=="")
+/*  if(($("#DSim").attr("value")=="") && ($("#PlanId").attr("value")!="81")  && ($("#PlanId").attr("value")!="282") 
+     && ($("#PlanId").attr("value")!="283")  && ($("#PlanId").attr("value")!="284")  && ($("#PlanId").attr("value")!="285") 
+      && ($("#PlanId").attr("value")!="286")  && ($("#PlanId").attr("value")!="287")  && ($("#PlanId").attr("value")!="288") 
+       && ($("#PlanId").attr("value")!="314")  && ($("#PlanId").attr("value")!="315")  && ($("#PlanId").attr("value")!="328") 
+        && ($("#PlanId").attr("value")!="329")  && ($("#PlanId").attr("value")!="330")  && ($("#PlanId").attr("value")!="331") 
+         && ($("#PlanId").attr("value")!="332")  && ($("#PlanId").attr("value")!="333")  && ($("#PlanId").attr("value")!="334") 
+          && ($("#PlanId").attr("value")!="335")  && ($("#PlanId").attr("value")!="336")  && ($("#PlanId").attr("value")!="337") 
+           && ($("#PlanId").attr("value")!="278")  && ($("#PlanId").attr("value")!="279")  && ($("#PlanId").attr("value")!="280") 
+            && ($("#PlanId").attr("value")!="281")  && ($("#PlanId").attr("value")!="312")  && ($("#PlanId").attr("value")!="365") 
+             && ($("#PlanId").attr("value")!="289")  && ($("#PlanId").attr("value")!="290")  && ($("#PlanId").attr("value")!="291") 
+              && ($("#PlanId").attr("value")!="292")  && ($("#PlanId").attr("value")!="313"))
   {
   alert("Debes ingresar el SIM");
   return false
+  }*/
+  if(($("#DSim").attr("value")=="") || ($("#codigo_sim").attr("value")=="")){
+      alert("Debes ingresar el SIM");
+      return false
   }
 
 
@@ -3755,7 +4065,7 @@ function AgregaLineaOr()
 	var v3=$("#PlanId").attr("value");
 	var v4=$("#TipoPlanId").attr("value");
 	var v5=$("#AddOnes").attr("value")+'0';
-	var v6=$("#OtrosServ").attr("value")+'0';
+	var v6=$("#Dn").attr("value");
 	var v7=$("#PlazoId").attr("value");
 	var v8=$("#Movimiento").attr("value");
 
@@ -3766,12 +4076,38 @@ function AgregaLineaOr()
 	var v12=$("#TipoPagoId").attr("value");
   var v13=$("#SeguroId").attr("value");
 
+
 	if(v11=='')
 		v11=0;
   var v14=$("#codigo_sim").attr("value");
+  var v15=$("#csequipoAux").attr("value");
+  var v16=$("#csequipo").attr("value");
+  if(v15=='1' && v16==2){
+    v1='0';
+  }
+	//$.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, modulo:24, opc:7},getResultadoOrg);
+  $.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, Dn:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, tipoVentaAux: v15, tipoVenta: v16,modulo:24, opc:9},getResultadoOrg);    
 
-	$.post("Acciones.php",{Serie:v1, MiFolio:v2, PlanId:v3, TipoPlanId:v4, AddOnes:v5, OtrosServ:v6, PlazoId:v7, Movimiento:v8, Diferencial:v11, TipoPagoDiferencial:v12, SeguroId:v13, codigo_sim: v14, modulo:24, opc:7},getResultadoOrg);
 
+
+}
+function FinVenta(){
+  if($("#FechaSS").attr("value")=="")
+  {
+    alert("Ingresa la fecha de Activacion")
+    return false
+  }
+
+
+  if($("#Contrato").attr("value")=="")
+  {
+    alert("Ingresa el contrato")
+    return false
+  }
+  var v1=$("#FechaSS").attr("value");
+  var v2=$("#Contrato").attr("value");
+
+$.post("Acciones.php",{FechaSS:v1,Contrato:v2,modulo:24, opc:10},getResultadoOrg);
 
 }
 
@@ -4093,6 +4429,7 @@ function sendFile()
 	data.append('Clave', clave);
 	data.append('DatoId', datoId);
 	data.append('Opc', 1);
+console.log(data);
 	var url = "Upload.php";
 	$.ajax({
 			url:url,
@@ -6798,6 +7135,209 @@ $("#resultados").html(data);
        }
   });
 }
+
+/*Funcion para guardadr los registro de venta de tiempo aire electronico*/
+
+function guardaVentaTAE()
+{
+  var extension1 = '';
+  var inputFile1 ='';
+  var file1 = '';
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+
+  var clave=$("#Clave").attr("value");
+  var data = new FormData();
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('FolioR', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('clave', clave);
+
+  data.append('Opc', 8);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+//funcion para guardar ventas con venta de de tiempo aire electronico mas activacion de sim
+
+function guardaVentaTAESim()
+{
+
+  var extension1 ='';
+  var inputFile1 = '';
+  var file1 = '';
+
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+  v9=$("#SIM").attr("value");
+
+var clave=$("#Clave").attr("value");
+  var data = new FormData();
+
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('Folio', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('Serie', v9);
+  data.append('clave', clave);
+
+  data.append('Opc', 9);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+
+
+
+//funcion para guardar ventas de Portabilidad
+function guardaVentaPortabilidad()
+{
+
+  var extension1 = '';
+  var inputFile1 = '';
+  var file1 = '';
+
+  $("#resultados").html('');
+  v1=$("#PuntoVentaId").attr("value");
+  v2=$("#VendedorId").attr("value");
+  v3=$("#CoordinadorId").attr("value");
+  v4=$("#Comentarios").attr("value");
+  v5=$("#FolioR").attr("value");
+  v6=$("#CompaniaId").attr("value");
+  v7=$("#MontoRecargaId").attr("value");
+  v8=$("#NTel").attr("value");
+  v9=$("#SIM").attr("value");
+  v11=$("#NTelP").attr("value");
+  v12=$("#Nip").attr("value");
+  v13=$("#Nombre").attr("value");
+  v14=$("#Materno").attr("value");
+  v15=$("#Paterno").attr("value");
+  v16=$("#Portabilidad").attr("value");
+
+var clave=$("#Clave").attr("value");
+  var data = new FormData();
+
+  data.append('archivo1',file1);
+  data.append('ext1', extension1);
+
+  data.append('PuntoVentaId', v1);
+  data.append('VendedorId', v2);
+  data.append('CoordinadorId', v3);
+  data.append('Comentario', v4);
+  data.append('FolioR', v5);
+  data.append('CompaniaId', v6);
+  data.append('MontoRecargaId', v7);
+  data.append('NTel', v8);
+  data.append('Sim', v9);
+  data.append('NTelP', v11);
+  data.append('Nip', v12);
+  data.append('Nombre', v13);
+  data.append('Materno', v14);
+  data.append('Paterno', v15);
+  data.append('Portabilidad', v16);
+  data.append('clave', clave);
+
+  data.append('Opc', 10);
+  var url = "Upload.php";
+  $.ajax({
+      url:url,
+      type:'POST',
+      contentType:false,
+      data:data,
+      processData:false,
+      cache:false
+      })
+  .done(function( data, textStatus, jqXHR ) {
+$("#resultados").html(data);
+
+  //    pagina=jQuery(location).attr('href')
+//     location.href=pagina
+   })
+   .fail(function( jqXHR, textStatus, errorThrown ) {
+       if ( console && console.log ) {
+           $("#resultados").html('<span class="alerta">¡No fue posible agregar el registro!</span>');
+           return false;
+       }
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function guardaDeposito()
