@@ -4426,6 +4426,7 @@ function sendFile()
 	data.append('Clave', clave);
 	data.append('DatoId', datoId);
 	data.append('Opc', 1);
+console.log(data);
 	var url = "Upload.php";
 	$.ajax({
 			url:url,

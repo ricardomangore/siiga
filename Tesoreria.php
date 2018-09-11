@@ -104,7 +104,12 @@
 		</form>
 	</fieldset>
 	
-	
+		<fieldset>
+	<legend>Descarga de Reportes</legend>
+	    <a href="reportes/depositosCR7.php" target="_blank">
+			<input class="lista" type="submit" name="enviar" value="Aceptar">
+		</a>
+	</fieldset>
 
 
 
