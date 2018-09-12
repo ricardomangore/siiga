@@ -25,6 +25,7 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="-1">
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="uid" content="<?php echo $_SESSION['UsuarioId']; ?>">
 <?php $HerramientasHtml->getTituloWeb(); ?>
 <link href="style/style.css" rel="stylesheet" type="text/css" />
 <link href="style/tabla.css" rel="stylesheet" type="text/css" />
@@ -40,6 +41,7 @@
 <script type="text/javascript" src="js/anytime.5.0.3.js"></script>
 <script type="text/javascript" src="js/sortedtable.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 
 </head>
@@ -69,18 +71,51 @@
 					<!--<input type="hidden" name="Clave" id="Clave" value="<?php echo $Clave; ?>" />-->
 					<fieldset>
 						<div id="app">
+							<input type="hidden" name="uid" value="<?php echo $_SESSION['UsuarioId']?>"/>
 							<legend>Cancelaciones</legend>
+							<br/><br/>
 							<div class="Izquierda">
 								<label>
 									Orden DRM/OMF:
 								</label>
-								<input type="text" name="order_crm" v-model="ordenCRM" v-on:keyup="validaOrdenCRM()"/>
-								{{ msmErrorCRM }}
+								<input 
+									type="text" 
+									name="order_crm" 
+									v-model.trim="ordencrm.value" 
+									v-on:keyup="validaOrdenCRM(ordencrm.value)"
+									v-on:blur="validaOrdenCRM(ordencrm.value)"
+									/>
+								<div 
+									v-if="ordencrm.haserror===true"
+									style="color: red; font-weight: bold;"
+									>
+									{{ ordencrm.message }}
+								</div>
 								<br/><br/><br/>
+								<label>
+									N&uacutemero de Documento: 
+								</label>
+								<input 
+									type="text" 
+									name="numero_documento"
+									v-model.trim="numdocument.value" 
+									v-on:keyup="validaNumDoc(numdocument.value)"
+									v-on:blur="validaNumDoc(numdocument.value)"/>
+								<div v-if="numdocument.haserror===true"
+									style="color:red; font-weight: bold;"
+									>
+									{{ numdocument.message }}
+								</div>
+							</div>
+							<div class="Derecha">
 								<label>
 									Concepto de Pago:
 								<label>
-								<select>
+								<select name="concepto"
+										v-model="concept.value"
+										v-on:click="validaConcepto()"
+										v-on:blur="validaConcepto()"
+										>
 									<option value="p_inical">
 										Pago Inicial
 									</option>
@@ -91,14 +126,31 @@
 										Pago Anticipado
 									</option>
 								</select>
-							</div>
-							<div class="Derecha">
-								<label>
-									N&uacutemero de Documento
-								</label>
-								<input type="text" name="numero_documento"/>
+								<div v-if="concept.haserror===true"
+									style="color:red; font-weight: bold;"
+									>
+									{{ concept.message }}
+								</div>
 								<br/><br/><br/>
-								<button type="submit">enviar</button>
+								<label>
+									Desripci&oacuten del movimiento
+								</label>
+								<textarea name="descripcion"
+									v-model.trim="description.value" 
+									v-on:keyup="validaDescription(description.value)"
+									v-on:blur="validaDescription(description.value)"/>>
+								</textarea>
+								<div v-if="description.haserror===true"
+									style="color:red; font-weight: bold;"
+									>
+									{{ description.message }}
+								</div>
+								<br/><br/><br/>
+								<button v-bind:disabled="disabled"
+									v-on:click.prevent="submit()" 
+									type="submit">
+									enviar
+								</button>
 							</div>
 						</div><!-- #app -->
 					</fieldset>
@@ -109,27 +161,159 @@
 		var app = new Vue({
 		  el: '#app',
 		  data: {
-		    ordenCRM: '',
-		    msmErrorCRM: '',
-		    numeroDocumento: '',
+	  		ordencrm : 
+	  		{
+	  			name: '',
+	  			value: '',
+	  			haserror: false,
+	  			isempty: false,
+	  			isvalid: false,
+	  			message: '',
+	  		},
+	  		numdocument:{
+	  			name: '',
+	  			value: '',
+	  			haserror: false,
+	  			isempty: false,
+	  			isvalid: false,
+	  			message: '',
+	  		},
+	  		description: {
+	  			name: '',
+	  			value: '',
+	  			haserror: false,
+	  			isempty: false,
+	  			isvalid: false,
+	  			message: '',
+	  		},
+	  		concept: {
+	  			name: '',
+	  			value: '',
+	  			haserror: false,
+	  			isempty: false,
+	  			isvalid: false,
+	  			message: '',
+	  		},
+	  		disabled:'disabled',
+	  		uid: ''
+		  },
+		  mounted(){
+		  	let token = document.head.querySelector('meta[name="uid"]');
+		  	this.uid = token.content;
 		  },
 		  methods:{
-		  	validaOrdenCRM(){
+		  	validaOrdenCRM(param){
 		  		var regex = /^([0-9])*$/;
-		  		newString = new String("1111111");
-		  		var str = this.ordenCRM.toString();
-		  		console.log(str);
-		  		console.log(regex.test(str));
-		  		if(!regex.test(str))
-		  			this.msmErrorCRM = 'el campo debe ser numerico';
-		  		else
-		  			this.msmErrorCRM = '';
-		  		
+		  		var str = param.toString();
+		  		if(this.isEmpty(str)){
+		  			this.ordencrm.haserror=true;
+		  			this.ordencrm.isvalid = false;
+		  			this.ordencrm.message='debe llenar el campo'
+		  		}else{
+		  			this.ordencrm.haserror=false;
+		  			this.ordencrm.isvalid = true;
+		  			this.ordencrm.message='';
+		  			if(!this.isNumeric(str)){
+			  			this.ordencrm.haserror=true;
+			  			this.ordencrm.isvalid = false;
+			  			this.ordencrm.message = 'el campo debe ser númerico';
+			  		}
+			  		else{
+			  			this.ordencrm.haserror = false;
+			  			this.ordencrm.isvalid = true;
+			  			this.ordencrm.message = '';
+			  		}
+		  		}
+		  		this.validaButton();
 		  	},
-		  	validaDocumento(){
-
+		  	validaNumDoc(param){
+		  		var regex = /^([0-9])*$/;
+		  		var str = param.toString();
+		  		if(this.isEmpty(str)){
+		  			this.numdocument.haserror=true;
+		  			this.numdocument.isvalid = false;
+		  			this.numdocument.message='debe llenar el campo'
+		  		}else{
+		  			this.numdocument.haserror=false;
+		  			this.numdocument.isvalid = true;
+		  			this.numdocument.message='';
+		  			if(!this.isNumeric(str)){
+			  			this.numdocument.haserror=true;
+			  			this.numdocument.isvalid = false;
+			  			this.numdocument.message = 'el campo debe ser númerico';
+			  		}
+			  		else{
+			  			this.numdocument.haserror = false;
+			  			this.numdocument.isvalid = true;
+			  			this.numdocument.message = '';
+			  		}
+		  		}
+		  		this.validaButton();
 		  	},
-
+		  	validaDescription(param){
+		  		var regex = /^([0-9])*$/;
+		  		var str = param.toString();
+		  		if(this.isEmpty(str)){
+		  			this.description.haserror=true;
+		  			this.description.isvalid = false;
+		  			this.description.message='debe llenar el campo'
+		  		}else{
+		  			this.description.haserror=false;
+		  			this.description.isvalid = true;
+		  			this.description.message='';
+		  		}
+		  		this.validaButton();
+		  	},
+		  	validaConcepto(){
+		  		if(this.concept.value===''){
+		  			this.concept.haserror= true;
+		  			this.concept.isvalid=false;
+		  			this.concept.message= 'seleccione una opción';
+		  		}else{
+		  			this.concept.haserror= false;
+		  			this.concept.isvalid=true;
+		  			this.concept.message= '';
+		  		}
+		  	},
+		  	isNumeric(param){
+		  		var regex = /^([0-9])*$/;
+		  		var str = param.toString();
+		  		return regex.test(str);
+		  	},
+		  	isEmpty(param){
+		  		var returnValue = true;
+		  		if(param !== '')
+		  			returnValue = false;
+		  		return returnValue;
+		  	},
+		  	validaButton(){
+		  		if(this.ordencrm.isvalid && 
+		  			this.numdocument.isvalid &&
+		  			this.description.isvalid &&
+		  			this.concept.isvalid){
+		  			console.log('habilitamos botón');
+		  			console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
+		  			this.disabled = false;
+		  		}else{
+		  			console.log('deshabilita botón');
+		  			console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
+		  			this.disabled = 'disabled';
+		  		}
+		  	},
+		  	submit(){
+		  		//const axios = require('axios');
+		  		var formData = new FormData();
+		  		formData.append('ordenCRM',this.ordencrm.value);
+		  		formData.append('numeroDocumento',this.numdocument.value);
+		  		formData.append('descripcion',this.description.value);
+		  		formData.append('concepto',this.concept.value);
+		  		formData.append('uid',this.uid);
+		  		axios.post('/siiga/Tesoreria/controllers/CancelacionController.php',formData).
+		  		then(function(response){
+		  			console.log(response.data);
+		  		});
+		  		this.disabled = 'disabled';
+		  	},
 		  }
 		})
 	</script>
