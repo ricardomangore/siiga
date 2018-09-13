@@ -71,7 +71,7 @@
 					<!--<input type="hidden" name="Clave" id="Clave" value="<?php echo $Clave; ?>" />-->
 					<fieldset>
 						<div id="app">
-							<div class="messageNotification">{{ msjnotification }}</div>
+							<div class="messageNotification" style="display: none;color:red;font-weight: bold;"><center><p>{{ msjnotification }}</p></center></div>
 							<input type="hidden" name="uid" value="<?php echo $_SESSION['UsuarioId']?>"/>
 							<legend>Cancelaciones</legend>
 							<br/><br/>
@@ -197,7 +197,8 @@
 	  		},
 	  		disabled:'disabled',
 	  		uid: '',
-	  		msjnotification : ''
+	  		msjnotification: '',
+	  		showMessageSuccess: false,
 		  },
 		  mounted(){
 		  	let token = document.head.querySelector('meta[name="uid"]');
@@ -310,18 +311,30 @@
 		  		formData.append('descripcion',this.description.value);
 		  		formData.append('concepto',this.concept.value);
 		  		formData.append('uid',this.uid);
-		  		var tmp = '';
+		  		var tmp;
 		  		axios.post('/siiga/Tesoreria/controllers/CancelacionController.php',formData).
 		  		then(function(response){
-		  			tmp = response.data.message;
-		  			console.log(response.data.message);
-		  		});
-		  		this.notification(tmp);
+		  			tmp = response.data.message
+		  			var type = response.data.type;
+		  			this.msjnotification = tmp;
+		  			if(type == 'Succefull'){
+		  				$('.messageNotification').fadeOut('slow',function(){
+		  					$('.messageNotification').fadeIn('slow',function(){
+		  						$('.messageNotification').fadeOut('slow');
+		  					});
+		  				});
+		  			}else{
+		  				$('.messageNotification').fadeOut('slow',function(){
+		  					$('.messageNotification').fadeIn('slow');
+		  				});
+		  			}
+		  			this.ordencrm.value = '';
+		  			this.numdocument.value = '';
+		  			this.description.value = '';
+		  			this.concept.value = '';
+		  		}.bind(this));
 		  		this.disabled = 'disabled';
-		  	},
-		  	notification(mensaje){
-		  		this.msjnotification = mensaje;
-		  	},
+		  	}
 		  }
 		})
 	</script>

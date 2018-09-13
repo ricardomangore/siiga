@@ -8,12 +8,16 @@ class toolsValidaciones extends Connect
 		if($ordenCRM !== "" && $numeroDocumento !== "" && $uId !== ""){
 			try{
 				$fecha = date("Y-m-d H:i:s");
-				$query = "INSERT INTO cancelascionestesoreria (orden_crm,numero_documeno,descripcion,concepto,uid,fecha_cancelacion) VALUES (?,?,?,?,?,?)";
+				$query = "INSERT INTO cancelacionestesoreria (orden_crm,numero_documento,descripcion,concepto,uid,fecha_cancelacion) VALUES (?,?,?,?,?,?)";
 				if($prepare = $this->getLink()->prepare($query)){
 					$prepare->bind_param("ssssss",$ordenCRM,$numeroDocumento,$descripcion,$concepto,$uId,$fecha);
-					$prepare->execute();
-					$prepare->close();
-					$returnvalue = 'TRUE';
+					if($prepare->execute()){
+						$prepare->close();
+						$returnvalue = 'TRUE';	
+					}else{
+						$prepare->close();
+						$returnvalue = 'EL Registro con el numero de Orden CRM '.$ordenCRM. ' y numero de documento '.$numeroDocumento.' ya Existe';//$prepare->error;
+					}
 				}else{
 					throw new Exception("Error al preparar la consulta");
 				}
