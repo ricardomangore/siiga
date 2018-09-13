@@ -1,6 +1,7 @@
 <?php
 include("../../includes/Conectar.php");
-include("../../includes/Security.php");
+include_once("../../includes/Security.php");
+include_once("/includes/toolsValidaciones.php");
 
 
 
@@ -15,13 +16,40 @@ else{
 	$descripcion = $_POST['descripcion'];
 	$concepto = $_POST['concepto']; 
 	$uid = $_POST['uid'];
-	header('Content-Type: application/json');
+
+	$boolMenssage = NULL;
+	$toolvalidation = new toolsValidaciones();
+	$type = 'error';
+	$message = '';
+	try{
+		$boolMenssage = $toolvalidation->insertCancelationAndValdiation($ordenCRM,$numeroDocumento,$descripcion,$concepto,$uid);
+	}catch(Exception $e){
+		$boolMenssage = $e->getMessage();
+	}
+	if($boolMenssage == 'TRUE'){
+		$type = 'Succefull';
+		$message = 'Succefull insertion';
+	}else{
+		$message = 'error when inserting'.$boolMenssage;
+	}
+
+	$response = array(
+		'type' => $type,
+		'message' => $message,
+		'status' => 200,
+	);
+
+
+
+
+
+	/*header('Content-Type: application/json');
 	$response = array(
 		'orden_crm' => $ordenCRM,
 		'numero_documento' => $numeroDocumento,
 		'descripcion' => $descripcion,
 		'concepto' => $concepto,
 		'uid' => $uid,
-	);
+	);*/
 	echo json_encode($response);
 }	

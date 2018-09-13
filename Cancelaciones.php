@@ -63,7 +63,7 @@
 			</form>
 			<form id="logout" name="logout" method="post" action="logout.php" /></form>
 		</div>
-		
+
 			<form id="foo" name="foo" method="post" >		
 				<br/>			
 				<div align="center" id="resultados"></div>
@@ -71,6 +71,7 @@
 					<!--<input type="hidden" name="Clave" id="Clave" value="<?php echo $Clave; ?>" />-->
 					<fieldset>
 						<div id="app">
+							<div class="messageNotification">{{ msjnotification }}</div>
 							<input type="hidden" name="uid" value="<?php echo $_SESSION['UsuarioId']?>"/>
 							<legend>Cancelaciones</legend>
 							<br/><br/>
@@ -195,7 +196,8 @@
 	  			message: '',
 	  		},
 	  		disabled:'disabled',
-	  		uid: ''
+	  		uid: '',
+	  		msjnotification : ''
 		  },
 		  mounted(){
 		  	let token = document.head.querySelector('meta[name="uid"]');
@@ -291,12 +293,12 @@
 		  			this.numdocument.isvalid &&
 		  			this.description.isvalid &&
 		  			this.concept.isvalid){
-		  			console.log('habilitamos botón');
-		  			console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
+		  			//console.log('habilitamos botón');
+		  			//console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
 		  			this.disabled = false;
 		  		}else{
-		  			console.log('deshabilita botón');
-		  			console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
+		  			//console.log('deshabilita botón');
+		  			//console.log(this.ordencrm.value + ";" + this.numdocument.value + ";" + this.description.value);
 		  			this.disabled = 'disabled';
 		  		}
 		  	},
@@ -308,11 +310,17 @@
 		  		formData.append('descripcion',this.description.value);
 		  		formData.append('concepto',this.concept.value);
 		  		formData.append('uid',this.uid);
+		  		var tmp = '';
 		  		axios.post('/siiga/Tesoreria/controllers/CancelacionController.php',formData).
 		  		then(function(response){
-		  			console.log(response.data);
+		  			tmp = response.data.message;
+		  			console.log(response.data.message);
 		  		});
+		  		this.notification(tmp);
 		  		this.disabled = 'disabled';
+		  	},
+		  	notification(mensaje){
+		  		this.msjnotification = mensaje;
 		  	},
 		  }
 		})
