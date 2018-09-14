@@ -184,15 +184,14 @@ class ComparativoVentasDAO extends Connect{
 	public function comparePostPagoByFolio($postPago){
 		$returnValue= FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sqlStr="SELECT LFolios.Folio FROM LFolios WHERE LFolios.Folio = ?";
+			$folio = trim($postPago->getFolio());
+			$sqlStr="SELECT HFolios.Folio FROM HFolios WHERE HFolios.Folio = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
 				$prepare->bind_param('s',$folio);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
 				
-				var_dump($param);
 
 				if($param!=''){
 					$returnValue = TRUE;
