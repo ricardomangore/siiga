@@ -30,7 +30,7 @@ else{
 		$type = 'Succefull';
 		$message = 'Succefull insertion';
 	}else{
-		$message = 'error when inserting'.$boolMenssage;
+		$message = $boolMenssage;
 	}
 
 	$response = array(
