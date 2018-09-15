@@ -169,6 +169,70 @@ class ComparativoVentasDAO extends Connect{
 	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 	/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 
+	#######################################################################################################
+	########################## METODOS PARA VERIFICAR SI EXISTE EL IMEI y SIM #############################
+	#######################################################################################################
+	/**
+	 * comaparePostPagoByImei()
+	 * Determina si un objeto PostPago es igual a un registro de ventas de SIIGA
+	 * a partir del IMEI
+	 * @param <Object> PostPago
+	 * @return <boolean>
+	 */
+	public function comparePostPagoByImei($postPago){
+		$returnValue= FALSE;
+		if(isset($postPago) && is_a($postPago,'PostPago')){
+			$folio = $postPago->getFolio();
+			$imei = $postPago->getImei();
+			$sqlStr="SELECT LFolios.serie FROM LFolios WHERE LFolios.Folio = ? AND LFolios.serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$folio,$imei);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				if($param != ''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+	/**
+	 * comaparePostPagoBySim()
+	 * Determina si un objeto PostPago es igual a un registro de ventas de SIIGA
+	 * a partir del SIM
+	 * @param <Object> PostPago
+	 * @return <boolean>
+	 */
+	public function comparePostPagoBySim($postPago){
+		$returnValue= FALSE;
+		if(isset($postPago) && is_a($postPago,'PostPago')){
+			$folio = $postPago->getFolio();
+			$sim = $postpago->getSim();
+			$sqlStr="SELECT LFolios.serie FROM LFolios WHERE LFolios.Folio = ? AND LFolios.serie = ?";
+			if($prepare = $this->getLink()->prepare($sqlStr)){
+				$prepare->bind_param('ss',$folio,$sim);
+				$prepare->execute();
+				$prepare->bind_result($param);
+				$prepare->fetch();
+				
+				if($param != ''){
+					$returnValue = TRUE;
+				}
+			}else{
+				throw new Exception('No se puedo ejecutar la consulta');
+			}
+		}
+		return $returnValue;
+	}
+	
+
+	################################################################################################
+	################################################################################################
+
 
 
 	/**
@@ -265,43 +329,15 @@ class ComparativoVentasDAO extends Connect{
 
 #########################################################################################################
 #########################################################################################################
-	/**
-	 * comaparePostPagoByImei()
-	 * Determina si un objeto PostPago es igual a un registro de ventas de SIIGA
-	 * a partir del IMEI
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByImei($postPago){
-		$returnValue= FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$imei = $postPago->getImei();
-			$sqlStr="SELECT LFolios.Folio FROM LFolios WHERE LFolios.serie = ?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('s',$imei);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-				
-				//var_dump($param);
 
-				if($param!=''){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw new Exception('No se puedo ejecutar la consulta');
-			}
-		}
-		return $returnValue;
-	}
 /************************************************************************************************
 	El siguiente grupo de funciones comapra los registros de PoatPago por diversos parametros
 	como Nombre del Punto de venta, Nombre del ejecutivo etc. Tomando como campos principales 
-	o lleves primarias Folio e IMEI
+	o lleves primarias Folio y en su caso el campo a buscar
 ************************************************************************************************/
 	/**
 	 * Determina si ounb objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Nombre del Punto de Venta registrado en ATT
+	 * a partir del folio y Nombre del Punto de Venta registrado en ATT
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -309,10 +345,9 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei(); 
-			$sqlStr="SELECT PuntosATT.NombreATT FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN PuntosATT ON HFolios.PuntoventaId=PuntosATT.PuntoVentaId WHERE HFolios.Folio = ? AND LFolios.Serie=?";
+			$sqlStr="SELECT PuntosATT.NombreATT FROM HFolios INNER JOIN PuntosATT ON HFolios.PuntoventaId=PuntosATT.PuntoVentaId WHERE HFolios.Folio = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('ss',$folio,$imei);
+				$prepare->bind_param('s',$folio);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -335,7 +370,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si on objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Tipo de Venta
+	 * a partir del folio y Tipo de Venta
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -343,11 +378,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PsotPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$tipoVenta = $postPago->getTipoVenta();
-			$sqlStr= 'SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN TiposContratacion ON HFolios.TipoContratacionId=TiposContratacion.TipoContratacionId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND TiposContratacion.Tipocontratacion = ?';
+			$sqlStr= 'SELECT HFolios.Folio FROM HFolios INNER JOIN TiposContratacion ON HFolios.TipoContratacionId=TiposContratacion.TipoContratacionId WHERE HFolios.Folio = ? AND TiposContratacion.Tipocontratacion = ?';
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss',$folio,$imei,$tipoVenta);
+				$prepare->bind_param('ss',$folio,$tipoVenta);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -369,7 +403,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si on objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Nombre Ejecutivo
+	 * a partir del folio y Nombre Ejecutivo
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -377,11 +411,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$nombreEjecutivo = $postPago->getNombreEjecutivoUnico();//'CARMEN YOLANDA PINKUS AMADOR';//;$postPago->getNombreEjecutivoUnico();
-			$sqlStr= "SELECT Empleados.Nombre FROM Usuarios INNER JOIN Empleados ON Empleados.EmpleadoId=Usuarios.EmpleadoId WHERE Usuarios.UsuarioId=(SELECT HFolios.UsuarioId FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Usuarios ON HFolios.UsuarioId=Usuarios.UsuarioId INNER JOIN Empleados ON Usuarios.EmpleadoId=Empleados.EmpleadoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? ) AND CONCAT(Empleados.Nombre,' ',Empleados.Paterno,' ',Empleados.Materno) = ?";
+			$sqlStr= "SELECT Empleados.Nombre FROM Usuarios INNER JOIN Empleados ON Empleados.EmpleadoId=Usuarios.EmpleadoId WHERE Usuarios.UsuarioId=(SELECT HFolios.UsuarioId FROM HFolios INNER JOIN Usuarios ON HFolios.UsuarioId=Usuarios.UsuarioId INNER JOIN Empleados ON Usuarios.EmpleadoId=Empleados.EmpleadoId WHERE HFolios.Folio = ? ) AND CONCAT(Empleados.Nombre,' ',Empleados.Paterno,' ',Empleados.Materno) = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss',$folio,$imei,$nombreEjecutivo);
+				$prepare->bind_param('ss',$folio,$nombreEjecutivo);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -402,7 +435,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Plazo Forzoso adquirido
+	 * a partir del folio y Plazo Forzoso adquirido
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -410,11 +443,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$plazoForzoso = $postPago->getPlazoForzoso();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Plazos ON LFolios.PlazoId=Plazos.PlazoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Plazos.Plazo = ?";
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Plazos ON LFolios.PlazoId=Plazos.PlazoId WHERE HFolios.Folio = ? AND Plazos.Plazo = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$imei,$plazoForzoso);
+				$prepare->bind_param('ss', $folio,$plazoForzoso);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -436,7 +468,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Modelo Equipo
+	 * a partir del folio y Modelo Equipo
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -444,11 +476,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$modeloEquipo = $postPago->getModeloEquipo();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Equipos ON Equipos.EquipoId=LFolios.EquipoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Equipos.Equipo = ? ";
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Equipos ON Equipos.EquipoId=LFolios.EquipoId WHERE HFolios.Folio = ? AND Equipos.Equipo = ? ";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$imei,$modeloEquipo);
+				$prepare->bind_param('ss', $folio,$modeloEquipo);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -468,7 +499,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Plan
+	 * a partir del folio y Plan
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -476,11 +507,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$plan = $postPago->getPlantarifarioHomo();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Planes.Plan = ?";
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND Planes.Plan = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$imei,$plan);
+				$prepare->bind_param('ss', $folio,$plan);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -501,7 +531,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y DN
+	 * a partir del folio y DN
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -509,11 +539,10 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue = FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$imei = $postPago->getImei();
 			$mdn = $postPago->getMdnActual();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND LFolios.Dn = ?";
+			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Dn = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$imei,$mdn);
+				$prepare->bind_param('ss', $folio,$mdn);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -534,7 +563,7 @@ class ComparativoVentasDAO extends Connect{
 
 	/**
 	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, IMEI y Fecah de Activación
+	 * a partir del folio y Fecah de Activación
 	 * @param <Object> PostPago
 	 * @return <boolean>
 	 */
@@ -545,9 +574,9 @@ class ComparativoVentasDAO extends Connect{
 			$imei = $postPago->getImei();
 			$tools = new ToolsComparativoVentas();
 			$fechaActivacion=$tools->getOnlyDate($postPago->getFechaActivacion());
-			$sqlStr = "SELECT Inventario.Activacion FROM Inventario WHERE Inventario.EquipoId=(SELECT LFolios.EquipoId FROM LFolios WHERE LFolios.Folio=? AND LFolios.Serie=?) AND Inventario.Serie=? AND Inventario.Cantidad=-1 AND Inventario.Activacion=?";
+			$sqlStr = "SELECT Inventario.Activacion FROM Inventario WHERE Inventario.EquipoId=(SELECT LFolios.EquipoId FROM LFolios WHERE LFolios.Folio=?) AND Inventario.Serie=? AND Inventario.Cantidad=-1 AND Inventario.Activacion=?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('ssss', $folio,$imei,$imei,$fechaActivacion);
+				$prepare->bind_param('sss', $folio,$imei,$fechaActivacion);
 				$prepare->execute();
 				$prepare->bind_result($param);
 				$prepare->fetch();
@@ -565,240 +594,6 @@ class ComparativoVentasDAO extends Connect{
 		return $returnValue;
 	}
 
-/************************************************************************************************
-	El siguiente grupo de funciones comapra los registros de PoatPago por diversos parametros
-	como Nombre del Punto de venta, Nombre del ejecutivo etc. Tomando como campos principales 
-	o lleves primarias Folio e SIM
-************************************************************************************************/
-	/**
-	 * Determina si ounb objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Nombre del Punto de Venta registrado en ATT
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByNombrePDVSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$nombrePdv = $postPago->getNombrePdvUnico();
-			$sqlStr="SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN PuntosATT ON HFolios.PuntoventaId=PuntosATT.PuntoVentaId WHERE HFolios.Folio = ? AND LFolios.Serie=? AND PuntosATT.NombreATT=?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss',$folio,$sim,$nombrePdv);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-				
-				//var_dump($param);
-
-				if($param!=''){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw new Exception('No se puedo ejecutar la consulta');
-			}
-		}
-
-		return $returnValue;
-	}
-
-	/**
-	 * Determina si on objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Tipo de Venta
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByTipoVentaSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PsotPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$tipoVenta = $postPago->getTipoVenta();
-			$sqlStr= 'SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN TiposContratacion ON HFolios.TipoContratacionId=TiposContratacion.TipoContratacionId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND TiposContratacion.Tipocontratacion = ?';
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss',$folio,$sim,$tipoVenta);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != ''){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw new Exception("No se puedo preparar la consulta");
-			}
-
-		}
-		return $returnValue;
-	}
-
-
-	/**
-	 * Determina si on objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Nombre Ejecutivo
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByNombreEjecutivoSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$nombreEjecutivo = $postPago->getNombreEjecutivoUnico();//'CARMEN YOLANDA PINKUS AMADOR';//;$postPago->getNombreEjecutivoUnico();
-			$sqlStr= "SELECT Empleados.Nombre FROM Usuarios INNER JOIN Empleados ON Empleados.EmpleadoId=Usuarios.EmpleadoId WHERE Usuarios.UsuarioId=(SELECT HFolios.UsuarioId FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Usuarios ON HFolios.UsuarioId=Usuarios.UsuarioId INNER JOIN Empleados ON Usuarios.EmpleadoId=Empleados.EmpleadoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? ) AND CONCAT(Empleados.Nombre,' ',Empleados.Paterno,' ',Empleados.Materno) = ?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss',$folio,$sim,$nombreEjecutivo);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != '' || !is_null($param)){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw new Exception("No se puedo preparar la consulta");
-			}
-
-		}
-		return $returnValue;
-	}
-
-	/**
-	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Plazo Forzoso adquirido
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByPlazoForzosoSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$plazoForzoso = $postPago->getPlazoForzoso();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Plazos ON LFolios.PlazoId=Plazos.PlazoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Plazos.Plazo = ?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$sim,$plazoForzoso);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != '' || !is_null($param)){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw  new Exception('No s epuedo preparar la consulta');
-			}
-		}
-		return $returnValue;
-	}
-
-
-	/**
-	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Modelo Equipo
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByModeloEquipoSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$modeloEquipo = $postPago->getModeloEquipo();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Equipos ON Equipos.EquipoId=LFolios.EquipoId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Equipos.Equipo = ? ";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$sim,$modeloEquipo);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != '' || !is_null($param)){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw  new Exception('No s epuedo preparar la consulta');
-			}
-		}
-		return $returnValue;
-	}
-
-	/**
-	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y Plan
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByPlanSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$plan = $postPago->getPlantarifarioHomo();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND Planes.Plan = ?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$sim,$plan);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != '' || !is_null($param)){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw  new Exception('No se puedo preparar la consulta');
-			}
-		}
-		return $returnValue;
-	}
-
-
-	/**
-	 * Determina si un objeto PostPago es igual a un registro de ventas dentro del SIIGA
-	 * a partir del folio, SIM y DN
-	 * @param <Object> PostPago
-	 * @return <boolean>
-	 */
-	public function comparePostPagoByDNSim($postPago){
-		$returnValue = FALSE;
-		if(isset($postPago) && is_a($postPago,'PostPago')){
-			$folio = $postPago->getFolio();
-			$sim = $postPago->getSim();
-			$mdn = $postPago->getMdnActual();
-			$sqlStr = "SELECT HFolios.Folio FROM HFolios INNER JOIN LFolios ON HFolios.Folio=LFolios.Folio INNER JOIN Planes ON Planes.PlanId=LFolios.PlanId WHERE HFolios.Folio = ? AND LFolios.Serie = ? AND LFolios.Dn = ?";
-			if($prepare = $this->getLink()->prepare($sqlStr)){
-				$prepare->bind_param('sss', $folio,$sim,$mdn);
-				$prepare->execute();
-				$prepare->bind_result($param);
-				$prepare->fetch();
-
-				//var_dump($param);
-
-				$prepare->close();
-				if($param != '' || !is_null($param)){
-					$returnValue = TRUE;
-				}
-			}else{
-				throw  new Exception('No se puedo preparar la consulta');
-			}
-		}
-		return $returnValue;
-	}
 
 
 	/**
