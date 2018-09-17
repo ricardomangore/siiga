@@ -49,120 +49,56 @@ class TransferController
 		foreach($transferList as $transfer){
 			if($comparativoVentasDAO->compareTransferByOrdenRenovacion($transfer)){
 				if($transfer->getNewImei() != ""){// EJECUTA CUANDO NEW_IMEI NO ES VACIO
-					if($comparativoVentasDAO->compareTransferByImei($transfer)){
-						switch($case){
-							case 1:{// CASO 1: NOMBRE PDV NO COINCIDE (id_tipo_diferencia = 2)
-								if(!$comparativoVentasDAO->compareTransferByNombrePdv($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(2);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-							case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
-								if(!$comparativoVentasDAO->compareTransferByFechaActivacion($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(4);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-							case 3:{// CASO 3: NEW SIM NO COINCIDE (id_tipo_diferencia = 6)
-								if(!$comparativoVentasDAO->compareTransferBySim($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(6);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-							case 4:{// CASO 4: NEW IMEI NO COINCIDE (id_tipo_diferencia = 7)
-								/*if(!$comparativoVentasDAO->compareTransferByImei($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(7);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}*/
-							}
-							case 5:{// CASO 5: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
-								if(!$comparativoVentasDAO->compareTransferByPlan($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(9);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-							case 6:{// CASO 6: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
-								if(!$comparativoVentasDAO->compareTransferByPlazo($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(10);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-							case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
-								if(!$comparativoVentasDAO->compareTransferByDn($transfer)){
-									$diferencia->setIdRegistro($transfer->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(1);//Tomado del caso que coincide con id_tipo_diferencia
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
-							}
-						}//Termina SWITCH
-					}else{//IMEI BO ENCONTRADO EN SIIGA
+					if(!$comparativoVentasDAO->compareTransferByImei($transfer)){//IMEI NO ENCONTRADO EN SIIGA
 						$diferencia->setIdRegistro($transfer->getIdRegistro());
 						$diferencia->setIdTipoDiferencia(7);
 						$diferenciaDAO->saveDiferenciasDAO($diferencia);
 					}
-				}elseif($comparativoVentasDAO->compareTransferBySim($transfer)){// USA NEW_SIM CUANDO NEW_IMEI ES VACIO
-					switch($case){
-						case 1:{// CASO 1: NOMBRE PDV NO COINCIDE (id_tipo_diferencia = 2)
-							if(!$comparativoVentasDAO->compareTransferByNombrePdvSim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(2);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-						case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
-							if(!$comparativoVentasDAO->compareTransferByFechaActivacionSim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(4);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-						case 3:{// CASO 3: NEW SIM NO COINCIDE (id_tipo_diferencia = 6)
-							/*if(!$comparativoVentasDAO->compareTransferBySim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(6);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}*/
-						}
-						case 4:{// CASO 4: NEW IMEI NO COINCIDE (id_tipo_diferencia = 7)
-							if(!$comparativoVentasDAO->compareTransferByImei($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(7);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-						case 5:{// CASO 5: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
-							if(!$comparativoVentasDAO->compareTransferByPlanSim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(9);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-						case 6:{// CASO 6: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
-							if(!$comparativoVentasDAO->compareTransferByPlazoSim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(10);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-						case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
-							if(!$comparativoVentasDAO->compareTransferByDnSim($transfer)){
-								$diferencia->setIdRegistro($transfer->getIdRegistro());
-								$diferencia->setIdTipoDiferencia(1);//Tomado del caso que coincide con id_tipo_diferencia
-								$diferenciaDAO->saveDiferenciasDAO($diferencia);
-							}
-						}
-					}//Termins SWITCH
-				}else{
-					$diferencia->setIdRegistro($transfer->getIdRegistro());
-					$diferencia->setIdTipoDiferencia(6);
-					$DiferenciasDAO->saveDiferenciasDAO($diferencia);
+				}else{// USA NEW_SIM CUANDO NEW_IMEI ES VACIO
+					if(!$comparativoVentasDAO->compareTransferBySim($transfer)){
+						$diferencia->setIdRegistro($transfer->getIdRegistro());
+						$diferencia->setIdTipoDiferencia(6);
+						$diferenciaDAO->saveDiferenciasDAO($diferencia);
+					}
 				}
+				switch($case){
+					case 1:{// CASO 1: NOMBRE PDV NO COINCIDE (id_tipo_diferencia = 2)
+						if(!$comparativoVentasDAO->compareTransferByNombrePdv($transfer)){
+							$diferencia->setIdRegistro($transfer->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(2);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
+					}
+					case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
+						if(!$comparativoVentasDAO->compareTransferByFechaActivacion($transfer)){
+							$diferencia->setIdRegistro($transfer->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(4);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
+					}
+					case 3:{// CASO 3: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
+						if(!$comparativoVentasDAO->compareTransferByPlan($transfer)){
+							$diferencia->setIdRegistro($transfer->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(9);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
+					}
+					case 4:{// CASO 4: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
+						if(!$comparativoVentasDAO->compareTransferByPlazo($transfer)){
+							$diferencia->setIdRegistro($transfer->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(10);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
+					}
+					case 5:{// CASO 5: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
+						if(!$comparativoVentasDAO->compareTransferByDn($transfer)){
+							$diferencia->setIdRegistro($transfer->getIdRegistro());
+							$diferencia->setIdTipoDiferencia(1);//Tomado del caso que coincide con id_tipo_diferencia
+							$diferenciaDAO->saveDiferenciasDAO($diferencia);
+						}
+					}
+				}//Termina SWITCH
+
 			}else{//FOLIO NO ENCONTRADO EN SIIGA
 				$diferencia->setIdRegistro($transfer->getIdRegistro());
 				$diferencia->setIdTipoDiferencia(11);
