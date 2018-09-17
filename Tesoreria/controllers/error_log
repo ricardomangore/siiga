@@ -1,0 +1,4 @@
+
+[17-Sep-2018 16:57:06 America/Chicago] PHP Warning:  include_once(/../../comparativo_ventas/includes/Connect.php): failed to open stream: No such file or directory in /home/solucell/siigatester.solucell.com.mx/siiga/Tesoreria/controllers/includes/toolsValidaciones.php on line 2
+[17-Sep-2018 16:57:06 America/Chicago] PHP Warning:  include_once(): Failed opening '/../../comparativo_ventas/includes/Connect.php' for inclusion (include_path='.:/usr/lib/php:/usr/local/lib/php') in /home/solucell/siigatester.solucell.com.mx/siiga/Tesoreria/controllers/includes/toolsValidaciones.php on line 2
+[17-Sep-2018 16:57:06 America/Chicago] PHP Fatal error:  Class 'Connect' not found in /home/solucell/siigatester.solucell.com.mx/siiga/Tesoreria/controllers/includes/toolsValidaciones.php on line 5

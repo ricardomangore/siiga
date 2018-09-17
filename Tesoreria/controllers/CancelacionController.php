@@ -1,7 +1,7 @@
 <?php
-include("../../includes/Conectar.php");
-include_once("../../includes/Security.php");
-include_once("/includes/toolsValidaciones.php");
+include(__DIR__ ."/../../includes/Conectar.php");
+include_once(__DIR__ ."/../../includes/Security.php");
+include_once("includes/toolsValidaciones.php");
 
 
 
