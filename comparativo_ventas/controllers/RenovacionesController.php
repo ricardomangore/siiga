@@ -47,76 +47,23 @@ class RenovacionesController
 	
 		$case = 1;	
 		foreach($renovacionesList as $renovacion){
-			if($comparativoVentasDAO->compareRenovacionesByFolio($renovacion)){
+			if($comparativoVentasDAO->compareRenovacionesByOrdenRenovacion($renovacion)){
 				if($renovacion->getNewImei() != ""){// SE EJECUTA CUANDO EL IMEI NO ES VACIO/
-					/*checar si IMEI del objeto postpago es igual a el del siiga*/
+					if($comparativoVentasDAO->compareRenovacionesByNewImei($renovacion)){//EJECUTA CUANDO EL IMEI SI ESTA EN SIIGA
 						switch ($case){
 							case 1:{// CASO 1: NOMBRE PDV NO COINCIDE ($id_tipo_diferencia = 2)
-								if(!$comparativoVentasDAO->compareRenovacionesByNombrePDVImei($renovacion)){
+								if(!$comparativoVentasDAO->compareRenovacionesByNombrePDV($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(2);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
 								}
 							}
 							case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
-								if(!$comparativoVentasDAO->compareRenovacionesByFechaActivacionContratoImei($renovacion)){
+								if(!$comparativoVentasDAO->compareRenovacionesByFechaActivacionContrato($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(4);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
 								}
-							}
-							case 3:{// CASO 3: NEW SIM NO COINCIDE (id_tipo_diferencia = 6)
-								if(!$comparativoVentasDAO->compareRenovacionesByNewSimImei($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(6);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
-							}
-							case 4:{// CASO 4: NEW IMEI NO COINCIDE (id_tipo_diferencia = 7)
-								if(!$comparativoVentasDAO->compareRenovacionesByNewImei($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(7);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
-							}
-							case 5:{// CASO 5: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
-								if(!$comparativoVentasDAO->compareRenovacionesByPlanActualImei($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(9);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
-							}
-							case 6:{// CASO 6: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
-								if(!$comparativoVentasDAO->compareRenovacionesByPlazoActualImei($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(10);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
-							}
-							case 7:{// CASO 7 : DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
-								if(!$comparativoVentasDAO->compareRenovacionesByDnActualImei($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(1);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}							
-							}
-						}
-	
-					}else{// USA SIM CUANDO EL IMEI ES VACIO
-						switch ($case){
-							case 1:{// CASO 1: NOMBRE PDV NO COINCIDE (id_tipo_diferencia = 2)
-								if(!$comparativoVentasDAO->compareRenovacionesByNombrePDVSim($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(2);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
-							}
-							case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
-								if(!$comparativoVentasDAO->compareRenovacionesByFechaActivacionContratoSim($renovacion)){
-									$diferencia->setIdRegistro($renovacion->getIdRegistro());
-									$diferencia->setIdTipoDiferencia(4);
-									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
 							}
 							case 3:{// CASO 3: NEW SIM NO COINCIDE (id_tipo_diferencia = 6)
 								if(!$comparativoVentasDAO->compareRenovacionesByNewSim($renovacion)){
@@ -126,36 +73,97 @@ class RenovacionesController
 								}						
 							}
 							case 4:{// CASO 4: NEW IMEI NO COINCIDE (id_tipo_diferencia = 7)
-								if(!$comparativoVentasDAO->compareRenovacionesByNewImeiSim($renovacion)){
+								/*if(!$comparativoVentasDAO->compareRenovacionesByNewImei($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(7);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}						
+								}	*/					
 							}
 							case 5:{// CASO 5: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
-								if(!$comparativoVentasDAO->compareRenovacionesByPlanActualSim($renovacion)){
+								if(!$comparativoVentasDAO->compareRenovacionesByPlanActual($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(9);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
 								}						
 							}
 							case 6:{// CASO 6: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
-								if(!$comparativoVentasDAO->compareRenovacionesByPlazoActualSim($renovacion)){
+								if(!$comparativoVentasDAO->compareRenovacionesByPlazoActual($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(10);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
 								}						
 							}
-							case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
-								if(!$comparativoVentasDAO->compareRenovacionesByDnActualSim($renovacion)){
+							case 7:{// CASO 7 : DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
+								if(!$comparativoVentasDAO->compareRenovacionesByDnActual($renovacion)){
 									$diferencia->setIdRegistro($renovacion->getIdRegistro());
 									$diferencia->setIdTipoDiferencia(1);
 									$diferenciaDAO->saveDiferenciasDAO($diferencia);
-								}
+								}							
 							}
 						}
+					}else{//IMEI NO COINCIDE EN SIIGA
+						$diferencia->setIdRegistro($renovacion->getIdRegistro());
+						$diferencia->setIdTipoDiferencia(7);
+						$diferenciaDAO->saveDiferenciasDAO($diferencia);
+					}
+				}elseif($comparativoVentasDAO->compareRenovacionesByNewSim($renovacion)){// USA SIM CUANDO EL IMEI ES VACIO
+					switch ($case){
+						case 1:{// CASO 1: NOMBRE PDV NO COINCIDE (id_tipo_diferencia = 2)
+							if(!$comparativoVentasDAO->compareRenovacionesByNombrePDV($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(2);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}						
+						}
+						case 2:{// CASO 2: FECHA ACTIVACION CONTRATO NO COINCIDE (id_tipo_diferencia = 4)
+							if(!$comparativoVentasDAO->compareRenovacionesByFechaActivacionContrato($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(4);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}						
+						}
+						case 3:{// CASO 3: NEW SIM NO COINCIDE (id_tipo_diferencia = 6)
+							/*if(!$comparativoVentasDAO->compareRenovacionesByNewSim($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(6);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}*/						
+						}
+						case 4:{// CASO 4: NEW IMEI NO COINCIDE (id_tipo_diferencia = 7)
+							if(!$comparativoVentasDAO->compareRenovacionesByNewImei($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(7);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}				
+						}
+						case 5:{// CASO 5: PLAN ACTUAL NO COINCIDE (id_tipo_diferencia = 9)
+							if(!$comparativoVentasDAO->compareRenovacionesByPlanActual($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(9);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}						
+						}
+						case 6:{// CASO 6: PLAZO ACTUAL NO COINCIDE (id_tipo_diferencia = 10)
+							if(!$comparativoVentasDAO->compareRenovacionesByPlazoActual($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(10);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}						
+						}
+						case 7:{// CASO 7: DN ACTUAL NO COINCIDE (id_tipo_diferencia = 1)->caso 1 por no existir su diferencia
+							if(!$comparativoVentasDAO->compareRenovacionesByDnActual($renovacion)){
+								$diferencia->setIdRegistro($renovacion->getIdRegistro());
+								$diferencia->setIdTipoDiferencia(1);
+								$diferenciaDAO->saveDiferenciasDAO($diferencia);
+							}
+						}
+					}
 	
-				}//termina else
+				}else{
+					$diferencia->setIdRegistro($renovacion->getIdRegistro());
+					$diferencia->setIdTipoDiferencia(6);
+					$diferenciaDAO->saveDiferenciasDAO($diferencia);
+				}
 			}else{//FOLIO NO ENCONTRADO EN SIIGA
 				$diferencia->setIdRegistro($renovacion->getIdRegistro());
 				$diferencia->setIdTipoDiferencia(11);
