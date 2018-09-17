@@ -211,7 +211,7 @@ class ComparativoVentasDAO extends Connect{
 		$returnValue= FALSE;
 		if(isset($postPago) && is_a($postPago,'PostPago')){
 			$folio = $postPago->getFolio();
-			$sim = $postpago->getSim();
+			$sim = $postPago->getSim();
 			$sqlStr="SELECT LFolios.serie FROM LFolios WHERE LFolios.Folio = ? AND LFolios.serie = ?";
 			if($prepare = $this->getLink()->prepare($sqlStr)){
 				$prepare->bind_param('ss',$folio,$sim);

@@ -208,8 +208,8 @@ class PostpagoController
 
 					}
 				}else{// SIM NO ENCONTRADA EN SIIGA
-					$diferenciaDAO->setIdRegistro($postPago->getIdRegistro());
-					$DiferenciasDAO->setIdTipoDiferencia(6);
+					$diferencia->setIdRegistro($postPago->getIdRegistro());
+					$diferencia->setIdTipoDiferencia(6);
 					$diferenciaDAO->saveDiferenciasDAO($diferencia);
 				}
 			}else{//FOLIO NO ENCONTRADO EN SIIGA
