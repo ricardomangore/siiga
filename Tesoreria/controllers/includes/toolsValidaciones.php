@@ -1,5 +1,5 @@
 <?php
-include_once("/../../comparativo_ventas/includes/Connect.php");
+include_once(__DIR__ . "/../../../comparativo_ventas/includes/Connect.php");
 
 class toolsValidaciones extends Connect
 {
