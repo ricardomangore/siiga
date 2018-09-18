@@ -65,7 +65,7 @@ class SegurosController
 			$arrayIncidencias = $listaIncidentes;
 			$titles = array('Id_Contrato', 'Renta', 'Fecha_Act_Seg', 'Tipo_Diferencia');
 			$fileName = $uploadFolder . "/" ."Seguros layout_$idlayout " . date("Y-m-d") . ".csv";
-			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias, $titles);
+			$respuesta = $tools->createReportCsv($fileName , $layout, $arrayIncidencias, $titles);
 			if($respuesta){
 				echo '
 					<br><center><table><tr><td align="center"><a href="#"><img src="img/Otros/Reportes.png"><br>Click View</a></td>
