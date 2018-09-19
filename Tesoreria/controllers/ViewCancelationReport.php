@@ -2,12 +2,24 @@
 
 class ViewCancelationReport{
 
+	private $uId;
 	private $nombre;
+	private $puntoatt;
 	private $orden_crm;
 	private $numero_documento;
 	private $concepto;
 	private $fecha_cancelacion;
 	private $descripcion;
+
+	public function getUid()
+	{
+	    return $this->uId;
+	}
+	
+	public function setUid($uId)
+	{
+	    $this->uId = $uId;
+	}
 
 	public function getNombre()
 	{
@@ -17,6 +29,16 @@ class ViewCancelationReport{
 	public function setNombre($nombre)
 	{
 	    $this->nombre = $nombre;
+	}
+
+	public function getPuntoAtt()
+	{
+	    return $this->puntoatt;
+	}
+	
+	public function setPuntoAtt($puntoatt)
+	{
+	    $this->puntoatt = $puntoatt;
 	}
 
 	public function getOrdenCrm()

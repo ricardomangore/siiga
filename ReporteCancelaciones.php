@@ -92,6 +92,8 @@
 						self.fecha = selectedDate;
 					}
 				});
+				var ayer = new Date();
+				ayer.setDate(ayer.getDate() - 1);
 			},
 			methods:{
 				generateCSV(){
@@ -102,6 +104,7 @@
 						date = moment().format('YYYY-MM-DD');
 					}
 					axios.get('/siiga/Tesoreria/controllers/CancelacionReportController.php?fecha='+date).then(function(response){
+						//console.log(response.data);
 						this.url = response.data.url;
 					 	var tmp = response.data.message;
 					 	var type = response.data.type;

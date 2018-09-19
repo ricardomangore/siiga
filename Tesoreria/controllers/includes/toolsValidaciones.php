@@ -34,7 +34,7 @@ class toolsValidaciones extends Connect
 		$arrayCancelations = array();
 		//$fechaHoy = date("Y-m-d");
 		//$fechaAyer = date("Y-m-d", strtotime("yesterday"));
-		$query = "SELECT CONCAT(empleados.Nombre,' ',empleados.Paterno,' ',empleados.Materno), cancelacionestesoreria.orden_crm, cancelacionestesoreria.numero_documento, cancelacionestesoreria.concepto, cancelacionestesoreria.fecha_cancelacion, cancelacionestesoreria.descripcion FROM cancelacionestesoreria INNER JOIN usuarios 
+		$query = "SELECT cancelacionestesoreria.uid, CONCAT(empleados.Nombre,' ',empleados.Paterno,' ',empleados.Materno), cancelacionestesoreria.orden_crm, cancelacionestesoreria.numero_documento, cancelacionestesoreria.concepto, cancelacionestesoreria.fecha_cancelacion, cancelacionestesoreria.descripcion FROM cancelacionestesoreria INNER JOIN usuarios 
 			ON cancelacionestesoreria.uid = usuarios.UsuarioId INNER JOIN empleados ON usuarios.EmpleadoId = empleados.EmpleadoId
 			WHERE cancelacionestesoreria.fecha_cancelacion =  '".$fecha."'";
 		$prepare = $this->getLink()->query($query);
@@ -42,12 +42,14 @@ class toolsValidaciones extends Connect
 			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
 				//var_dump($fila);
 				$viewCancelationReporObj = new ViewCancelationReport();
-				$viewCancelationReporObj->setNombre($fila[0]);
-				$viewCancelationReporObj->setOrdenCrm($fila[1]);
-				$viewCancelationReporObj->setNumeroDocumento($fila[2]);
-				$viewCancelationReporObj->setConcepto($fila[3]);
-				$viewCancelationReporObj->setFechaCancelacion($fila[4]);
-				$viewCancelationReporObj->setDescripcion($fila[5]);
+				$viewCancelationReporObj->setUid($fila[0]);
+				$viewCancelationReporObj->setNombre($fila[1]);
+				$viewCancelationReporObj->setPuntoAtt('');
+				$viewCancelationReporObj->setOrdenCrm($fila[2]);
+				$viewCancelationReporObj->setNumeroDocumento($fila[3]);
+				$viewCancelationReporObj->setConcepto($fila[4]);
+				$viewCancelationReporObj->setFechaCancelacion($fila[5]);
+				$viewCancelationReporObj->setDescripcion($fila[6]);
 				array_push($arrayCancelations, $viewCancelationReporObj);
 			}
 			$returnValue = $arrayCancelations;
@@ -58,8 +60,18 @@ class toolsValidaciones extends Connect
 	public function createCancelacionReport($fileName,$fecha){
 		$returnValue = FALSE;
 		$cancelationsList = $this->getListCancelations($fecha);
-		$titles = array('Nombre','Orden CRM','Numero Documento','Concepto','Fecha Cancelacion','Descripcion');
+		$titles = array('Nombre','Punto Venta','Orden CRM','Numero Documento','Concepto','Fecha Cancelacion','Descripcion');
 		if($cancelationsList != NULL){
+			foreach($cancelationsList as $cancelation){
+				$userId = $cancelation->getUid();
+				$query = "SELECT NombreATT FROM puntosatt INNER JOIN HFolios ON HFolios.PuntoventaId = puntosatt.PuntoVentaId WHERE HFolios.UsuarioId='".$userId."' LIMIT 1";
+				$prepare = $this->getLink()->query($query);
+				if($prepare->num_rows != 0){
+					while ($fila = mysqli_fetch_row($prepare)) {
+						$cancelation->setPuntoAtt($fila[0]);
+					}
+				}
+			}
 			if($flag = $this->generateReport($fileName,$cancelationsList,$titles)){
 				$returnValue = TRUE;
 			}
@@ -85,7 +97,7 @@ class toolsValidaciones extends Connect
 			foreach($list as $row){
 				$tempRow = "";
 				$arrayMethods = get_class_methods($row);
-				for($i = 0; $i<sizeof($arrayMethods); $i++){
+				for($i = 1; $i<sizeof($arrayMethods); $i++){
 					$method = $arrayMethods[$i];
 					$subStr = substr($method,0,3);
 					if($subStr == 'get'){
