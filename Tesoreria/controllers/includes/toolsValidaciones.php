@@ -29,14 +29,14 @@ class toolsValidaciones extends Connect
 		return $returnvalue;
 	}
 
-	public function getListCancelations(){
+	public function getListCancelations($fecha){
 		$returnValue = NULL;
 		$arrayCancelations = array();
 		//$fechaHoy = date("Y-m-d");
-		$fechaAyer = date("Y-m-d", strtotime("yesterday"));
+		//$fechaAyer = date("Y-m-d", strtotime("yesterday"));
 		$query = "SELECT CONCAT(empleados.Nombre,' ',empleados.Paterno,' ',empleados.Materno), cancelacionestesoreria.orden_crm, cancelacionestesoreria.numero_documento, cancelacionestesoreria.concepto, cancelacionestesoreria.fecha_cancelacion, cancelacionestesoreria.descripcion FROM cancelacionestesoreria INNER JOIN usuarios 
 			ON cancelacionestesoreria.uid = usuarios.UsuarioId INNER JOIN empleados ON usuarios.EmpleadoId = empleados.EmpleadoId
-			WHERE cancelacionestesoreria.fecha_cancelacion =  '".$fechaAyer."'";
+			WHERE cancelacionestesoreria.fecha_cancelacion =  '".$fecha."'";
 		$prepare = $this->getLink()->query($query);
 		if($prepare->num_rows != 0){
 			while($fila = $prepare->fetch_array(MYSQLI_NUM)){
@@ -55,9 +55,9 @@ class toolsValidaciones extends Connect
 		return $returnValue;
 	}
 
-	public function createCancelacionReport($fileName){
+	public function createCancelacionReport($fileName,$fecha){
 		$returnValue = FALSE;
-		$cancelationsList = $this->getListCancelations();
+		$cancelationsList = $this->getListCancelations($fecha);
 		$titles = array('Nombre','Orden CRM','Numero Documento','Concepto','Fecha Cancelacion','Descripcion');
 		if($cancelationsList != NULL){
 			if($flag = $this->generateReport($fileName,$cancelationsList,$titles)){

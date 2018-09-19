@@ -10,8 +10,9 @@ if(!$Seguridad->SesionExiste()){
 }else{
 	header("Content-Type: application/json");
 	$ValidationsTools = new toolsValidaciones();
-	$fileName = "FilesTmp/CancelacionesTesoreria/CancelationsReport-".date('d-m-Y H-i-s').".csv";
-	$message = $ValidationsTools->createCancelacionReport(__DIR__."/../../". $fileName);
+	$date = $_GET['fecha'];
+	$fileName = "FilesTmp/CancelacionesTesoreria/CancelationsReport-".$date.".csv";
+	$message = $ValidationsTools->createCancelacionReport(__DIR__."/../../". $fileName,$date);
 	$type = '';
 	$msj = '';
 	if($message){
@@ -19,13 +20,14 @@ if(!$Seguridad->SesionExiste()){
 		$msj = 'SE CREO EL ARCHIVO CORRECTAMENTE';
 	}else{
 		$type = 'Error';
-		$msj = 'NO SE PUDO CREAR EL ARCHIVO';
+		$msj = 'NO HAY CANCELACIONES EN ESTE DIA';
 	}
 	$response = array(
 		'type' => $type, 
 		'message' => $msj, 
 		'status' => 200, 
 		'url' => $fileName,
+		'fecha' => $date,
 	);
 
 	echo json_encode($response);
