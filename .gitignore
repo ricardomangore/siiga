@@ -15,3 +15,5 @@ test.php
 Test/
 comparativo_ventas/includes/Connect.php
 ruta/
+OrdenPedidoV1/
+error_log
