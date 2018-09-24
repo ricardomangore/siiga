@@ -15,7 +15,7 @@
 	$HerramientasHtml= new ToolsHtml($_SESSION['UsuarioId']);	
 
 	$Clave=$_SESSION['UsuarioId'].date("dmyHis").'66';
-	$ModuloId=78;
+	$ModuloId=79;
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -42,7 +42,7 @@
 <script type="text/javascript" src="js/sortedtable.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.17.1/moment.min.js"></script>
+
 
 </head>
 </head>
@@ -63,63 +63,21 @@
 			</form>
 			<form id="logout" name="logout" method="post" action="logout.php" /></form>
 		</div>
+
+			<form id="foo" name="foo" method="post" >		
+				<br/>			
+				<div align="center" id="resultados"></div>
+				<div id="display" name="display"></div>
+			</form>
+			
+			<!-- AQUI COMIENZA EL CONTENIDO DEL COMPARATIVO VENTAS -->
+			<form>
+				<fieldset>
+					<input type="file" name="ImportFile" id="ImportFile">
+				</fieldset>
+
+			</form>
+			<!-- AQUI TERMINA EL CONETNIDAO DEL COMPARATIVO VENTAS -->
 	</div>
-	<br>
-	<fieldset><br>
-		<div id="shortapp">
-			<p><center><h3>FECHA:  <input type="text" v-model="fecha" id="datepicker" placeholder="16-04-1986"><button id="generateCSV" v-on:click="generateCSV()">Buscar</button></h3></center></p>
-			<br>
-			<h3><center><p>{{ message }}</p></center></h3><br>
-			<div id="downloadReport" style="display: none;color:red;font-weight: bold;"><center>
-				<p>CLICK PARA DESCARGAR EL ARCHIVO CSV DE CANCELACIONES</p>
-				<a v-bind:href="url"><img src="img/export_csv.png" style="width:70px; height:70px;"></a>
-			</center></div>
-		</div>
-		<br>
-	</fieldset>
-	<script>
-		var app2 = new Vue({
-			el: '#shortapp',
-			data :{
-				message:'SELECCIONA UNA FECHA',
-				url: '',
-				fecha:'',
-			},
-			mounted(){
-				var self = this;
-				$('#datepicker').datepicker({
-					onSelect:function(selectedDate, datePicker){
-						self.fecha = selectedDate;
-					}
-				});
-				var ayer = new Date();
-				ayer.setDate(ayer.getDate() - 1);
-			},
-			methods:{
-				generateCSV(){
-					var date = '';
-					if(this.fecha != ''){
-						date = moment(this.fecha,'DD/MM/YYYY').format('YYYY-MM-DD');
-					}else{
-						date = moment().format('YYYY-MM-DD');
-					}
-					axios.get('/siiga/Tesoreria/controllers/CancelacionReportController.php?fecha='+date).then(function(response){
-						//console.log(response.data);
-						this.url = response.data.url;
-					 	var tmp = response.data.message;
-					 	var type = response.data.type;
-					 	this.message = tmp;
-					 	if(type == 'Succefull'){
-					 		$('#downloadReport').fadeOut('slow',function(){
-					 			$('#downloadReport').fadeIn('slow');
-					 		});
-					 	}else{
-					 		$('#downloadReport').fadeOut('slow');
-					 	}
-					}.bind(this));
-				}
-			}
-		})
-	</script>
 </body>
 </html>
