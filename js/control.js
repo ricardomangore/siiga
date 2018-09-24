@@ -4436,6 +4436,7 @@ console.log(data);
 			type:'POST',
 			contentType:false,
 			data:data,
+                        timeout: 0,
 			processData:false,
 			cache:false
 			})
