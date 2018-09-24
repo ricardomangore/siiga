@@ -1,6 +1,6 @@
 <?php
-include_once(__DIR__ . "/../../../comparativo_ventas/includes/Connect.php");
-include_once("/../ViewCancelationReport.php");
+include_once("../../comparativo_ventas/includes/Connect.php");
+include_once("../controllers/ViewCancelationReport.php");
 
 class toolsValidaciones extends Connect
 {
@@ -17,7 +17,7 @@ class toolsValidaciones extends Connect
 						$returnvalue = 'TRUE';	
 					}else{
 						$prepare->close();
-						$returnvalue = 'EL Registro con el numero de Orden CRM '.$ordenCRM. ' y numero de documento '.$numeroDocumento.' ya Existe';//$prepare->error;
+						$returnvalue = 'El Registro con el numero de Orden CRM '.$ordenCRM. ' y numero de documento '.$numeroDocumento.' ya Existe';//$prepare->error;
 					}
 				}else{
 					throw new Exception("Error al preparar la consulta");
@@ -34,8 +34,8 @@ class toolsValidaciones extends Connect
 		$arrayCancelations = array();
 		//$fechaHoy = date("Y-m-d");
 		//$fechaAyer = date("Y-m-d", strtotime("yesterday"));
-		$query = "SELECT cancelacionestesoreria.uid, CONCAT(empleados.Nombre,' ',empleados.Paterno,' ',empleados.Materno), cancelacionestesoreria.orden_crm, cancelacionestesoreria.numero_documento, cancelacionestesoreria.concepto, cancelacionestesoreria.fecha_cancelacion, cancelacionestesoreria.descripcion FROM cancelacionestesoreria INNER JOIN usuarios 
-			ON cancelacionestesoreria.uid = usuarios.UsuarioId INNER JOIN empleados ON usuarios.EmpleadoId = empleados.EmpleadoId
+		$query = "SELECT cancelacionestesoreria.uid, CONCAT(Empleados.Nombre,' ',Empleados.Paterno,' ',Empleados.Materno), cancelacionestesoreria.orden_crm, cancelacionestesoreria.numero_documento, cancelacionestesoreria.concepto, cancelacionestesoreria.fecha_cancelacion, cancelacionestesoreria.descripcion FROM cancelacionestesoreria INNER JOIN Usuarios 
+			ON cancelacionestesoreria.uid = Usuarios.UsuarioId INNER JOIN Empleados ON Usuarios.EmpleadoId = Empleados.EmpleadoId
 			WHERE cancelacionestesoreria.fecha_cancelacion =  '".$fecha."'";
 		$prepare = $this->getLink()->query($query);
 		if($prepare->num_rows != 0){
@@ -64,7 +64,7 @@ class toolsValidaciones extends Connect
 		if($cancelationsList != NULL){
 			foreach($cancelationsList as $cancelation){
 				$userId = $cancelation->getUid();
-				$query = "SELECT NombreATT FROM puntosatt INNER JOIN HFolios ON HFolios.PuntoventaId = puntosatt.PuntoVentaId WHERE HFolios.UsuarioId='".$userId."' LIMIT 1";
+				$query = "SELECT NombreATT FROM PuntosATT INNER JOIN HFolios ON HFolios.PuntoventaId = PuntosATT.PuntoVentaId WHERE HFolios.UsuarioId='".$userId."' LIMIT 1";
 				$prepare = $this->getLink()->query($query);
 				if($prepare->num_rows != 0){
 					while ($fila = mysqli_fetch_row($prepare)) {

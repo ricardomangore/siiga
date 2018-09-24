@@ -1,7 +1,7 @@
 <?php
-include(__DIR__ ."/../../includes/Conectar.php");
+include_once ("../../includes/Conectar.php");
 include_once("includes/toolsValidaciones.php");
-include_once(__DIR__ ."/../../includes/Security.php");
+include_once("../../includes/Security.php");
 
 
 $Seguridad = new Security();
@@ -12,7 +12,7 @@ if(!$Seguridad->SesionExiste()){
 	$ValidationsTools = new toolsValidaciones();
 	$date = $_GET['fecha'];
 	$fileName = "FilesTmp/CancelacionesTesoreria/CancelationsReport-".$date.".csv";
-	$message = $ValidationsTools->createCancelacionReport(__DIR__."/../../". $fileName,$date);
+	$message = $ValidationsTools->createCancelacionReport("../../". $fileName,$date);
 	$type = '';
 	$msj = '';
 	if($message){
