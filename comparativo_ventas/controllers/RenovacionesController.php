@@ -124,7 +124,7 @@ class RenovacionesController
 				'Plazo_Actual', 'Dn_Actual', 'Tipo_Diferencia'
 			);
 			$fileName = $uploadFolder . "/" ."Renovaciones layout_$idlayout " . date("Y-m-d") . ".csv";
-			$respuesta = $tools->createReportCsv($fileName ,$layout, $arrayIncidencias, $titles);
+			$respuesta = $tools->createReportCsv($fileName , $layout, $arrayIncidencias, $titles);
 			if($respuesta){
 				echo '
 					<br><center><table><tr><td align="center"><a href="#"><img src="img/Otros/Reportes.png"><br>Click View</a></td>

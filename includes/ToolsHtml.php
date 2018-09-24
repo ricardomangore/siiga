@@ -184,6 +184,9 @@ class ToolsHtml extends Tools{
 				break;
 			case '76':
 						$this->displayOriginacionV2();
+				break;
+			case '77':  $this->displayCancelacionTesoreria();
+				break;
 			default:
 				echo '';
 				break;
@@ -6748,5 +6751,25 @@ function drawTablaFinVenta2($Folio)
 		</tbody></table>
 		';
 	}
+
+	/**
+	 * Formulario para captura de cancelaciones 
+	 * Área: Tesoreria
+	 */
+	public function displayCancelacionTesoreria(){
+		$htmlString = "<div>
+			<fieldset>
+				<div class='izquierda'>
+					asdf
+				</div>
+				<div class='derecha'>
+					asdf
+				</div>
+			</fieldset>
+		</div>";
+
+		echo $htmlString;
+	}
+
 }//Fin Clase
 ?>

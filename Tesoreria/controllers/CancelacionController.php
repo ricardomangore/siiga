@@ -1,7 +1,7 @@
 <?php
 include("../../includes/Conectar.php");
 include_once("../../includes/Security.php");
-include_once("/includes/toolsValidaciones.php");
+include_once("includes/toolsValidaciones.php");
 
 
 
@@ -52,4 +52,9 @@ else{
 		'uid' => $uid,
 	);*/
 	echo json_encode($response);
-}	
+}
+
+?>
+
+
+	
